@@ -128,28 +128,28 @@ namespace Gemserk
 
 		void DrawHistory()
 		{
-			var nonSelectedColor = GUI.color;
+			var nonSelectedColor = GUI.backgroundColor;
 
 			EditorGUI.BeginDisabledGroup(true);
 			for (int i = 0; i < history.Count; i++) {
 				var historyElement = history [i];
 
 				if (currentSelectionIndex == i) {
-					GUI.color = Color.green;
+					GUI.backgroundColor = Color.cyan;
 				} else {
-					GUI.color = nonSelectedColor;
+					GUI.backgroundColor = nonSelectedColor;
 				}
 
 				if (historyElement == null) {
 					EditorGUILayout.LabelField("Deleted");
 					continue;
 				}
-
+					
 				EditorGUILayout.ObjectField(historyElement, historyElement.GetType(), true);
 			}
 			EditorGUI.EndDisabledGroup();
 
-			GUI.color = nonSelectedColor;
+			GUI.backgroundColor = nonSelectedColor;
 		}
 
 	}
