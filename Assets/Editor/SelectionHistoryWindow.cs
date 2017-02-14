@@ -9,10 +9,10 @@ namespace Gemserk
 
 		static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
 
-		static List<Object> storedHistory = new List<Object>(100);
+		public static List<Object> storedHistory = new List<Object>(100);
 
 		// Add menu named "My Window" to the Window menu
-		[MenuItem ("Window/Gemserk/Selection History")]
+		[MenuItem ("Window/Gemserk/Selection History %#h")]
 		static void Init () {
 			// Get existing open window or if none, make a new one:
 			var window = ScriptableObject.CreateInstance<SelectionHistoryWindow>();
