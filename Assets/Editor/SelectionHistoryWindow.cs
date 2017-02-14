@@ -17,6 +17,8 @@ namespace Gemserk
 
 		int historySize = 10;
 
+		public GUISkin windowSkin;
+
 		// Add menu named "My Window" to the Window menu
 		[MenuItem ("Window/Gemserk/Selection History")]
 		static void Init () {
@@ -28,6 +30,8 @@ namespace Gemserk
 		void OnEnable()
 		{
 			historySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
+
+//			windowSkin = AssetDatabase.LoadAssetAtPath<GUISkin> ("Editor/SelectionHistorySkin");
 
 			Selection.selectionChanged += delegate {
 				Repaint();
@@ -90,6 +94,14 @@ namespace Gemserk
 			currentSelection = history[currentSelectionIndex];
 		}
 
+		void UpdateSelection(int currentIndex)
+		{
+			currentSelectionIndex = currentIndex;
+			currentSelection = history[currentSelectionIndex];
+
+			Selection.activeObject = currentSelection;
+		}
+
 		Vector2 scrollPosition;
 
 		void OnGUI () {
@@ -107,17 +119,17 @@ namespace Gemserk
 
 			DrawHistory();
 
-			if (GUILayout.Button("Previous")) {
+			if (GUILayout.Button("Previous", windowSkin.button)) {
 				Previous();
 				Selection.activeObject = GetSelection();
 			}
 
-			if (GUILayout.Button("Next")) {
+			if (GUILayout.Button("Next", windowSkin.button)) {
 				Next();
 				Selection.activeObject = GetSelection();
 			}
 
-			if (GUILayout.Button("Clear")) {
+			if (GUILayout.Button("Clear", windowSkin.button)) {
 				history.Clear();
 				Repaint();
 			}
@@ -130,7 +142,6 @@ namespace Gemserk
 		{
 			var nonSelectedColor = GUI.backgroundColor;
 
-			EditorGUI.BeginDisabledGroup(true);
 			for (int i = 0; i < history.Count; i++) {
 				var historyElement = history [i];
 
@@ -145,9 +156,22 @@ namespace Gemserk
 					continue;
 				}
 					
+				EditorGUILayout.BeginHorizontal ();
+
+				EditorGUI.BeginDisabledGroup(true);
 				EditorGUILayout.ObjectField(historyElement, historyElement.GetType(), true);
+				EditorGUI.EndDisabledGroup();
+
+				GUI.backgroundColor = nonSelectedColor;
+
+				var buttonStyle = windowSkin.GetStyle("SelectionButton");
+
+				if (GUILayout.Button ("Select", buttonStyle)) {
+					UpdateSelection (i);
+				}
+
+				EditorGUILayout.EndHorizontal ();
 			}
-			EditorGUI.EndDisabledGroup();
 
 			GUI.backgroundColor = nonSelectedColor;
 		}
