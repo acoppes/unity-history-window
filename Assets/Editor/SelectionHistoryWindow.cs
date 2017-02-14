@@ -23,7 +23,7 @@ namespace Gemserk
 		[MenuItem ("Window/Gemserk/Selection History")]
 		static void Init () {
 			// Get existing open window or if none, make a new one:
-			SelectionHistoryWindow window = EditorWindow.GetWindow<SelectionHistoryWindow>("Selection History");
+			SelectionHistoryWindow window = EditorWindow.GetWindow<SelectionHistoryWindow>("History");
 			window.Show();
 		}
 
