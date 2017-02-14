@@ -9,7 +9,21 @@ namespace Gemserk
 
 		static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
 
-		readonly List<Object> history = new List<Object>(100);
+		static List<Object> storedHistory = new List<Object>(100);
+
+		// Add menu named "My Window" to the Window menu
+		[MenuItem ("Window/Gemserk/Selection History")]
+		static void Init () {
+			// Get existing open window or if none, make a new one:
+			var window = ScriptableObject.CreateInstance<SelectionHistoryWindow>();
+
+//			SelectionHistoryWindow window = EditorWindow.GetWindow<SelectionHistoryWindow>("History");
+			window.titleContent.text = "History";
+			window.History = storedHistory;
+			window.Show();
+		}
+	
+		List<Object> history = new List<Object>(100);
 
 		int currentSelectionIndex;
 
@@ -19,12 +33,13 @@ namespace Gemserk
 
 		public GUISkin windowSkin;
 
-		// Add menu named "My Window" to the Window menu
-		[MenuItem ("Window/Gemserk/Selection History")]
-		static void Init () {
-			// Get existing open window or if none, make a new one:
-			SelectionHistoryWindow window = EditorWindow.GetWindow<SelectionHistoryWindow>("History");
-			window.Show();
+		public List<Object> History {
+			get {
+				return history;
+			}
+			set {
+				history = value;
+			}
 		}
 
 		void OnEnable()
