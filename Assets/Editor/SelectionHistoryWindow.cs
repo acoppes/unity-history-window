@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Gemserk
 {
@@ -9,7 +8,7 @@ namespace Gemserk
 
 		static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
 
-		public static List<Object> storedHistory = new List<Object>(100);
+		public static SelectionHistory selectionHistory = new SelectionHistory();
 
 		// Add menu named "My Window" to the Window menu
 		[MenuItem ("Window/Gemserk/Selection History %#h")]
@@ -19,32 +18,15 @@ namespace Gemserk
 
 //			SelectionHistoryWindow window = EditorWindow.GetWindow<SelectionHistoryWindow>("History");
 			window.titleContent.text = "History";
-			window.History = storedHistory;
+//			window.History = storedHistory;
 			window.Show();
 		}
 	
-		List<Object> history = new List<Object>(100);
-
-		int currentSelectionIndex;
-
-		Object currentSelection;
-
-		int historySize = 10;
-
 		public GUISkin windowSkin;
-
-		public List<Object> History {
-			get {
-				return history;
-			}
-			set {
-				history = value;
-			}
-		}
 
 		void OnEnable()
 		{
-			historySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
+			selectionHistory.HistorySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
 
 //			windowSkin = AssetDatabase.LoadAssetAtPath<GUISkin> ("Editor/SelectionHistorySkin");
 
@@ -57,64 +39,12 @@ namespace Gemserk
 		{
 			if (Selection.activeObject == null)
 				return;
-			UpdateSelection(Selection.activeObject);
-		}
-
-		public int GetHistoryCount()
-		{
-			return history.Count;	
-		}
-
-		public Object GetSelection()
-		{
-			return currentSelection;
-		}
-
-		public void UpdateSelection(Object selection)
-		{
-			var lastSelectedObject = history.Count > 0 ? history.Last() : null;
-
-			if (lastSelectedObject != selection && currentSelection != selection) {
-				history.Add(selection);
-				currentSelectionIndex = history.Count - 1;
-			}
-
-			currentSelection = selection;
-
-			if (history.Count > historySize) {
-				history.RemoveRange(0, history.Count - historySize);
-				//			history.RemoveAt(0);
-			}
-		}
-
-		public void Previous()
-		{
-			if (history.Count == 0)
-				return;
-
-			currentSelectionIndex--;
-			if (currentSelectionIndex < 0)
-				currentSelectionIndex = 0;
-			currentSelection = history[currentSelectionIndex];
-		}
-
-		public void Next()
-		{
-			if (history.Count == 0)
-				return;
-
-			currentSelectionIndex++;
-			if (currentSelectionIndex >= history.Count)
-				currentSelectionIndex = history.Count - 1;
-			currentSelection = history[currentSelectionIndex];
+			selectionHistory.UpdateSelection (Selection.activeGameObject);
 		}
 
 		void UpdateSelection(int currentIndex)
 		{
-			currentSelectionIndex = currentIndex;
-			currentSelection = history[currentSelectionIndex];
-
-			Selection.activeObject = currentSelection;
+			Selection.activeObject = selectionHistory.UpdateSelection(currentIndex);
 		}
 
 		Vector2 scrollPosition;
@@ -123,29 +53,29 @@ namespace Gemserk
 
 			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
 
-			int currentHistorySize = historySize;
+			int currentHistorySize = selectionHistory.HistorySize;
 
-			historySize = EditorGUILayout.IntField("History Size", historySize);
+			selectionHistory.HistorySize = EditorGUILayout.IntField("History Size", selectionHistory.HistorySize);
 
-			if (historySize != currentHistorySize) {
+			if (selectionHistory.HistorySize != currentHistorySize) {
 				// updates user pref for history size
-				EditorPrefs.SetInt(HistorySizePrefKey, historySize);
+				EditorPrefs.SetInt(HistorySizePrefKey, selectionHistory.HistorySize);
 			}
 
 			DrawHistory();
 
 			if (GUILayout.Button("Previous", windowSkin.button)) {
-				Previous();
-				Selection.activeObject = GetSelection();
+				selectionHistory.Previous();
+				Selection.activeObject = selectionHistory.GetSelection();
 			}
 
 			if (GUILayout.Button("Next", windowSkin.button)) {
-				Next();
-				Selection.activeObject = GetSelection();
+				selectionHistory.Next();
+				Selection.activeObject = selectionHistory.GetSelection();
 			}
 
 			if (GUILayout.Button("Clear", windowSkin.button)) {
-				history.Clear();
+				selectionHistory.Clear();
 				Repaint();
 			}
 
@@ -157,10 +87,12 @@ namespace Gemserk
 		{
 			var nonSelectedColor = GUI.backgroundColor;
 
+			var history = selectionHistory.History;
+
 			for (int i = 0; i < history.Count; i++) {
 				var historyElement = history [i];
 
-				if (currentSelectionIndex == i) {
+				if (selectionHistory.IsSelected(i)) {
 					GUI.backgroundColor = Color.cyan;
 				} else {
 					GUI.backgroundColor = nonSelectedColor;

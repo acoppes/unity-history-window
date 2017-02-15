@@ -8,7 +8,7 @@ namespace Gemserk
 		[Test]
 		public void NextAndPreviousShouldntExplodeWithoutItems()
 		{
-			var navigationWindow = new SelectionHistoryWindow();
+			var navigationWindow = new SelectionHistory();
 
 			navigationWindow.Previous();
 			navigationWindow.Next();
@@ -20,7 +20,7 @@ namespace Gemserk
 		[Test]
 		public void NavigationWindowTest()
 		{
-			var navigationWindow = new SelectionHistoryWindow();
+			var navigationWindow = new SelectionHistory();
 
 			var selection1 = new GameObject();
 
@@ -33,7 +33,7 @@ namespace Gemserk
 		[Test]
 		public void NavigationWindowTest2()
 		{
-			var navigationWindow = new SelectionHistoryWindow();
+			var navigationWindow = new SelectionHistory();
 
 			var selection1 = new GameObject();
 			var selection2 = new GameObject();
@@ -48,7 +48,7 @@ namespace Gemserk
 		[Test]
 		public void UpdateWithSameSelectionShouldntAddTwiceToHistory()
 		{
-			var navigationWindow = new SelectionHistoryWindow();
+			var navigationWindow = new SelectionHistory();
 
 			var selection1 = new GameObject();
 
@@ -62,7 +62,7 @@ namespace Gemserk
 		[Test]
 		public void TestPreviousSelectionShouldntStoreInHistory()
 		{
-			var navigationWindow = new SelectionHistoryWindow();
+			var navigationWindow = new SelectionHistory();
 
 			var selection1 = new GameObject();
 			var selection2 = new GameObject();
@@ -87,7 +87,7 @@ namespace Gemserk
 		[Test]
 		public void TestPreviousAndNextShouldntUpdateHistory()
 		{
-			var navigationWindow = new SelectionHistoryWindow();
+			var navigationWindow = new SelectionHistory();
 
 			var selection1 = new GameObject();
 			var selection2 = new GameObject();
