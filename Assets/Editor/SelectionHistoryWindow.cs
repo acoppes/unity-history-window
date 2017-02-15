@@ -7,8 +7,11 @@ namespace Gemserk
 	public class SelectionHistoryWindow : EditorWindow {
 
 		static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
+		static readonly string HistoryBackgroundEnabledPrefKey = "Gemserk.SelectionHistory.RunInBackgroundEnabled";
 
 		public static SelectionHistory selectionHistory = new SelectionHistory();
+
+		static bool debugEnabled = true;
 
 		// Add menu named "My Window" to the Window menu
 		[MenuItem ("Window/Gemserk/Selection History %#h")]
@@ -16,12 +19,32 @@ namespace Gemserk
 			// Get existing open window or if none, make a new one:
 			var window = ScriptableObject.CreateInstance<SelectionHistoryWindow>();
 
-//			SelectionHistoryWindow window = EditorWindow.GetWindow<SelectionHistoryWindow>("History");
 			window.titleContent.text = "History";
-//			window.History = storedHistory;
 			window.Show();
 		}
+
+		static void SelectionRecorder ()
+		{
+			if (Selection.activeObject != null) {
+				if (debugEnabled) {
+					Debug.Log ("Recording new selection: " + Selection.activeObject.name);
+				}
+				selectionHistory.UpdateSelection (Selection.activeObject);
+			}
+		}
+
+		public static void RegisterSelectionListener()
+		{
+			if (!EditorPrefs.GetBool (HistoryBackgroundEnabledPrefKey, false))
+				return;
+			Selection.selectionChanged += SelectionRecorder;
+		}
 	
+		public static void UnregisterSelectionListener()
+		{
+			Selection.selectionChanged -= SelectionRecorder;
+		}
+
 		public GUISkin windowSkin;
 
 		void OnEnable()
@@ -60,6 +83,17 @@ namespace Gemserk
 			if (selectionHistory.HistorySize != currentHistorySize) {
 				// updates user pref for history size
 				EditorPrefs.SetInt(HistorySizePrefKey, selectionHistory.HistorySize);
+			}
+
+			var runInBackgroundEnabled = EditorPrefs.GetBool (HistoryBackgroundEnabledPrefKey, false);
+			var newRunInBackground = GUILayout.Toggle (runInBackgroundEnabled, "Run in background");
+
+			if (runInBackgroundEnabled && !newRunInBackground) {
+				EditorPrefs.SetBool (HistoryBackgroundEnabledPrefKey, false);
+				UnregisterSelectionListener ();
+			} else if (!runInBackgroundEnabled && newRunInBackground) {
+				EditorPrefs.SetBool (HistoryBackgroundEnabledPrefKey, true);
+				RegisterSelectionListener ();
 			}
 
 			DrawHistory();
