@@ -11,7 +11,7 @@ namespace Gemserk
 
 		public static SelectionHistory selectionHistory = new SelectionHistory();
 
-		static bool debugEnabled = true;
+		static bool debugEnabled = false;
 
 		// Add menu named "My Window" to the Window menu
 		[MenuItem ("Window/Gemserk/Selection History %#h")]
