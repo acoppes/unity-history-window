@@ -9,7 +9,7 @@ namespace Gemserk
 		static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
 		static readonly string HistoryBackgroundEnabledPrefKey = "Gemserk.SelectionHistory.RunInBackgroundEnabled";
 
-		public static SelectionHistory selectionHistory = new SelectionHistory();
+		static readonly SelectionHistory selectionHistory = new SelectionHistory();
 
 		static bool debugEnabled = false;
 
@@ -29,6 +29,7 @@ namespace Gemserk
 				if (debugEnabled) {
 					Debug.Log ("Recording new selection: " + Selection.activeObject.name);
 				}
+
 				selectionHistory.UpdateSelection (Selection.activeObject);
 			}
 		}
@@ -49,9 +50,9 @@ namespace Gemserk
 
 		void OnEnable()
 		{
-			selectionHistory.HistorySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
+			selectionHistory.History = EditorTemporaryMemory.Instance.history;
 
-//			windowSkin = AssetDatabase.LoadAssetAtPath<GUISkin> ("Editor/SelectionHistorySkin");
+			selectionHistory.HistorySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
 
 			Selection.selectionChanged += delegate {
 				Repaint();
