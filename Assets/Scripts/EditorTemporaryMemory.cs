@@ -7,6 +7,8 @@ namespace Gemserk
 	{
 		static EditorTemporaryMemory instance;
 
+		static HideFlags instanceHideFlags = HideFlags.DontSave;
+
 		static void InitTemporaryMemory()
 		{
 			if (instance != null)
@@ -16,14 +18,14 @@ namespace Gemserk
 
 			if (editorMemory == null) {
 				editorMemory = new GameObject ("~EditorTemporaryMemory");
-				editorMemory.hideFlags = HideFlags.DontSave;
-
 				instance = editorMemory.AddComponent<EditorTemporaryMemory> ();
 			} else {
 				instance = editorMemory.GetComponent<EditorTemporaryMemory> ();
 				if (instance == null)
 					instance = editorMemory.AddComponent<EditorTemporaryMemory> ();
 			}
+
+			editorMemory.hideFlags = instanceHideFlags;
 		}
 
 		public static EditorTemporaryMemory Instance {

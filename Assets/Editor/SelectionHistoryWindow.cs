@@ -17,7 +17,8 @@ namespace Gemserk
 		[MenuItem ("Window/Gemserk/Selection History %#h")]
 		static void Init () {
 			// Get existing open window or if none, make a new one:
-			var window = ScriptableObject.CreateInstance<SelectionHistoryWindow>();
+//			var window = ScriptableObject.CreateInstance<SelectionHistoryWindow>();
+			var window = EditorWindow.GetWindow<SelectionHistoryWindow> ();
 
 			window.titleContent.text = "History";
 			window.Show();
