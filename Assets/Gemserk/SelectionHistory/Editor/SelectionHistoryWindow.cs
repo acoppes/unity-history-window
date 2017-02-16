@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Gemserk
 {
+	[InitializeOnLoad]
 	public class SelectionHistoryWindow : EditorWindow {
 
 		static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
@@ -12,6 +13,11 @@ namespace Gemserk
 		static readonly SelectionHistory selectionHistory = new SelectionHistory();
 
 		static bool debugEnabled = false;
+
+		static SelectionHistoryWindow()
+		{
+			RegisterSelectionListener ();
+		}
 
 		// Add menu named "My Window" to the Window menu
 		[MenuItem ("Window/Gemserk/Selection History %#h")]
