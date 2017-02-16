@@ -31,6 +31,7 @@ namespace Gemserk
 					Debug.Log ("Recording new selection: " + Selection.activeObject.name);
 				}
 
+				selectionHistory.History = EditorTemporaryMemory.Instance.history;
 				selectionHistory.UpdateSelection (Selection.activeObject);
 			}
 		}
