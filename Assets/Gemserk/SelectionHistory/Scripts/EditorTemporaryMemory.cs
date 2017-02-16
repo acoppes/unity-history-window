@@ -7,7 +7,7 @@ namespace Gemserk
 	{
 		static EditorTemporaryMemory instance;
 
-		static HideFlags instanceHideFlags = HideFlags.DontSave;
+		static HideFlags instanceHideFlags = HideFlags.DontSave | HideFlags.HideInHierarchy;
 
 		static void InitTemporaryMemory()
 		{
