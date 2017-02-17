@@ -6,6 +6,4 @@ It is really useful when editing stuff and following a link to an object referen
 
 [Download Unity Package](release/unity-selection-history.unitypackage?raw=true)
 
-![Alt text](screenshots/SelectionHistoryWindow.PNG?raw=true "Example")
-
 ![Alt text](screenshots/demo.gif?raw=true "Demo")
