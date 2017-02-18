@@ -7,3 +7,5 @@ It is really useful when editing stuff and following a link to an object referen
 [Download Unity Package](release/unity-selection-history.unitypackage?raw=true)
 
 ![Alt text](screenshots/demo.gif?raw=true "Demo")
+
+![Alt text](screenshots/demodrag.gif?raw=true "Demo Drag")
