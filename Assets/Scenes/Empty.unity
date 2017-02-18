@@ -100,7 +100,7 @@ GameObject:
   m_Component:
   - component: {fileID: 824007276}
   m_Layer: 0
-  m_Name: MyCharacter
+  m_Name: Object2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -215,7 +215,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2071847643}
   m_Layer: 0
-  m_Name: MySuperGameObject
+  m_Name: Object1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

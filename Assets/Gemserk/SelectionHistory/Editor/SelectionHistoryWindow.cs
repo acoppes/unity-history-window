@@ -13,12 +13,6 @@ namespace Gemserk
 		}
 	}
 
-	public class SelectionRect
-	{
-		public Rect rect;
-		public Object element;
-	}
-
 	public class SelectionHistoryWindow : EditorWindow {
 
 		static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
@@ -31,8 +25,6 @@ namespace Gemserk
 		static readonly bool prevNextButtonsEnabled = false;
 
 		static readonly bool runInBackgroundConfigEnabled = false;
-
-		List<SelectionRect> selectionRects = new List<SelectionRect>();
 
 		// Add menu named "My Window" to the Window menu
 		[MenuItem ("Window/Gemserk/Selection History %#h")]
@@ -85,12 +77,6 @@ namespace Gemserk
 
 		void Update()
 		{
-//			foreach (var selectionRect in selectionRects) {
-//				if (selectionRect.element == null)
-//					continue;
-//				DragLogic (selectionRect.rect, selectionRect.element);
-//			}
-
 			if (Selection.activeObject == null)
 				return;
 			selectionHistory.UpdateSelection (Selection.activeGameObject);
@@ -128,12 +114,6 @@ namespace Gemserk
 			}
 
 			EditorGUILayout.EndScrollView();
-
-			foreach (var selectionRect in selectionRects) {
-				if (selectionRect.element == null)
-					continue;
-				DragLogic (selectionRect.rect, selectionRect.element);
-			}
 		}
 
 		static void DrawRunInBackgroundConfig ()
@@ -170,12 +150,8 @@ namespace Gemserk
 			}
 		}
 
-		bool draggingObject = false;
-
 		void DrawHistory()
 		{
-			selectionRects.Clear ();
-
 			var nonSelectedColor = GUI.contentColor;
 
 			var history = selectionHistory.History;
@@ -205,73 +181,62 @@ namespace Gemserk
 				content.image = icon;
 				content.text = historyElement.name;
 
-				if (GUILayout.Button (content, buttonStyle)) {
-					if (Event.current.button == 0) {
-						UpdateSelection (i);
-
-						// && over current object...
-					} else {
-						EditorGUIUtility.PingObject (historyElement);
-					}
-				}
+				// chnanged to label to be able to handle events for drag
+				GUILayout.Label (content, buttonStyle); 
 
 				GUI.contentColor = nonSelectedColor;
 
 				if (GUILayout.Button ("Ping", windowSkin.button)) {
 					EditorGUIUtility.PingObject (historyElement);
 				}
-
-//				DragLogic (rect, historyElement);
-
+					
 				EditorGUILayout.EndHorizontal ();
 
-				selectionRects.Add (new SelectionRect () {
-					rect = rect,
-					element = historyElement
-				});
+				ButtonLogic (i, rect, historyElement);
 			}
 
 			GUI.contentColor = nonSelectedColor;
 		}
 
-		void DragLogic(Rect rect, Object currentObject)
+		void ButtonLogic(int currentIndex, Rect rect, Object currentObject)
 		{
 			if (currentObject == null)
 				return;
 
-			if (Event.current == null)
+			var currentEvent = Event.current;
+
+			if (currentEvent == null)
 				return;
 
-//			if (!Event.current.isMouse)
-//				return;
+			if (!rect.Contains (currentEvent.mousePosition))
+				return;
+			
+//			Debug.Log (string.Format("event:{0}", currentEvent.ToString()));
 
-			var mousePosition = Event.current.mousePosition;
+			var eventType = currentEvent.type;
 
-			if (!draggingObject) {
-				var insideRect = rect.Contains (mousePosition);
-				var mouseDragging = Event.current.type == EventType.MouseDrag;
-
-				if (!insideRect)
-					return;
+			if (eventType == EventType.MouseDrag) {
 				
-				Debug.Log (string.Format("rect:{0}, drag:{1}", insideRect, mouseDragging));
+				DragAndDrop.PrepareStartDrag ();
 
-				if (mouseDragging) {
-					DragAndDrop.PrepareStartDrag ();
+				DragAndDrop.StartDrag ("SelectionHistoryWindowDrag");
 
-					DragAndDrop.StartDrag ("MyDragTest");
+				DragAndDrop.objectReferences = new Object[] { currentObject };
+				DragAndDrop.visualMode = DragAndDropVisualMode.Link;
 
-					DragAndDrop.objectReferences = new Object[] { currentObject };
-					DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+				Event.current.Use ();
 
-					draggingObject = true;
+			} else if (eventType == EventType.MouseUp) {
+
+				if (Event.current.button == 0) {
+					UpdateSelection (currentIndex);
+				} else {
+					EditorGUIUtility.PingObject (currentObject);
 				}
-			} else {
-				if (Event.current.type == EventType.MouseUp) {
-					draggingObject = false;
-				}
-				//					draggingObject = false;
+
+				Event.current.Use ();
 			}
+
 		}
 
 	}

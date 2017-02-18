@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TriggerContainer : MonoBehaviour {
-
-	public TriggerContainer otherTriggerContainer;
+public class Health : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
