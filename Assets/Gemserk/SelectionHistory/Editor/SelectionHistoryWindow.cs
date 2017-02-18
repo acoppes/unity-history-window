@@ -218,10 +218,23 @@ namespace Gemserk
 				if (currentObject != null) {
 					DragAndDrop.PrepareStartDrag ();
 
-					DragAndDrop.StartDrag ("SelectionHistoryWindowDrag");
+					DragAndDrop.StartDrag (currentObject.name);
 
 					DragAndDrop.objectReferences = new Object[] { currentObject };
-					DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+
+					if (ProjectWindowUtil.IsFolder(currentObject.GetInstanceID())) {
+
+						// added DragAndDrop.path in case we are dragging a folder.
+
+						DragAndDrop.paths = new string[] {
+							AssetDatabase.GetAssetPath(currentObject)
+						};
+
+						// previous test with setting generic data by looking at
+						// decompiled Unity code.
+
+						// DragAndDrop.SetGenericData ("IsFolder", "isFolder");
+					}
 				}
 
 				Event.current.Use ();
