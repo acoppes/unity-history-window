@@ -222,7 +222,10 @@ namespace Gemserk
 
 					DragAndDrop.objectReferences = new Object[] { currentObject };
 
-					if (ProjectWindowUtil.IsFolder(currentObject.GetInstanceID())) {
+//					if (ProjectWindowUtil.IsFolder(currentObject.GetInstanceID())) {
+
+					// fixed to use IsPersistent to work with all assets with paths.
+					if (EditorUtility.IsPersistent(currentObject)) {
 
 						// added DragAndDrop.path in case we are dragging a folder.
 
