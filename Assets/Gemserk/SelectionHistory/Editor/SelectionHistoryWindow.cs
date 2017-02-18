@@ -156,6 +156,8 @@ namespace Gemserk
 
 			var history = selectionHistory.History;
 
+			var buttonStyle = windowSkin.GetStyle("SelectionButton");
+
 			for (int i = 0; i < history.Count; i++) {
 				var historyElement = history [i];
 
@@ -165,29 +167,28 @@ namespace Gemserk
 					GUI.contentColor = nonSelectedColor;
 				}
 
-				var buttonStyle = windowSkin.GetStyle("SelectionButton");
-
-				if (historyElement == null) {
-					GUILayout.Button ("Deleted", buttonStyle);
-					continue;
-				}
-					
 				var rect = EditorGUILayout.BeginHorizontal ();
 
-				var icon = AssetPreview.GetMiniThumbnail (historyElement);
+				if (historyElement == null) {
+					GUILayout.Label ("Deleted", buttonStyle); 
+				} else {
 
-				GUIContent content = new GUIContent ();
+					var icon = AssetPreview.GetMiniThumbnail (historyElement);
 
-				content.image = icon;
-				content.text = historyElement.name;
+					GUIContent content = new GUIContent ();
 
-				// chnanged to label to be able to handle events for drag
-				GUILayout.Label (content, buttonStyle); 
+					content.image = icon;
+					content.text = historyElement.name;
 
-				GUI.contentColor = nonSelectedColor;
+					// chnanged to label to be able to handle events for drag
+					GUILayout.Label (content, buttonStyle); 
 
-				if (GUILayout.Button ("Ping", windowSkin.button)) {
-					EditorGUIUtility.PingObject (historyElement);
+					GUI.contentColor = nonSelectedColor;
+
+					if (GUILayout.Button ("Ping", windowSkin.button)) {
+						EditorGUIUtility.PingObject (historyElement);
+					}
+
 				}
 					
 				EditorGUILayout.EndHorizontal ();
@@ -200,9 +201,6 @@ namespace Gemserk
 
 		void ButtonLogic(int currentIndex, Rect rect, Object currentObject)
 		{
-			if (currentObject == null)
-				return;
-
 			var currentEvent = Event.current;
 
 			if (currentEvent == null)
@@ -216,22 +214,26 @@ namespace Gemserk
 			var eventType = currentEvent.type;
 
 			if (eventType == EventType.MouseDrag) {
-				
-				DragAndDrop.PrepareStartDrag ();
 
-				DragAndDrop.StartDrag ("SelectionHistoryWindowDrag");
+				if (currentObject != null) {
+					DragAndDrop.PrepareStartDrag ();
 
-				DragAndDrop.objectReferences = new Object[] { currentObject };
-				DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+					DragAndDrop.StartDrag ("SelectionHistoryWindowDrag");
+
+					DragAndDrop.objectReferences = new Object[] { currentObject };
+					DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+				}
 
 				Event.current.Use ();
 
 			} else if (eventType == EventType.MouseUp) {
 
-				if (Event.current.button == 0) {
-					UpdateSelection (currentIndex);
-				} else {
-					EditorGUIUtility.PingObject (currentObject);
+				if (currentObject != null) {
+					if (Event.current.button == 0) {
+						UpdateSelection (currentIndex);
+					} else {
+						EditorGUIUtility.PingObject (currentObject);
+					}
 				}
 
 				Event.current.Use ();
