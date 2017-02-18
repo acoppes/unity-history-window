@@ -20,7 +20,11 @@ namespace Gemserk
 
 		static readonly SelectionHistory selectionHistory = new SelectionHistory();
 
-		static bool debugEnabled = false;
+		static readonly bool debugEnabled = false;
+
+		static readonly bool prevNextButtonsEnabled = false;
+
+		static readonly bool runInBackgroundConfigEnabled = false;
 
 		// Add menu named "My Window" to the Window menu
 		[MenuItem ("Window/Gemserk/Selection History %#h")]
@@ -47,8 +51,10 @@ namespace Gemserk
 
 		public static void RegisterSelectionListener()
 		{
-			if (!EditorPrefs.GetBool (HistoryBackgroundEnabledPrefKey, false))
-				return;
+			if (runInBackgroundConfigEnabled) {
+				if (!EditorPrefs.GetBool (HistoryBackgroundEnabledPrefKey, false))
+					return;
+			}
 			Selection.selectionChanged += SelectionRecorder;
 		}
 	
@@ -62,7 +68,6 @@ namespace Gemserk
 		void OnEnable()
 		{
 			selectionHistory.History = EditorTemporaryMemory.Instance.history;
-
 			selectionHistory.HistorySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
 
 			Selection.selectionChanged += delegate {
@@ -97,6 +102,25 @@ namespace Gemserk
 				EditorPrefs.SetInt(HistorySizePrefKey, selectionHistory.HistorySize);
 			}
 
+			DrawRunInBackgroundConfig ();
+
+			DrawHistory();
+
+			DrawPreviousNextButtons ();
+
+			if (GUILayout.Button("Clear")) {
+				selectionHistory.Clear();
+				Repaint();
+			}
+
+			EditorGUILayout.EndScrollView();
+		}
+
+		static void DrawRunInBackgroundConfig ()
+		{
+			if (!runInBackgroundConfigEnabled)
+				return;
+			
 			var runInBackgroundEnabled = EditorPrefs.GetBool (HistoryBackgroundEnabledPrefKey, false);
 			var newRunInBackground = GUILayout.Toggle (runInBackgroundEnabled, "Run in background");
 
@@ -108,25 +132,22 @@ namespace Gemserk
 				RegisterSelectionListener ();
 			}
 
-			DrawHistory();
+		}
 
-//			if (GUILayout.Button("Previous")) {
-//				selectionHistory.Previous();
-//				Selection.activeObject = selectionHistory.GetSelection();
-//			}
-//
-//			if (GUILayout.Button("Next")) {
-//				selectionHistory.Next();
-//				Selection.activeObject = selectionHistory.GetSelection();
-//			}
-
-			if (GUILayout.Button("Clear")) {
-				selectionHistory.Clear();
-				Repaint();
+		void DrawPreviousNextButtons ()
+		{
+			if (!prevNextButtonsEnabled)
+				return;
+			
+			if (GUILayout.Button ("Previous")) {
+				selectionHistory.Previous ();
+				Selection.activeObject = selectionHistory.GetSelection ();
 			}
 
-			EditorGUILayout.EndScrollView();
-
+			if (GUILayout.Button ("Next")) {
+				selectionHistory.Next ();
+				Selection.activeObject = selectionHistory.GetSelection ();
+			}
 		}
 
 		void DrawHistory()
