@@ -13,6 +13,12 @@ namespace Gemserk
 		}
 	}
 
+	public class SelectionRect
+	{
+		public Rect rect;
+		public Object element;
+	}
+
 	public class SelectionHistoryWindow : EditorWindow {
 
 		static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
@@ -25,6 +31,8 @@ namespace Gemserk
 		static readonly bool prevNextButtonsEnabled = false;
 
 		static readonly bool runInBackgroundConfigEnabled = false;
+
+		List<SelectionRect> selectionRects = new List<SelectionRect>();
 
 		// Add menu named "My Window" to the Window menu
 		[MenuItem ("Window/Gemserk/Selection History %#h")]
@@ -77,6 +85,12 @@ namespace Gemserk
 
 		void Update()
 		{
+//			foreach (var selectionRect in selectionRects) {
+//				if (selectionRect.element == null)
+//					continue;
+//				DragLogic (selectionRect.rect, selectionRect.element);
+//			}
+
 			if (Selection.activeObject == null)
 				return;
 			selectionHistory.UpdateSelection (Selection.activeGameObject);
@@ -114,6 +128,12 @@ namespace Gemserk
 			}
 
 			EditorGUILayout.EndScrollView();
+
+			foreach (var selectionRect in selectionRects) {
+				if (selectionRect.element == null)
+					continue;
+				DragLogic (selectionRect.rect, selectionRect.element);
+			}
 		}
 
 		static void DrawRunInBackgroundConfig ()
@@ -150,8 +170,12 @@ namespace Gemserk
 			}
 		}
 
+		bool draggingObject = false;
+
 		void DrawHistory()
 		{
+			selectionRects.Clear ();
+
 			var nonSelectedColor = GUI.contentColor;
 
 			var history = selectionHistory.History;
@@ -172,7 +196,7 @@ namespace Gemserk
 					continue;
 				}
 					
-				EditorGUILayout.BeginHorizontal ();
+				var rect = EditorGUILayout.BeginHorizontal ();
 
 				var icon = AssetPreview.GetMiniThumbnail (historyElement);
 
@@ -184,6 +208,8 @@ namespace Gemserk
 				if (GUILayout.Button (content, buttonStyle)) {
 					if (Event.current.button == 0) {
 						UpdateSelection (i);
+
+						// && over current object...
 					} else {
 						EditorGUIUtility.PingObject (historyElement);
 					}
@@ -195,10 +221,57 @@ namespace Gemserk
 					EditorGUIUtility.PingObject (historyElement);
 				}
 
+//				DragLogic (rect, historyElement);
+
 				EditorGUILayout.EndHorizontal ();
+
+				selectionRects.Add (new SelectionRect () {
+					rect = rect,
+					element = historyElement
+				});
 			}
 
 			GUI.contentColor = nonSelectedColor;
+		}
+
+		void DragLogic(Rect rect, Object currentObject)
+		{
+			if (currentObject == null)
+				return;
+
+			if (Event.current == null)
+				return;
+
+//			if (!Event.current.isMouse)
+//				return;
+
+			var mousePosition = Event.current.mousePosition;
+
+			if (!draggingObject) {
+				var insideRect = rect.Contains (mousePosition);
+				var mouseDragging = Event.current.type == EventType.MouseDrag;
+
+				if (!insideRect)
+					return;
+				
+				Debug.Log (string.Format("rect:{0}, drag:{1}", insideRect, mouseDragging));
+
+				if (mouseDragging) {
+					DragAndDrop.PrepareStartDrag ();
+
+					DragAndDrop.StartDrag ("MyDragTest");
+
+					DragAndDrop.objectReferences = new Object[] { currentObject };
+					DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+
+					draggingObject = true;
+				}
+			} else {
+				if (Event.current.type == EventType.MouseUp) {
+					draggingObject = false;
+				}
+				//					draggingObject = false;
+			}
 		}
 
 	}
