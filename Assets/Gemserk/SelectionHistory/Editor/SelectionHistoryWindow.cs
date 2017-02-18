@@ -22,8 +22,6 @@ namespace Gemserk
 
 		static bool debugEnabled = false;
 
-
-
 		// Add menu named "My Window" to the Window menu
 		[MenuItem ("Window/Gemserk/Selection History %#h")]
 		static void Init () {
@@ -112,17 +110,17 @@ namespace Gemserk
 
 			DrawHistory();
 
-			if (GUILayout.Button("Previous", windowSkin.button)) {
-				selectionHistory.Previous();
-				Selection.activeObject = selectionHistory.GetSelection();
-			}
+//			if (GUILayout.Button("Previous")) {
+//				selectionHistory.Previous();
+//				Selection.activeObject = selectionHistory.GetSelection();
+//			}
+//
+//			if (GUILayout.Button("Next")) {
+//				selectionHistory.Next();
+//				Selection.activeObject = selectionHistory.GetSelection();
+//			}
 
-			if (GUILayout.Button("Next", windowSkin.button)) {
-				selectionHistory.Next();
-				Selection.activeObject = selectionHistory.GetSelection();
-			}
-
-			if (GUILayout.Button("Clear", windowSkin.button)) {
+			if (GUILayout.Button("Clear")) {
 				selectionHistory.Clear();
 				Repaint();
 			}
@@ -133,7 +131,7 @@ namespace Gemserk
 
 		void DrawHistory()
 		{
-			var nonSelectedColor = GUI.backgroundColor;
+			var nonSelectedColor = GUI.contentColor;
 
 			var history = selectionHistory.History;
 
@@ -141,34 +139,35 @@ namespace Gemserk
 				var historyElement = history [i];
 
 				if (selectionHistory.IsSelected(i)) {
-					GUI.backgroundColor = Color.cyan;
+					GUI.contentColor = new Color(0.2f, 170.0f / 255.0f, 1.0f, 1.0f);
 				} else {
-					GUI.backgroundColor = nonSelectedColor;
+					GUI.contentColor = nonSelectedColor;
 				}
 
+				var buttonStyle = windowSkin.GetStyle("SelectionButton");
+
 				if (historyElement == null) {
-					EditorGUILayout.LabelField("Deleted");
+					GUILayout.Button ("Deleted", buttonStyle);
 					continue;
 				}
 					
 				EditorGUILayout.BeginHorizontal ();
 
-				EditorGUI.BeginDisabledGroup(true);
-				EditorGUILayout.ObjectField(historyElement, historyElement.GetType(), true);
-				EditorGUI.EndDisabledGroup();
+				var icon = AssetPreview.GetMiniThumbnail (historyElement);
 
-				GUI.backgroundColor = nonSelectedColor;
+				GUIContent content = new GUIContent ();
 
-				var buttonStyle = windowSkin.GetStyle("SelectionButton");
+				content.image = icon;
+				content.text = historyElement.name;
 
-				if (GUILayout.Button ("Select", buttonStyle)) {
+				if (GUILayout.Button (content, buttonStyle)) {
 					UpdateSelection (i);
 				}
 
 				EditorGUILayout.EndHorizontal ();
 			}
 
-			GUI.backgroundColor = nonSelectedColor;
+			GUI.contentColor = nonSelectedColor;
 		}
 
 	}
