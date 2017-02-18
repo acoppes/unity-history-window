@@ -189,6 +189,12 @@ namespace Gemserk
 					}
 				}
 
+				GUI.contentColor = nonSelectedColor;
+
+				if (GUILayout.Button ("Ping", windowSkin.button)) {
+					EditorGUIUtility.PingObject (historyElement);
+				}
+
 				EditorGUILayout.EndHorizontal ();
 			}
 
