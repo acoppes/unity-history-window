@@ -182,7 +182,11 @@ namespace Gemserk
 				content.text = historyElement.name;
 
 				if (GUILayout.Button (content, buttonStyle)) {
-					UpdateSelection (i);
+					if (Event.current.button == 0) {
+						UpdateSelection (i);
+					} else {
+						EditorGUIUtility.PingObject (historyElement);
+					}
 				}
 
 				EditorGUILayout.EndHorizontal ();
