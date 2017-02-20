@@ -71,6 +71,11 @@ namespace Gemserk
 			selectionHistory.HistorySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
 
 			Selection.selectionChanged += delegate {
+
+				if (selectionHistory.IsSelected(selectionHistory.GetHistoryCount() - 1)) {
+					scrollPosition.y = float.MaxValue;
+				}
+
 				Repaint();
 			};
 		}
