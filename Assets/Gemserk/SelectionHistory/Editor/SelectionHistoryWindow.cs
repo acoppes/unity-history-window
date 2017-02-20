@@ -91,8 +91,6 @@ namespace Gemserk
 
 		void OnGUI () {
 
-			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
-
 			int currentHistorySize = selectionHistory.HistorySize;
 
 			selectionHistory.HistorySize = EditorGUILayout.IntField("History Size", selectionHistory.HistorySize);
@@ -104,7 +102,11 @@ namespace Gemserk
 
 			DrawRunInBackgroundConfig ();
 
+			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+
 			DrawHistory();
+
+			EditorGUILayout.EndScrollView();
 
 			DrawPreviousNextButtons ();
 
@@ -112,8 +114,7 @@ namespace Gemserk
 				selectionHistory.Clear();
 				Repaint();
 			}
-
-			EditorGUILayout.EndScrollView();
+		
 		}
 
 		static void DrawRunInBackgroundConfig ()
