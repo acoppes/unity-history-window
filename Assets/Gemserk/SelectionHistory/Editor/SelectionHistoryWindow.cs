@@ -15,9 +15,9 @@ namespace Gemserk
 
 	public class SelectionHistoryWindow : EditorWindow {
 
-		static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
-		static readonly string HistoryBackgroundEnabledPrefKey = "Gemserk.SelectionHistory.RunInBackgroundEnabled";
-		static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
+		public static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
+		public static readonly string HistoryBackgroundEnabledPrefKey = "Gemserk.SelectionHistory.RunInBackgroundEnabled";
+		public static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
 
 		static readonly SelectionHistory selectionHistory = new SelectionHistory();
 
@@ -26,6 +26,8 @@ namespace Gemserk
 		static readonly bool prevNextButtonsEnabled = false;
 
 		static readonly bool runInBackgroundConfigEnabled = false;
+
+		public static bool shouldReloadPreferences = true;
 
 		// Add menu named "My Window" to the Window menu
 		[MenuItem ("Window/Gemserk/Selection History %#h")]
@@ -101,16 +103,11 @@ namespace Gemserk
 
 		void OnGUI () {
 
-			int currentHistorySize = selectionHistory.HistorySize;
-
-			selectionHistory.HistorySize = EditorGUILayout.IntField("History Size", selectionHistory.HistorySize);
-
-			if (selectionHistory.HistorySize != currentHistorySize) {
-				// updates user pref for history size
-				EditorPrefs.SetInt(HistorySizePrefKey, selectionHistory.HistorySize);
+			if (shouldReloadPreferences) {
+				selectionHistory.HistorySize = EditorPrefs.GetInt (SelectionHistoryWindow.HistorySizePrefKey, 10);
+				automaticRemoveDeleted = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, true);
+				shouldReloadPreferences = false;
 			}
-
-			DrawAutomaticRemoveDeleted ();
 
 			DrawRunInBackgroundConfig ();
 
@@ -134,17 +131,6 @@ namespace Gemserk
 				}
 			} 
 		
-		}
-
-		void DrawAutomaticRemoveDeleted()
-		{
-			automaticRemoveDeleted = EditorGUILayout.Toggle ("Auto Remove Deleted", automaticRemoveDeleted);
-
-			if (automaticRemoveDeleted) {
-				selectionHistory.ClearDeleted ();
-			}
-
-			EditorPrefs.SetBool (HistoryAutomaticRemoveDeletedPrefKey, automaticRemoveDeleted);
 		}
 
 		static void DrawRunInBackgroundConfig ()
