@@ -138,7 +138,7 @@ namespace Gemserk
 
 		void DrawAutomaticRemoveDeleted()
 		{
-			automaticRemoveDeleted = EditorGUILayout.Toggle ("Automatic remove deleted", automaticRemoveDeleted);
+			automaticRemoveDeleted = EditorGUILayout.Toggle ("Auto Remove Deleted", automaticRemoveDeleted);
 
 			if (automaticRemoveDeleted) {
 				selectionHistory.ClearDeleted ();
