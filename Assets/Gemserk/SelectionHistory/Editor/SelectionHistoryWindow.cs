@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Gemserk
 {
@@ -68,6 +69,8 @@ namespace Gemserk
 
 		public GUISkin windowSkin;
 
+		MethodInfo openPreferencesWindow;
+
 		void OnEnable()
 		{
 			automaticRemoveDeleted = EditorPrefs.GetBool (HistoryAutomaticRemoveDeletedPrefKey, true);
@@ -83,6 +86,15 @@ namespace Gemserk
 
 				Repaint();
 			};
+
+			try {
+				var asm = Assembly.GetAssembly (typeof(EditorWindow));
+				var t = asm.GetType ("UnityEditor.PreferencesWindow");
+				openPreferencesWindow = t.GetMethod ("ShowPreferencesWindow", BindingFlags.NonPublic | BindingFlags.Static);
+			} catch {
+				// couldnt get preferences window...
+				openPreferencesWindow = null;
+			}
 		}
 
 		void Update()
@@ -130,7 +142,18 @@ namespace Gemserk
 					Repaint ();
 				}
 			} 
-		
+
+			DrawSettingsButton ();
+		}
+
+		void DrawSettingsButton()
+		{
+			if (openPreferencesWindow == null)
+				return;
+			
+			if (GUILayout.Button ("Preferences")) {
+				openPreferencesWindow.Invoke(null, null);
+			}
 		}
 
 		static void DrawRunInBackgroundConfig ()
