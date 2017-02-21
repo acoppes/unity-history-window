@@ -17,6 +17,7 @@ namespace Gemserk
 
 		static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
 		static readonly string HistoryBackgroundEnabledPrefKey = "Gemserk.SelectionHistory.RunInBackgroundEnabled";
+		static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
 
 		static readonly SelectionHistory selectionHistory = new SelectionHistory();
 
@@ -67,6 +68,8 @@ namespace Gemserk
 
 		void OnEnable()
 		{
+			automaticRemoveDeleted = EditorPrefs.GetBool (HistoryAutomaticRemoveDeletedPrefKey, true);
+
 			selectionHistory.History = EditorTemporaryMemory.Instance.history;
 			selectionHistory.HistorySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
 
@@ -94,7 +97,7 @@ namespace Gemserk
 
 		Vector2 scrollPosition;
 
-		bool autoclearDeleted;
+		bool automaticRemoveDeleted;
 
 		void OnGUI () {
 
@@ -107,11 +110,7 @@ namespace Gemserk
 				EditorPrefs.SetInt(HistorySizePrefKey, selectionHistory.HistorySize);
 			}
 
-			autoclearDeleted = EditorGUILayout.Toggle ("Automatic remove deleted", autoclearDeleted);
-
-			if (autoclearDeleted) {
-				selectionHistory.ClearDeleted ();
-			}
+			DrawAutomaticRemoveDeleted ();
 
 			DrawRunInBackgroundConfig ();
 
@@ -128,13 +127,24 @@ namespace Gemserk
 				Repaint();
 			}
 
-			if (!autoclearDeleted) {
+			if (!automaticRemoveDeleted) {
 				if (GUILayout.Button ("Remove Deleted")) {
 					selectionHistory.ClearDeleted ();
 					Repaint ();
 				}
 			} 
 		
+		}
+
+		void DrawAutomaticRemoveDeleted()
+		{
+			automaticRemoveDeleted = EditorGUILayout.Toggle ("Automatic remove deleted", automaticRemoveDeleted);
+
+			if (automaticRemoveDeleted) {
+				selectionHistory.ClearDeleted ();
+			}
+
+			EditorPrefs.SetBool (HistoryAutomaticRemoveDeletedPrefKey, automaticRemoveDeleted);
 		}
 
 		static void DrawRunInBackgroundConfig ()
