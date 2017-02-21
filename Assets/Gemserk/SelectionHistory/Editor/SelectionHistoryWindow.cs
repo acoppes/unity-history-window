@@ -119,6 +119,11 @@ namespace Gemserk
 				selectionHistory.Clear();
 				Repaint();
 			}
+
+			if (GUILayout.Button("Remove Deleted")) {
+				selectionHistory.ClearDeleted ();
+				Repaint();
+			}
 		
 		}
 

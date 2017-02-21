@@ -100,4 +100,18 @@ public class SelectionHistory  {
 		return currentSelection;
 	}
 
+	public void ClearDeleted()
+	{
+		var deletedCount = history.Count(e => e == null);
+
+		history.RemoveAll (e => e == null);
+
+		currentSelectionIndex -= deletedCount;
+
+		if (currentSelectionIndex < 0)
+			currentSelectionIndex = 0;
+
+		if (currentSelection == null)
+			currentSelectionIndex = -1;
+	}
 }

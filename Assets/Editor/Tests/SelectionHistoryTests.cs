@@ -8,10 +8,10 @@ namespace Gemserk
 		[Test]
 		public void NextAndPreviousShouldntExplodeWithoutItems()
 		{
-			var navigationWindow = new SelectionHistory();
+			var selectionHistory = new SelectionHistory();
 
-			navigationWindow.Previous();
-			navigationWindow.Next();
+			selectionHistory.Previous();
+			selectionHistory.Next();
 
 			Assert.Pass();
 		}
@@ -20,96 +20,159 @@ namespace Gemserk
 		[Test]
 		public void NavigationWindowTest()
 		{
-			var navigationWindow = new SelectionHistory();
+			var selectionHistory = new SelectionHistory();
 
 			var selection1 = new GameObject();
 
-			navigationWindow.UpdateSelection(selection1);
+			selectionHistory.UpdateSelection(selection1);
 
-			Assert.AreSame(navigationWindow.GetSelection(), selection1);
-			Assert.AreEqual(navigationWindow.GetHistoryCount(), 1);
+			Assert.AreSame(selectionHistory.GetSelection(), selection1);
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 1);
 		}
 
 		[Test]
 		public void NavigationWindowTest2()
 		{
-			var navigationWindow = new SelectionHistory();
+			var selectionHistory = new SelectionHistory();
 
 			var selection1 = new GameObject();
 			var selection2 = new GameObject();
 
-			navigationWindow.UpdateSelection(selection1);
-			navigationWindow.UpdateSelection(selection2);
+			selectionHistory.UpdateSelection(selection1);
+			selectionHistory.UpdateSelection(selection2);
 
-			Assert.AreSame(navigationWindow.GetSelection(), selection2);
-			Assert.AreEqual(navigationWindow.GetHistoryCount(), 2);
+			Assert.AreSame(selectionHistory.GetSelection(), selection2);
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 2);
 		}
 
 		[Test]
 		public void UpdateWithSameSelectionShouldntAddTwiceToHistory()
 		{
-			var navigationWindow = new SelectionHistory();
+			var selectionHistory = new SelectionHistory();
 
 			var selection1 = new GameObject();
 
-			navigationWindow.UpdateSelection(selection1);
-			navigationWindow.UpdateSelection(selection1);
+			selectionHistory.UpdateSelection(selection1);
+			selectionHistory.UpdateSelection(selection1);
 
-			Assert.AreSame(navigationWindow.GetSelection(), selection1);
-			Assert.AreEqual(navigationWindow.GetHistoryCount(), 1);
+			Assert.AreSame(selectionHistory.GetSelection(), selection1);
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 1);
 		}
 
 		[Test]
 		public void TestPreviousSelectionShouldntStoreInHistory()
 		{
-			var navigationWindow = new SelectionHistory();
+			var selectionHistory = new SelectionHistory();
 
 			var selection1 = new GameObject();
 			var selection2 = new GameObject();
 
-			navigationWindow.UpdateSelection(selection1);
-			navigationWindow.UpdateSelection(selection2);
+			selectionHistory.UpdateSelection(selection1);
+			selectionHistory.UpdateSelection(selection2);
 
-			Assert.AreSame(navigationWindow.GetSelection(), selection2);
-			Assert.AreEqual(navigationWindow.GetHistoryCount(), 2);
+			Assert.AreSame(selectionHistory.GetSelection(), selection2);
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 2);
 
-			navigationWindow.Previous();
+			selectionHistory.Previous();
 
-			Assert.AreSame(navigationWindow.GetSelection(), selection1);
-			Assert.AreEqual(navigationWindow.GetHistoryCount(), 2);
+			Assert.AreSame(selectionHistory.GetSelection(), selection1);
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 2);
 
-			navigationWindow.Next();
+			selectionHistory.Next();
 
-			Assert.AreSame(navigationWindow.GetSelection(), selection2);
-			Assert.AreEqual(navigationWindow.GetHistoryCount(), 2);
+			Assert.AreSame(selectionHistory.GetSelection(), selection2);
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 2);
 		}
 
 		[Test]
 		public void TestPreviousAndNextShouldntUpdateHistory()
 		{
-			var navigationWindow = new SelectionHistory();
+			var selectionHistory = new SelectionHistory();
 
 			var selection1 = new GameObject();
 			var selection2 = new GameObject();
 
-			navigationWindow.UpdateSelection(selection1);
-			navigationWindow.UpdateSelection(selection2);
+			selectionHistory.UpdateSelection(selection1);
+			selectionHistory.UpdateSelection(selection2);
 
-			Assert.AreSame(navigationWindow.GetSelection(), selection2);
-			Assert.AreEqual(navigationWindow.GetHistoryCount(), 2);
+			Assert.AreSame(selectionHistory.GetSelection(), selection2);
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 2);
 
-			navigationWindow.Previous();
-			navigationWindow.UpdateSelection(selection1);
+			selectionHistory.Previous();
+			selectionHistory.UpdateSelection(selection1);
 
-			Assert.AreSame(navigationWindow.GetSelection(), selection1);
-			Assert.AreEqual(navigationWindow.GetHistoryCount(), 2);
+			Assert.AreSame(selectionHistory.GetSelection(), selection1);
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 2);
 
-			navigationWindow.Next();
-			navigationWindow.UpdateSelection(selection2);
+			selectionHistory.Next();
+			selectionHistory.UpdateSelection(selection2);
 
-			Assert.AreSame(navigationWindow.GetSelection(), selection2);
-			Assert.AreEqual(navigationWindow.GetHistoryCount(), 2);
+			Assert.AreSame(selectionHistory.GetSelection(), selection2);
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 2);
 		}
+
+		[Test]
+		public void ClearDeletedEntriesShouldKeepSelectedIndex()
+		{
+			var selectionHistory = new SelectionHistory();
+
+			var selection1 = new GameObject();
+			var selection2 = new GameObject();
+			var selection3 = new GameObject();
+			var selection4 = new GameObject();
+
+			selectionHistory.UpdateSelection(selection1);
+			selectionHistory.UpdateSelection(selection2);
+			selectionHistory.UpdateSelection(selection3);
+			selectionHistory.UpdateSelection(selection4);
+
+			Assert.IsTrue(selectionHistory.IsSelected(3));
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 4);
+
+			GameObject.DestroyImmediate (selection2);
+
+			selectionHistory.ClearDeleted ();
+
+			Assert.IsTrue(selectionHistory.IsSelected(2));
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 3);
+
+			selectionHistory.UpdateSelection (1);
+
+			GameObject.DestroyImmediate (selection1);
+			GameObject.DestroyImmediate (selection4);
+
+			selectionHistory.ClearDeleted ();
+
+			Assert.IsTrue(selectionHistory.IsSelected(0));
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 1);
+		}
+
+		[Test]
+		public void ClearDeletedItemsShouldntSelectIfSelectionDeleted()
+		{
+			var selectionHistory = new SelectionHistory();
+
+			var selection1 = new GameObject();
+			var selection2 = new GameObject();
+			var selection3 = new GameObject();
+
+			selectionHistory.UpdateSelection(selection1);
+			selectionHistory.UpdateSelection(selection2);
+			selectionHistory.UpdateSelection(selection3);
+
+			Assert.IsTrue(selectionHistory.IsSelected(2));
+			Assert.That(selectionHistory.GetHistoryCount(), Is.EqualTo(3));
+
+			GameObject.DestroyImmediate (selection3);
+
+			selectionHistory.ClearDeleted ();
+
+			Assert.IsFalse(selectionHistory.IsSelected(0));
+			Assert.IsFalse(selectionHistory.IsSelected(1));
+			Assert.AreEqual(selectionHistory.GetHistoryCount(), 2);
+		}
+
+		// Test: deleting selected object should unselect selection
 
 	}
 }
