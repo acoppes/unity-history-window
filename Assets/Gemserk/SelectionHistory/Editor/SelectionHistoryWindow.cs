@@ -46,7 +46,7 @@ namespace Gemserk
 
 				selectionHistory.History = EditorTemporaryMemory.Instance.history;
 				selectionHistory.UpdateSelection (Selection.activeObject);
-			}
+			} 
 		}
 
 		public static void RegisterSelectionListener()
@@ -94,6 +94,8 @@ namespace Gemserk
 
 		Vector2 scrollPosition;
 
+		bool autoclearDeleted;
+
 		void OnGUI () {
 
 			int currentHistorySize = selectionHistory.HistorySize;
@@ -103,6 +105,12 @@ namespace Gemserk
 			if (selectionHistory.HistorySize != currentHistorySize) {
 				// updates user pref for history size
 				EditorPrefs.SetInt(HistorySizePrefKey, selectionHistory.HistorySize);
+			}
+
+			autoclearDeleted = EditorGUILayout.Toggle ("Automatic remove deleted", autoclearDeleted);
+
+			if (autoclearDeleted) {
+				selectionHistory.ClearDeleted ();
 			}
 
 			DrawRunInBackgroundConfig ();
@@ -120,10 +128,12 @@ namespace Gemserk
 				Repaint();
 			}
 
-			if (GUILayout.Button("Remove Deleted")) {
-				selectionHistory.ClearDeleted ();
-				Repaint();
-			}
+			if (!autoclearDeleted) {
+				if (GUILayout.Button ("Remove Deleted")) {
+					selectionHistory.ClearDeleted ();
+					Repaint ();
+				}
+			} 
 		
 		}
 
