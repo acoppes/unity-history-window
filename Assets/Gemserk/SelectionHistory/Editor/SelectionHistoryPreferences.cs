@@ -14,7 +14,6 @@ namespace Gemserk
 		static bool autoRemoveDuplicated;
 
 		[PreferenceItem("Selection History")]
-
 		public static void PreferencesGUI()
 		{
 			if (!prefsLoaded)
