@@ -172,7 +172,33 @@ namespace Gemserk
 			Assert.AreEqual(selectionHistory.GetHistoryCount(), 2);
 		}
 
-		// Test: deleting selected object should unselect selection
+		[Test]
+		public void TestRemoveDuplicatedElementsInOrder()
+		{
+			var selectionHistory = new SelectionHistory();
+
+			var selection1 = new GameObject();
+			var selection2 = new GameObject();
+			var selection3 = new GameObject();
+
+			selectionHistory.UpdateSelection(selection1);
+			selectionHistory.UpdateSelection(selection2);
+			selectionHistory.UpdateSelection(selection1);
+			selectionHistory.UpdateSelection(selection3);
+			selectionHistory.UpdateSelection(selection1);
+
+			selectionHistory.RemoveDuplicated();
+
+			Assert.That(selectionHistory.GetHistoryCount(), Is.EqualTo(3));
+			Assert.That(selectionHistory.GetSelection(), Is.SameAs(selection1)); 
+			Assert.That(selectionHistory.IsSelected(2), Is.True);
+
+			selectionHistory.UpdateSelection (1);
+			Assert.That(selectionHistory.GetSelection(), Is.SameAs(selection3)); 
+
+			selectionHistory.UpdateSelection (0);
+			Assert.That(selectionHistory.GetSelection(), Is.SameAs(selection2)); 
+		}
 
 	}
 }

@@ -114,4 +114,25 @@ public class SelectionHistory  {
 		if (currentSelection == null)
 			currentSelectionIndex = -1;
 	}
+
+	public void RemoveDuplicated()
+	{
+		var tempList = new List<Object> (history);
+
+		foreach (var item in tempList) {
+			var itemFirstIndex = history.IndexOf (item);
+			var itemLastIndex = history.LastIndexOf (item);
+
+			while (itemFirstIndex != itemLastIndex) {
+				history.RemoveAt (itemFirstIndex);
+
+				itemFirstIndex = history.IndexOf (item);
+				itemLastIndex = history.LastIndexOf (item);
+			}
+		}
+
+		if (currentSelectionIndex >= history.Count)
+			currentSelectionIndex = history.Count - 1;
+	}
+
 }

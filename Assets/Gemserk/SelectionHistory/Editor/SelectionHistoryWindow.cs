@@ -19,6 +19,7 @@ namespace Gemserk
 		public static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
 		public static readonly string HistoryBackgroundEnabledPrefKey = "Gemserk.SelectionHistory.RunInBackgroundEnabled";
 		public static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
+		public static readonly string HistoryAllowDuplicatedEntriesPrefKey = "Gemserk.SelectionHistory.AllowDuplicatedEntries";
 
 		static readonly SelectionHistory selectionHistory = new SelectionHistory();
 
@@ -112,14 +113,19 @@ namespace Gemserk
 		Vector2 scrollPosition;
 
 		bool automaticRemoveDeleted;
+		bool allowDuplicatedEntries;
 
 		void OnGUI () {
 
 			if (shouldReloadPreferences) {
 				selectionHistory.HistorySize = EditorPrefs.GetInt (SelectionHistoryWindow.HistorySizePrefKey, 10);
 				automaticRemoveDeleted = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, true);
+				allowDuplicatedEntries = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, false);
 				shouldReloadPreferences = false;
 			}
+
+			if (!allowDuplicatedEntries)
+				selectionHistory.RemoveDuplicated ();
 
 			DrawRunInBackgroundConfig ();
 
@@ -139,6 +145,13 @@ namespace Gemserk
 			if (!automaticRemoveDeleted) {
 				if (GUILayout.Button ("Remove Deleted")) {
 					selectionHistory.ClearDeleted ();
+					Repaint ();
+				}
+			} 
+
+			if (allowDuplicatedEntries) {
+				if (GUILayout.Button ("Remove Duplciated")) {
+					selectionHistory.RemoveDuplicated ();
 					Repaint ();
 				}
 			} 
