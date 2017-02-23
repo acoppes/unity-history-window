@@ -17,7 +17,7 @@ namespace Gemserk
 	public class SelectionHistoryWindow : EditorWindow {
 
 		public static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
-		public static readonly string HistoryBackgroundEnabledPrefKey = "Gemserk.SelectionHistory.RunInBackgroundEnabled";
+//		public static readonly string HistoryBackgroundEnabledPrefKey = "Gemserk.SelectionHistory.RunInBackgroundEnabled";
 		public static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
 		public static readonly string HistoryAllowDuplicatedEntriesPrefKey = "Gemserk.SelectionHistory.AllowDuplicatedEntries";
 
@@ -27,7 +27,7 @@ namespace Gemserk
 
 		static readonly bool prevNextButtonsEnabled = false;
 
-		static readonly bool runInBackgroundConfigEnabled = false;
+//		static readonly bool runInBackgroundConfigEnabled = false;
 
 		public static bool shouldReloadPreferences = true;
 
@@ -56,16 +56,7 @@ namespace Gemserk
 
 		public static void RegisterSelectionListener()
 		{
-			if (runInBackgroundConfigEnabled) {
-				if (!EditorPrefs.GetBool (HistoryBackgroundEnabledPrefKey, false))
-					return;
-			}
 			Selection.selectionChanged += SelectionRecorder;
-		}
-	
-		public static void UnregisterSelectionListener()
-		{
-			Selection.selectionChanged -= SelectionRecorder;
 		}
 
 		public GUISkin windowSkin;
@@ -98,13 +89,6 @@ namespace Gemserk
 			}
 		}
 
-		void Update()
-		{
-			if (Selection.activeObject == null)
-				return;
-			selectionHistory.UpdateSelection (Selection.activeGameObject);
-		}
-
 		void UpdateSelection(int currentIndex)
 		{
 			Selection.activeObject = selectionHistory.UpdateSelection(currentIndex);
@@ -127,9 +111,15 @@ namespace Gemserk
 			if (!allowDuplicatedEntries)
 				selectionHistory.RemoveDuplicated ();
 
-			DrawRunInBackgroundConfig ();
+			bool changedBefore = GUI.changed;
 
 			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+
+			bool changedAfter = GUI.changed;
+
+			if (!changedBefore && changedAfter) {
+				Debug.Log ("changed");
+			}
 
 			DrawHistory();
 
@@ -167,24 +157,6 @@ namespace Gemserk
 			if (GUILayout.Button ("Preferences")) {
 				openPreferencesWindow.Invoke(null, null);
 			}
-		}
-
-		static void DrawRunInBackgroundConfig ()
-		{
-			if (!runInBackgroundConfigEnabled)
-				return;
-			
-			var runInBackgroundEnabled = EditorPrefs.GetBool (HistoryBackgroundEnabledPrefKey, false);
-			var newRunInBackground = GUILayout.Toggle (runInBackgroundEnabled, "Run in background");
-
-			if (runInBackgroundEnabled && !newRunInBackground) {
-				EditorPrefs.SetBool (HistoryBackgroundEnabledPrefKey, false);
-				UnregisterSelectionListener ();
-			} else if (!runInBackgroundEnabled && newRunInBackground) {
-				EditorPrefs.SetBool (HistoryBackgroundEnabledPrefKey, true);
-				RegisterSelectionListener ();
-			}
-
 		}
 
 		void DrawPreviousNextButtons ()
