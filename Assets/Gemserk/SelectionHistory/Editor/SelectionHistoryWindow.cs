@@ -17,17 +17,12 @@ namespace Gemserk
 	public class SelectionHistoryWindow : EditorWindow {
 
 		public static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
-//		public static readonly string HistoryBackgroundEnabledPrefKey = "Gemserk.SelectionHistory.RunInBackgroundEnabled";
 		public static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
 		public static readonly string HistoryAllowDuplicatedEntriesPrefKey = "Gemserk.SelectionHistory.AllowDuplicatedEntries";
 
 		static readonly SelectionHistory selectionHistory = new SelectionHistory();
 
 		static readonly bool debugEnabled = false;
-
-		static readonly bool prevNextButtonsEnabled = false;
-
-//		static readonly bool runInBackgroundConfigEnabled = false;
 
 		public static bool shouldReloadPreferences = true;
 
@@ -108,6 +103,9 @@ namespace Gemserk
 				shouldReloadPreferences = false;
 			}
 
+			if (automaticRemoveDeleted)
+				selectionHistory.ClearDeleted ();
+
 			if (!allowDuplicatedEntries)
 				selectionHistory.RemoveDuplicated ();
 
@@ -124,8 +122,6 @@ namespace Gemserk
 			DrawHistory();
 
 			EditorGUILayout.EndScrollView();
-
-			DrawPreviousNextButtons ();
 
 			if (GUILayout.Button("Clear")) {
 				selectionHistory.Clear();
@@ -158,23 +154,7 @@ namespace Gemserk
 				openPreferencesWindow.Invoke(null, null);
 			}
 		}
-
-		void DrawPreviousNextButtons ()
-		{
-			if (!prevNextButtonsEnabled)
-				return;
 			
-			if (GUILayout.Button ("Previous")) {
-				selectionHistory.Previous ();
-				Selection.activeObject = selectionHistory.GetSelection ();
-			}
-
-			if (GUILayout.Button ("Next")) {
-				selectionHistory.Next ();
-				Selection.activeObject = selectionHistory.GetSelection ();
-			}
-		}
-
 		[MenuItem("Window/Gemserk/Previous selection %#,")]
 		public static void PreviousSelection()
 		{
