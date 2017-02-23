@@ -203,6 +203,20 @@ namespace Gemserk
 			}
 		}
 
+		[MenuItem("Window/Gemserk/Previous selection %#,")]
+		public static void PreviousSelection()
+		{
+			selectionHistory.Previous ();
+			Selection.activeObject = selectionHistory.GetSelection ();
+		}
+
+		[MenuItem("Window/Gemserk/Next selection %#.")]
+		public static void Nextelection()
+		{
+			selectionHistory.Next();
+			Selection.activeObject = selectionHistory.GetSelection ();
+		}
+
 		void DrawHistory()
 		{
 			var nonSelectedColor = GUI.contentColor;
