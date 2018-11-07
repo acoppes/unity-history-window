@@ -1,138 +1,141 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
-public class SelectionHistory  {
+namespace Gemserk
+{
+    public class SelectionHistory
+    {
+        List<Object> history = new List<Object>(100);
 
-	List<Object> history = new List<Object>(100);
+        int currentSelectionIndex;
 
-	int currentSelectionIndex;
+        Object currentSelection;
 
-	Object currentSelection;
+        int historySize = 10;
 
-	int historySize = 10;
+        public List<Object> History
+        {
+            get { return history; }
+            set { history = value; }
+        }
 
-	public List<Object> History {
-		get {
-			return history;
-		}
-		set {
-			history = value;
-		}
-	}
+        public int HistorySize
+        {
+            get { return historySize; }
+            set { historySize = value; }
+        }
 
-	public int HistorySize {
-		get {
-			return historySize;
-		}
-		set {
-			historySize = value;
-		}
-	}
+        public bool IsSelected(int index)
+        {
+            return index == currentSelectionIndex;
+        }
 
-	public bool IsSelected(int index)
-	{
-		return index == currentSelectionIndex;
-	}
+        public void Clear()
+        {
+            history.Clear();
+        }
 
-	public void Clear()
-	{
-		history.Clear ();
-	}
+        public int GetHistoryCount()
+        {
+            return history.Count;
+        }
 
-	public int GetHistoryCount()
-	{
-		return history.Count;	
-	}
+        public Object GetSelection()
+        {
+            return currentSelection;
+        }
 
-	public Object GetSelection()
-	{
-		return currentSelection;
-	}
+        public void UpdateSelection(Object selection)
+        {
+            if (selection == null)
+                return;
 
-	public void UpdateSelection(Object selection)
-	{
-		if (selection == null)
-			return;
-		
-		var lastSelectedObject = history.Count > 0 ? history.Last() : null;
+            var lastSelectedObject = history.Count > 0 ? history.Last() : null;
 
-		if (lastSelectedObject != selection && currentSelection != selection) {
-			history.Add(selection);
-			currentSelectionIndex = history.Count - 1;
-		}
+            if (lastSelectedObject != selection && currentSelection != selection)
+            {
+                history.Add(selection);
+                currentSelectionIndex = history.Count - 1;
+            }
 
-		currentSelection = selection;
+            currentSelection = selection;
 
-		if (history.Count > historySize) {
-			history.RemoveRange(0, history.Count - historySize);
-			//			history.RemoveAt(0);
-		}
-	}
+            if (history.Count > historySize)
+            {
+                history.RemoveRange(0, history.Count - historySize);
+                //			history.RemoveAt(0);
+            }
+        }
 
-	public void Previous()
-	{
-		if (history.Count == 0)
-			return;
+        public void Previous()
+        {
+            if (history.Count == 0)
+                return;
 
-		currentSelectionIndex--;
-		if (currentSelectionIndex < 0)
-			currentSelectionIndex = 0;
-		currentSelection = history[currentSelectionIndex];
-	}
+            currentSelectionIndex--;
+            if (currentSelectionIndex < 0)
+                currentSelectionIndex = 0;
+            currentSelection = history[currentSelectionIndex];
+        }
 
-	public void Next()
-	{
-		if (history.Count == 0)
-			return;
+        public void Next()
+        {
+            if (history.Count == 0)
+                return;
 
-		currentSelectionIndex++;
-		if (currentSelectionIndex >= history.Count)
-			currentSelectionIndex = history.Count - 1;
-		currentSelection = history[currentSelectionIndex];
-	}
+            currentSelectionIndex++;
+            if (currentSelectionIndex >= history.Count)
+                currentSelectionIndex = history.Count - 1;
+            currentSelection = history[currentSelectionIndex];
+        }
 
-	public Object UpdateSelection(int currentIndex)
-	{
-		currentSelectionIndex = currentIndex;
-		currentSelection = history[currentSelectionIndex];
+        public Object UpdateSelection(int currentIndex)
+        {
+            currentSelectionIndex = currentIndex;
+            currentSelection = history[currentSelectionIndex];
 
-		return currentSelection;
-	}
+            return currentSelection;
+        }
 
-	public void ClearDeleted()
-	{
-		var deletedCount = history.Count(e => e == null);
+        public void ClearDeleted()
+        {
+            var deletedCount = history.Count(e => e == null);
 
-		history.RemoveAll (e => e == null);
+            history.RemoveAll(e => e == null);
 
-		currentSelectionIndex -= deletedCount;
+            currentSelectionIndex -= deletedCount;
 
-		if (currentSelectionIndex < 0)
-			currentSelectionIndex = 0;
+            if (currentSelectionIndex < 0)
+                currentSelectionIndex = 0;
 
-		if (currentSelection == null)
-			currentSelectionIndex = -1;
-	}
+            if (currentSelection == null)
+                currentSelectionIndex = -1;
+        }
 
-	public void RemoveDuplicated()
-	{
-		var tempList = new List<Object> (history);
+        public void RemoveDuplicated()
+        {
+            var tempList = new List<Object>(history);
 
-		foreach (var item in tempList) {
-			var itemFirstIndex = history.IndexOf (item);
-			var itemLastIndex = history.LastIndexOf (item);
+            foreach (var item in tempList)
+            {
+                var itemFirstIndex = history.IndexOf(item);
+                var itemLastIndex = history.LastIndexOf(item);
 
-			while (itemFirstIndex != itemLastIndex) {
-				history.RemoveAt (itemFirstIndex);
+                while (itemFirstIndex != itemLastIndex)
+                {
+                    history.RemoveAt(itemFirstIndex);
 
-				itemFirstIndex = history.IndexOf (item);
-				itemLastIndex = history.LastIndexOf (item);
-			}
-		}
+                    itemFirstIndex = history.IndexOf(item);
+                    itemLastIndex = history.LastIndexOf(item);
+                }
+            }
 
-		if (currentSelectionIndex >= history.Count)
-			currentSelectionIndex = history.Count - 1;
-	}
+            if (currentSelectionIndex >= history.Count)
+                currentSelectionIndex = history.Count - 1;
+        }
 
+    }
 }
