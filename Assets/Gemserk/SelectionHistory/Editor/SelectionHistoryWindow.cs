@@ -19,8 +19,10 @@ namespace Gemserk
 		public static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
 		public static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
 		public static readonly string HistoryAllowDuplicatedEntriesPrefKey = "Gemserk.SelectionHistory.AllowDuplicatedEntries";
+	    public static readonly string HistoryShowHierarchyObjectsPrefKey = "Gemserk.SelectionHistory.ShowHierarchyObjects";
+	    public static readonly string HistoryShowProjectViewObjectsPrefKey = "Gemserk.SelectionHistory.ShowProjectViewObjects";
 
-		static readonly SelectionHistory selectionHistory = new SelectionHistory();
+        static readonly SelectionHistory selectionHistory = new SelectionHistory();
 
 		static readonly bool debugEnabled = false;
 
@@ -97,13 +99,20 @@ namespace Gemserk
 		bool automaticRemoveDeleted;
 		bool allowDuplicatedEntries;
 
-		void OnGUI () {
+	    bool showHierarchyViewObjects;
+	    bool showProjectViewObjects;
+
+        void OnGUI () {
 
 			if (shouldReloadPreferences) {
 				selectionHistory.HistorySize = EditorPrefs.GetInt (SelectionHistoryWindow.HistorySizePrefKey, 10);
 				automaticRemoveDeleted = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, true);
 				allowDuplicatedEntries = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, false);
-				shouldReloadPreferences = false;
+
+			    showHierarchyViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, true);
+			    showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, true);
+
+                shouldReloadPreferences = false;
 			}
 
 			if (automaticRemoveDeleted)
@@ -187,7 +196,14 @@ namespace Gemserk
 
 			    if (!EditorUtility.IsPersistent(historyElement))
 			    {
+                    if (!showHierarchyViewObjects)
+                        continue;
 			        nonSelectedColor = hierarchyElementColor;
+			    }
+			    else
+			    {
+                    if (!showProjectViewObjects)
+                        continue;
 			    }
 
                 if (selectionHistory.IsSelected(i)) {
