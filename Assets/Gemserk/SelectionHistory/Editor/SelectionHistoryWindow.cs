@@ -26,8 +26,11 @@ namespace Gemserk
 
 		public static bool shouldReloadPreferences = true;
 
-		// Add menu named "My Window" to the Window menu
-		[MenuItem ("Window/Gemserk/Selection History %#h")]
+	    private static Color hierarchyElementColor = new Color(0.7f, 1.0f, 0.7f);
+	    private static Color selectedElementColor = new Color(0.2f, 170.0f / 255.0f, 1.0f, 1.0f);
+
+        // Add menu named "My Window" to the Window menu
+        [MenuItem ("Window/Gemserk/Selection History %#h")]
 		static void Init () {
 			// Get existing open window or if none, make a new one:
 //			var window = ScriptableObject.CreateInstance<SelectionHistoryWindow>();
@@ -171,7 +174,7 @@ namespace Gemserk
 
 		void DrawHistory()
 		{
-			var nonSelectedColor = GUI.contentColor;
+			var originalColor = GUI.contentColor;
 
 			var history = selectionHistory.History;
 
@@ -180,12 +183,19 @@ namespace Gemserk
 			for (int i = 0; i < history.Count; i++) {
 				var historyElement = history [i];
 
-				if (selectionHistory.IsSelected(i)) {
-					GUI.contentColor = new Color(0.2f, 170.0f / 255.0f, 1.0f, 1.0f);
+			    var nonSelectedColor = originalColor;
+
+			    if (!EditorUtility.IsPersistent(historyElement))
+			    {
+			        nonSelectedColor = hierarchyElementColor;
+			    }
+
+                if (selectionHistory.IsSelected(i)) {
+					GUI.contentColor = selectedElementColor;
 				} else {
 					GUI.contentColor = nonSelectedColor;
 				}
-
+                
 				var rect = EditorGUILayout.BeginHorizontal ();
 
 				if (historyElement == null) {
@@ -202,7 +212,7 @@ namespace Gemserk
 					// chnanged to label to be able to handle events for drag
 					GUILayout.Label (content, buttonStyle); 
 
-					GUI.contentColor = nonSelectedColor;
+					GUI.contentColor = originalColor;
 
 					if (GUILayout.Button ("Ping", windowSkin.button)) {
 						EditorGUIUtility.PingObject (historyElement);
@@ -215,7 +225,7 @@ namespace Gemserk
 				ButtonLogic (i, rect, historyElement);
 			}
 
-			GUI.contentColor = nonSelectedColor;
+			GUI.contentColor = originalColor;
 		}
 
 		void ButtonLogic(int currentIndex, Rect rect, Object currentObject)
