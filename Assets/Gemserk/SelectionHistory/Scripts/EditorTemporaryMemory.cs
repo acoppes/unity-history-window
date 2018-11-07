@@ -35,8 +35,8 @@ namespace Gemserk
 			}
 		}
 
-		[SerializeField]
-		public List<Object> history = new List<Object>(100);
+	    [SerializeField]
+	    public SelectionHistory selectionHistory;
 	}
 	
 }

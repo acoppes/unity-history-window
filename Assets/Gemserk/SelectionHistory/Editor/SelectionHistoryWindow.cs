@@ -22,7 +22,7 @@ namespace Gemserk
 	    public static readonly string HistoryShowHierarchyObjectsPrefKey = "Gemserk.SelectionHistory.ShowHierarchyObjects";
 	    public static readonly string HistoryShowProjectViewObjectsPrefKey = "Gemserk.SelectionHistory.ShowProjectViewObjects";
 
-        static readonly SelectionHistory selectionHistory = new SelectionHistory();
+        static SelectionHistory selectionHistory = new SelectionHistory();
 
 		static readonly bool debugEnabled = false;
 
@@ -31,11 +31,9 @@ namespace Gemserk
 	    private static Color hierarchyElementColor = new Color(0.7f, 1.0f, 0.7f);
 	    private static Color selectedElementColor = new Color(0.2f, 170.0f / 255.0f, 1.0f, 1.0f);
 
-        // Add menu named "My Window" to the Window menu
         [MenuItem ("Window/Gemserk/Selection History %#h")]
 		static void Init () {
 			// Get existing open window or if none, make a new one:
-//			var window = ScriptableObject.CreateInstance<SelectionHistoryWindow>();
 			var window = EditorWindow.GetWindow<SelectionHistoryWindow> ();
 
 			window.titleContent.text = "History";
@@ -49,7 +47,7 @@ namespace Gemserk
 					Debug.Log ("Recording new selection: " + Selection.activeObject.name);
 				}
 
-				selectionHistory.History = EditorTemporaryMemory.Instance.history;
+				selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
 				selectionHistory.UpdateSelection (Selection.activeObject);
 			} 
 		}
@@ -67,7 +65,7 @@ namespace Gemserk
 		{
 			automaticRemoveDeleted = EditorPrefs.GetBool (HistoryAutomaticRemoveDeletedPrefKey, true);
 
-			selectionHistory.History = EditorTemporaryMemory.Instance.history;
+			selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
 			selectionHistory.HistorySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
 
 			Selection.selectionChanged += delegate {

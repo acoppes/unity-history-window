@@ -6,8 +6,10 @@ using Object = UnityEngine.Object;
 
 namespace Gemserk
 {
+    [Serializable]
     public class SelectionHistory
     {
+        [SerializeField]
         List<Object> history = new List<Object>(100);
 
         int currentSelectionIndex;
