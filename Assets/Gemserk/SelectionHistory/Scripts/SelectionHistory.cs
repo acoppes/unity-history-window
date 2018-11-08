@@ -106,15 +106,7 @@ namespace Gemserk
             currentSelection = _history[currentSelectionIndex];
         }
 
-        public Object UpdateSelection(int currentIndex)
-        {
-            currentSelectionIndex = currentIndex;
-            currentSelection = _history[currentSelectionIndex];
-
-            return currentSelection;
-        }
-
-        public void UpdateSelection2(Object obj)
+        public void SetSelection(Object obj)
         {
             currentSelectionIndex = _history.IndexOf(obj);
             currentSelection = obj;
@@ -125,6 +117,7 @@ namespace Gemserk
             var deletedCount = _history.Count(e => e == null);
 
             _history.RemoveAll(e => e == null);
+            _favorites.RemoveAll(d => d == null);
 
             currentSelectionIndex -= deletedCount;
 
@@ -155,6 +148,7 @@ namespace Gemserk
 
             if (currentSelectionIndex >= _history.Count)
                 currentSelectionIndex = _history.Count - 1;
+        
         }
 
         public bool IsFavorite(Object obj)

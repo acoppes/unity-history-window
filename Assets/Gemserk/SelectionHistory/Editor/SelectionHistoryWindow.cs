@@ -89,7 +89,7 @@ namespace Gemserk
 
 		void UpdateSelection(Object obj)
 		{
-		    selectionHistory.UpdateSelection2(obj);
+		    selectionHistory.SetSelection(obj);
             Selection.activeObject = obj;
             // Selection.activeObject = selectionHistory.UpdateSelection(currentIndex);
 		}

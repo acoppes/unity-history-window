@@ -136,7 +136,7 @@ namespace Gemserk
 			Assert.IsTrue(selectionHistory.IsSelected(2));
 			Assert.AreEqual(selectionHistory.GetHistoryCount(), 3);
 
-			selectionHistory.UpdateSelection (1);
+			selectionHistory.SetSelection (selection3);
 
 			GameObject.DestroyImmediate (selection1);
 			GameObject.DestroyImmediate (selection4);
@@ -193,10 +193,10 @@ namespace Gemserk
 			Assert.That(selectionHistory.GetSelection(), Is.SameAs(selection1)); 
 			Assert.That(selectionHistory.IsSelected(2), Is.True);
 
-			selectionHistory.UpdateSelection (1);
+			selectionHistory.UpdateSelection (selection3);
 			Assert.That(selectionHistory.GetSelection(), Is.SameAs(selection3)); 
 
-			selectionHistory.UpdateSelection (0);
+			selectionHistory.UpdateSelection (selection2);
 			Assert.That(selectionHistory.GetSelection(), Is.SameAs(selection2)); 
 		}
 
