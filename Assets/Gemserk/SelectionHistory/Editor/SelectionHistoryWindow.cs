@@ -21,6 +21,7 @@ namespace Gemserk
 		public static readonly string HistoryAllowDuplicatedEntriesPrefKey = "Gemserk.SelectionHistory.AllowDuplicatedEntries";
 	    public static readonly string HistoryShowHierarchyObjectsPrefKey = "Gemserk.SelectionHistory.ShowHierarchyObjects";
 	    public static readonly string HistoryShowProjectViewObjectsPrefKey = "Gemserk.SelectionHistory.ShowProjectViewObjects";
+	    public static readonly string HistoryFavoritesPrefKey = "Gemserk.SelectionHistory.Favorites";
 
         static SelectionHistory selectionHistory = new SelectionHistory();
 
@@ -131,8 +132,12 @@ namespace Gemserk
 				Debug.Log ("changed");
 			}
 
-            DrawFavorites();
-            EditorGUILayout.Separator();
+            var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
+            if (favoritesEnabled)
+            {
+                DrawFavorites();
+                EditorGUILayout.Separator();
+            }
 			DrawHistory();
 
 			EditorGUILayout.EndScrollView();
@@ -234,18 +239,23 @@ namespace Gemserk
                     EditorGUIUtility.PingObject(obj);
                 }
 
-                var pinString = "Pin";
-                var isFavorite = selectionHistory.IsFavorite(obj);
+                var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
 
-                if (isFavorite)
+                if (favoritesEnabled)
                 {
-                    pinString = "Unpin";
-                }
+                    var pinString = "Pin";
+                    var isFavorite = selectionHistory.IsFavorite(obj);
 
-                if (GUILayout.Button(pinString, windowSkin.button))
-                {
-                    selectionHistory.ToggleFavorite(obj);
-                    Repaint();
+                    if (isFavorite)
+                    {
+                        pinString = "Unpin";
+                    }
+
+                    if (GUILayout.Button(pinString, windowSkin.button))
+                    {
+                        selectionHistory.ToggleFavorite(obj);
+                        Repaint();
+                    }
                 }
 
             }
@@ -280,9 +290,11 @@ namespace Gemserk
 
 			var buttonStyle = windowSkin.GetStyle("SelectionButton");
 
-			for (int i = 0; i < history.Count; i++) {
+		    var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
+
+            for (int i = 0; i < history.Count; i++) {
 				var historyElement = history [i];
-                if (selectionHistory.IsFavorite(historyElement))
+                if (selectionHistory.IsFavorite(historyElement) && favoritesEnabled)
                     continue;
 			    DrawElement(historyElement, i, originalColor);
             }

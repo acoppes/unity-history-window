@@ -16,6 +16,8 @@ namespace Gemserk
 	    private static bool showHierarchyObjects = true;
 	    private static bool showProjectViewObjects = true;
 
+	    private static bool drawFavorites = true;
+
         [PreferenceItem("Selection History")]
 		public static void PreferencesGUI()
 		{
@@ -26,6 +28,7 @@ namespace Gemserk
 				autoRemoveDuplicated = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, false);
 			    showHierarchyObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, true);
 			    showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, true);
+			    drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryFavoritesPrefKey, true);
                 prefsLoaded = true;
 			}
 
@@ -34,6 +37,7 @@ namespace Gemserk
 			autoRemoveDuplicated = EditorGUILayout.Toggle ("Allow duplicated entries", autoRemoveDuplicated);
 		    showHierarchyObjects = EditorGUILayout.Toggle("Show HierarchyView objects", showHierarchyObjects);
 		    showProjectViewObjects = EditorGUILayout.Toggle("Show ProjectView objects", showProjectViewObjects);
+		    drawFavorites = EditorGUILayout.Toggle("Favorites Enabled", drawFavorites);
 
             if (GUI.changed) {
 				EditorPrefs.SetInt(SelectionHistoryWindow.HistorySizePrefKey, historySize);
@@ -42,6 +46,7 @@ namespace Gemserk
                 
                 EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, showHierarchyObjects);
                 EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, showProjectViewObjects);
+                EditorPrefs.SetBool(SelectionHistoryWindow.HistoryFavoritesPrefKey, drawFavorites);
 
                 SelectionHistoryWindow.shouldReloadPreferences = true;
 			}
