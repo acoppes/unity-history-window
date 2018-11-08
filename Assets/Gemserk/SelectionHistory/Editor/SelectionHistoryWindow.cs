@@ -129,6 +129,8 @@ namespace Gemserk
 				Debug.Log ("changed");
 			}
 
+            DrawFavorites();
+            EditorGUILayout.Separator();
 			DrawHistory();
 
 			EditorGUILayout.EndScrollView();
@@ -179,6 +181,95 @@ namespace Gemserk
 			Selection.activeObject = selectionHistory.GetSelection ();
 		}
 
+	    void DrawElement(Object favorite, int i, Color originalColor)
+	    {
+	        var buttonStyle = windowSkin.GetStyle("SelectionButton");
+            var nonSelectedColor = originalColor;
+
+            if (!EditorUtility.IsPersistent(favorite))
+            {
+                if (!showHierarchyViewObjects)
+                    return;
+                nonSelectedColor = hierarchyElementColor;
+            }
+            else
+            {
+                if (!showProjectViewObjects)
+                    return;
+            }
+
+            if (selectionHistory.IsSelected(i))
+            {
+                GUI.contentColor = selectedElementColor;
+            }
+            else
+            {
+                GUI.contentColor = nonSelectedColor;
+            }
+
+            var rect = EditorGUILayout.BeginHorizontal();
+
+            if (favorite == null)
+            {
+                GUILayout.Label("Deleted", buttonStyle);
+            }
+            else
+            {
+                var icon = AssetPreview.GetMiniThumbnail(favorite);
+
+                GUIContent content = new GUIContent();
+
+                content.image = icon;
+                content.text = favorite.name;
+
+                // chnanged to label to be able to handle events for drag
+                GUILayout.Label(content, buttonStyle);
+
+                GUI.contentColor = originalColor;
+
+                if (GUILayout.Button("Ping", windowSkin.button))
+                {
+                    EditorGUIUtility.PingObject(favorite);
+                }
+
+                var pinString = "Pin";
+                var isFavorite = selectionHistory.IsFavorite(favorite);
+
+                if (isFavorite)
+                {
+                    pinString = "Unpin";
+                }
+
+                if (GUILayout.Button(pinString, windowSkin.button))
+                {
+                    selectionHistory.ToggleFavorite(favorite);
+                    Repaint();
+                }
+
+            }
+
+            EditorGUILayout.EndHorizontal();
+
+            ButtonLogic(i, rect, favorite);
+        }
+
+	    void DrawFavorites()
+	    {
+	        var originalColor = GUI.contentColor;
+
+	        var favorites = selectionHistory.Favorites;
+
+	        var buttonStyle = windowSkin.GetStyle("SelectionButton");
+
+	        for (int i = 0; i < favorites.Count; i++)
+	        {
+	            var favorite = favorites[i];
+                DrawElement(favorite, i, originalColor);
+	        }
+
+	        GUI.contentColor = originalColor;
+        }
+
 		void DrawHistory()
 		{
 			var originalColor = GUI.contentColor;
@@ -189,55 +280,8 @@ namespace Gemserk
 
 			for (int i = 0; i < history.Count; i++) {
 				var historyElement = history [i];
-
-			    var nonSelectedColor = originalColor;
-
-			    if (!EditorUtility.IsPersistent(historyElement))
-			    {
-                    if (!showHierarchyViewObjects)
-                        continue;
-			        nonSelectedColor = hierarchyElementColor;
-			    }
-			    else
-			    {
-                    if (!showProjectViewObjects)
-                        continue;
-			    }
-
-                if (selectionHistory.IsSelected(i)) {
-					GUI.contentColor = selectedElementColor;
-				} else {
-					GUI.contentColor = nonSelectedColor;
-				}
-                
-				var rect = EditorGUILayout.BeginHorizontal ();
-
-				if (historyElement == null) {
-					GUILayout.Label ("Deleted", buttonStyle); 
-				} else {
-
-					var icon = AssetPreview.GetMiniThumbnail (historyElement);
-
-					GUIContent content = new GUIContent ();
-
-					content.image = icon;
-					content.text = historyElement.name;
-
-					// chnanged to label to be able to handle events for drag
-					GUILayout.Label (content, buttonStyle); 
-
-					GUI.contentColor = originalColor;
-
-					if (GUILayout.Button ("Ping", windowSkin.button)) {
-						EditorGUIUtility.PingObject (historyElement);
-					}
-
-				}
-					
-				EditorGUILayout.EndHorizontal ();
-
-				ButtonLogic (i, rect, historyElement);
-			}
+			    DrawElement(historyElement, i, originalColor);
+            }
 
 			GUI.contentColor = originalColor;
 		}
