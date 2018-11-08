@@ -42,6 +42,11 @@ namespace Gemserk
             return index == currentSelectionIndex;
         }
 
+        public bool IsSelected(Object obj)
+        {
+            return currentSelection == obj;
+        }
+
         public void Clear()
         {
             _history.Clear();
@@ -107,6 +112,12 @@ namespace Gemserk
             currentSelection = _history[currentSelectionIndex];
 
             return currentSelection;
+        }
+
+        public void UpdateSelection2(Object obj)
+        {
+            currentSelectionIndex = _history.IndexOf(obj);
+            currentSelection = obj;
         }
 
         public void ClearDeleted()

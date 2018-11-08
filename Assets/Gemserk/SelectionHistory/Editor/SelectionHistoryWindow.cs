@@ -87,9 +87,11 @@ namespace Gemserk
 			}
 		}
 
-		void UpdateSelection(int currentIndex)
+		void UpdateSelection(Object obj)
 		{
-			Selection.activeObject = selectionHistory.UpdateSelection(currentIndex);
+		    selectionHistory.UpdateSelection2(obj);
+            Selection.activeObject = obj;
+            // Selection.activeObject = selectionHistory.UpdateSelection(currentIndex);
 		}
 
 		Vector2 scrollPosition;
@@ -181,12 +183,12 @@ namespace Gemserk
 			Selection.activeObject = selectionHistory.GetSelection ();
 		}
 
-	    void DrawElement(Object favorite, int i, Color originalColor)
+	    void DrawElement(Object obj, int i, Color originalColor)
 	    {
 	        var buttonStyle = windowSkin.GetStyle("SelectionButton");
             var nonSelectedColor = originalColor;
 
-            if (!EditorUtility.IsPersistent(favorite))
+            if (!EditorUtility.IsPersistent(obj))
             {
                 if (!showHierarchyViewObjects)
                     return;
@@ -198,7 +200,7 @@ namespace Gemserk
                     return;
             }
 
-            if (selectionHistory.IsSelected(i))
+            if (selectionHistory.IsSelected(obj))
             {
                 GUI.contentColor = selectedElementColor;
             }
@@ -209,18 +211,18 @@ namespace Gemserk
 
             var rect = EditorGUILayout.BeginHorizontal();
 
-            if (favorite == null)
+            if (obj == null)
             {
                 GUILayout.Label("Deleted", buttonStyle);
             }
             else
             {
-                var icon = AssetPreview.GetMiniThumbnail(favorite);
+                var icon = AssetPreview.GetMiniThumbnail(obj);
 
                 GUIContent content = new GUIContent();
 
                 content.image = icon;
-                content.text = favorite.name;
+                content.text = obj.name;
 
                 // chnanged to label to be able to handle events for drag
                 GUILayout.Label(content, buttonStyle);
@@ -229,11 +231,11 @@ namespace Gemserk
 
                 if (GUILayout.Button("Ping", windowSkin.button))
                 {
-                    EditorGUIUtility.PingObject(favorite);
+                    EditorGUIUtility.PingObject(obj);
                 }
 
                 var pinString = "Pin";
-                var isFavorite = selectionHistory.IsFavorite(favorite);
+                var isFavorite = selectionHistory.IsFavorite(obj);
 
                 if (isFavorite)
                 {
@@ -242,7 +244,7 @@ namespace Gemserk
 
                 if (GUILayout.Button(pinString, windowSkin.button))
                 {
-                    selectionHistory.ToggleFavorite(favorite);
+                    selectionHistory.ToggleFavorite(obj);
                     Repaint();
                 }
 
@@ -250,7 +252,7 @@ namespace Gemserk
 
             EditorGUILayout.EndHorizontal();
 
-            ButtonLogic(i, rect, favorite);
+            ButtonLogic(rect, obj);
         }
 
 	    void DrawFavorites()
@@ -280,13 +282,15 @@ namespace Gemserk
 
 			for (int i = 0; i < history.Count; i++) {
 				var historyElement = history [i];
+                if (selectionHistory.IsFavorite(historyElement))
+                    continue;
 			    DrawElement(historyElement, i, originalColor);
             }
 
 			GUI.contentColor = originalColor;
 		}
 
-		void ButtonLogic(int currentIndex, Rect rect, Object currentObject)
+		void ButtonLogic(Rect rect, Object currentObject)
 		{
 			var currentEvent = Event.current;
 
@@ -333,7 +337,7 @@ namespace Gemserk
 
 				if (currentObject != null) {
 					if (Event.current.button == 0) {
-						UpdateSelection (currentIndex);
+						UpdateSelection (currentObject);
 					} else {
 						EditorGUIUtility.PingObject (currentObject);
 					}
