@@ -72,7 +72,7 @@ namespace Gemserk
 			Selection.selectionChanged += delegate {
 
 				if (selectionHistory.IsSelected(selectionHistory.GetHistoryCount() - 1)) {
-					scrollPosition.y = float.MaxValue;
+					_historyScrollPosition.y = float.MaxValue;
 				}
 
 				Repaint();
@@ -95,7 +95,8 @@ namespace Gemserk
             // Selection.activeObject = selectionHistory.UpdateSelection(currentIndex);
 		}
 
-		Vector2 scrollPosition;
+	    private Vector2 _favoritesScrollPosition;
+		private Vector2 _historyScrollPosition;
 
 		bool automaticRemoveDeleted;
 		bool allowDuplicatedEntries;
@@ -122,9 +123,18 @@ namespace Gemserk
 			if (!allowDuplicatedEntries)
 				selectionHistory.RemoveDuplicated ();
 
-			bool changedBefore = GUI.changed;
+            var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
+            if (favoritesEnabled)
+            {
+                _favoritesScrollPosition = EditorGUILayout.BeginScrollView(_favoritesScrollPosition);
+                DrawFavorites();
+                EditorGUILayout.EndScrollView();
+                EditorGUILayout.Separator();
+            }
+        
+            bool changedBefore = GUI.changed;
 
-			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+			_historyScrollPosition = EditorGUILayout.BeginScrollView(_historyScrollPosition);
 
 			bool changedAfter = GUI.changed;
 
@@ -132,12 +142,6 @@ namespace Gemserk
 				Debug.Log ("changed");
 			}
 
-            var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
-            if (favoritesEnabled)
-            {
-                DrawFavorites();
-                EditorGUILayout.Separator();
-            }
 			DrawHistory();
 
 			EditorGUILayout.EndScrollView();
