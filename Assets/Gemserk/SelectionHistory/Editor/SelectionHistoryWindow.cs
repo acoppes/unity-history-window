@@ -124,7 +124,7 @@ namespace Gemserk
 				selectionHistory.RemoveDuplicated ();
 
             var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
-            if (favoritesEnabled)
+            if (favoritesEnabled && selectionHistory.Favorites.Count > 0)
             {
                 _favoritesScrollPosition = EditorGUILayout.BeginScrollView(_favoritesScrollPosition);
                 DrawFavorites();
