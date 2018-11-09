@@ -36,7 +36,7 @@ namespace Gemserk
 		}
 
 	    [SerializeField]
-	    public SelectionHistory selectionHistory;
+	    public SelectionHistory selectionHistory = new SelectionHistory();
 	}
 	
 }
