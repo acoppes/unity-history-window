@@ -320,7 +320,7 @@ namespace Gemserk
 
 			var eventType = currentEvent.type;
 
-			if (eventType == EventType.MouseDrag) {
+			if (eventType == EventType.MouseDrag && currentEvent.button == 0) {
 
 				if (currentObject != null) {
 					DragAndDrop.PrepareStartDrag ();
