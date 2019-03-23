@@ -1,0 +1,10 @@
+{
+    "name": "SelectionHistory-Editor-asm",
+    "references": [
+        "SelectionHistory-asm"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}
