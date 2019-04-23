@@ -5,15 +5,6 @@ using System.Reflection;
 
 namespace Gemserk
 {
-	[InitializeOnLoad]
-	public static class SelectionHistoryInitialized
-	{
-		static SelectionHistoryInitialized()
-		{
-			SelectionHistoryWindow.RegisterSelectionListener ();
-		}
-	}
-
 	public class SelectionHistoryWindow : EditorWindow {
 
 		public static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
@@ -22,10 +13,6 @@ namespace Gemserk
 	    public static readonly string HistoryShowHierarchyObjectsPrefKey = "Gemserk.SelectionHistory.ShowHierarchyObjects";
 	    public static readonly string HistoryShowProjectViewObjectsPrefKey = "Gemserk.SelectionHistory.ShowProjectViewObjects";
 	    public static readonly string HistoryFavoritesPrefKey = "Gemserk.SelectionHistory.Favorites";
-
-        static SelectionHistory selectionHistory = new SelectionHistory();
-
-		static readonly bool debugEnabled = false;
 
 		public static bool shouldReloadPreferences = true;
 
@@ -41,32 +28,21 @@ namespace Gemserk
 			window.Show();
 		}
 
-		static void SelectionRecorder ()
-		{
-			if (Selection.activeObject != null) {
-				if (debugEnabled) {
-					Debug.Log ("Recording new selection: " + Selection.activeObject.name);
-				}
-
-				selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
-				selectionHistory.UpdateSelection (Selection.activeObject);
-			} 
-		}
-
-		public static void RegisterSelectionListener()
-		{
-			Selection.selectionChanged += SelectionRecorder;
-		}
 
 		public GUISkin windowSkin;
 
 		MethodInfo openPreferencesWindow;
 
+		private static SelectionHistory selectionHistory
+		{
+			get { return SelectionHistoryContext.SelectionHistory; }
+		}
+
 		void OnEnable()
 		{
 			automaticRemoveDeleted = EditorPrefs.GetBool (HistoryAutomaticRemoveDeletedPrefKey, true);
 
-			selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+			// selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
 			selectionHistory.HistorySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
 
 			Selection.selectionChanged += delegate {
