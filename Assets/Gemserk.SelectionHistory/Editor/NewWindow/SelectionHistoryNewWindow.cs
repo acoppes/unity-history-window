@@ -1,3 +1,4 @@
+using System;
 using Gemserk;
 using UnityEditor;
 using UnityEditor.ShortcutManagement;
@@ -71,5 +72,22 @@ public class SelectionHistoryNewWindow : EditorWindow
         clearButton.text = "Clear";
         
         root.Add(clearButton);
+        
+        // Selection.selectionChanged += OnSelectionChanged;
+    }
+
+    public void OnDisable()
+    {
+        // Selection.selectionChanged -= OnSelectionChanged;
+    }
+
+    private void OnSelectionChanged()
+    {
+        var tree = _visualTreeAsset.CloneTree();
+        var selectionContainer = tree.Q("Selection");
+        var objectField = selectionContainer.Q<ObjectField>("Object" );
+        
+        // selectionHistory.
+        // objectField.SetValueWithoutNotify(Selection.activeObject);
     }
 }

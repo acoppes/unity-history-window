@@ -10,16 +10,19 @@ namespace Gemserk
     public class SelectionHistory
     {
         [SerializeField]
-        List<Object> _history = new List<Object>(100);
+        private List<Object> _history = new List<Object>(100);
 
         [SerializeField]
-        List<Object> _favorites = new List<Object>(100);
+        private List<Object> _favorites = new List<Object>(100);
 
-        int currentSelectionIndex;
+        private int currentSelectionIndex;
 
-        Object currentSelection;
+        private Object currentSelection;
 
-        int historySize = 10;
+        private int historySize = 10;
+        
+        // TODO: event to know when history was modified
+        public Action<Object> objectAdded;
 
         public List<Object> History
         {
@@ -73,6 +76,8 @@ namespace Gemserk
             {
                 _history.Add(selection);
                 currentSelectionIndex = _history.Count - 1;
+
+                objectAdded?.Invoke(selection);
             }
 
             currentSelection = selection;

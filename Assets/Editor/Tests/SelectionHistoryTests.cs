@@ -199,6 +199,30 @@ namespace Gemserk
 			selectionHistory.UpdateSelection (selection2);
 			Assert.That(selectionHistory.GetSelection(), Is.SameAs(selection2)); 
 		}
+		
+		[Test]
+		public void TestSelectionHistoryModifiedCallback()
+		{
+			var selectionHistory = new SelectionHistory();
+
+			var selection1 = new GameObject();
+
+			var selection1AddedTimes = 0;
+
+			selectionHistory.objectAdded += obj =>
+			{
+				Assert.AreSame(selection1, obj);
+				selection1AddedTimes++;
+			};
+			
+			Assert.AreEqual(0, selection1AddedTimes);
+			
+			selectionHistory.UpdateSelection(selection1);
+			
+			Assert.AreEqual(1, selection1AddedTimes);
+			selectionHistory.UpdateSelection(selection1);
+			Assert.AreEqual(1, selection1AddedTimes);
+		}
 
 	}
 }
