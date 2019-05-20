@@ -5,6 +5,7 @@ using UnityEditor.ShortcutManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using Object = UnityEngine.Object;
 
 public class SelectionHistoryNewWindow : EditorWindow
 {
@@ -31,6 +32,8 @@ public class SelectionHistoryNewWindow : EditorWindow
 
     private VisualTreeAsset _visualTreeAsset;
 
+    private VisualElement _historyObjectsContainer;
+
     private static StyleSheet LoadStyleSheet()
     {
         var guids = AssetDatabase.FindAssets("t:StyleSheet " + StyleSheetFileName);
@@ -56,6 +59,10 @@ public class SelectionHistoryNewWindow : EditorWindow
         // Each editor window contains a root VisualElement object
         var root = rootVisualElement;
 
+        _historyObjectsContainer = new VisualElement();
+        
+        root.Add(_historyObjectsContainer);
+
         _styleSheet = LoadStyleSheet();
         _visualTreeAsset = LoadTreeAsset();
 
@@ -65,29 +72,57 @@ public class SelectionHistoryNewWindow : EditorWindow
             return;
         }
         
+        root.styleSheets.Add(_styleSheet);
+        
         var clearButton = new Button(delegate
         {
             selectionHistory.Clear();
+            // _historyObjectsContainer.Clear();
+            // clear list too
         });
         clearButton.text = "Clear";
         
         root.Add(clearButton);
         
+        var scheduledAction = root.schedule.Execute(() =>
+        {
+            // textFields.ForEach(t => t.value = m_Tank.tankName);
+            // integerFields.ForEach(t => t.value = m_Tank.tankSize);
+        });
+        scheduledAction.Every(100); // ms
+
+        selectionHistory.objectAdded += AddSelectionField;
+        selectionHistory.cleared += () =>
+        {
+            _historyObjectsContainer.Clear();
+        };
+
         // Selection.selectionChanged += OnSelectionChanged;
+        
+        // regenerate
+//        _historyObjectsContainer.Clear();
+        
+        selectionHistory.History.ForEach(AddSelectionField);
     }
 
     public void OnDisable()
     {
+        selectionHistory.objectAdded -= AddSelectionField;
         // Selection.selectionChanged -= OnSelectionChanged;
     }
 
-    private void OnSelectionChanged()
+    private void AddSelectionField(Object objectAdded)
     {
         var tree = _visualTreeAsset.CloneTree();
         var selectionContainer = tree.Q("Selection");
-        var objectField = selectionContainer.Q<ObjectField>("Object" );
+        var objectField = selectionContainer.Q<ObjectField>( );
+
+        var button = selectionContainer.Q<Button>();
+        button.text = "Ping";
         
         // selectionHistory.
-        // objectField.SetValueWithoutNotify(Selection.activeObject);
+        objectField.SetValueWithoutNotify(objectAdded);
+        
+        _historyObjectsContainer.Add(selectionContainer);
     }
 }

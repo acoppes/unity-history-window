@@ -1,5 +1,27 @@
-Label {
-    font-size: 20;
-    font-weight: bold;
-    text-color: rgb(68, 138, 255);
+#Selection {
+    padding: 1px;
+    background-color: rgba(25, 25, 25, 1);
+    flex-direction: row;
+}
+
+#Selection > ObjectField {
+    flex-grow: 1;
+}
+
+#Selection ObjectFieldDisplay {
+    background-image: none;
+    background-color: rgba(10, 10, 10, 1);
+    border-color: rgba(0, 0, 0, 1);
+    border-width: 1px;
+}
+
+#Selection .unity-label {
+    -unity-text-align: middle-left;
+    color: rgba(255, 255, 255, 1);
+}
+
+
+#Selection > Button {
+    min-width: 60px;
+    -unity-text-align: middle-center;
 }

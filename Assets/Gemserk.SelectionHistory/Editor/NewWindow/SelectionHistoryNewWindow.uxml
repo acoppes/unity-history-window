@@ -12,4 +12,10 @@ xsi:schemaLocation="
                         UnityEditor.PackageManager.UI ../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd
 "
 >
+
+      <engine:VisualElement name="Selection" class="horizontalContainer">
+        <editor:ObjectField/>
+        <engine:Button />
+      </engine:VisualElement>
+
 </engine:UXML>

@@ -47,6 +47,8 @@ namespace Gemserk
 			// selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
 			selectionHistory.HistorySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
 
+			selectionHistory.cleared += Repaint;
+
 			Selection.selectionChanged += delegate {
 
 				if (selectionHistory.IsSelected(selectionHistory.GetHistoryCount() - 1)) {

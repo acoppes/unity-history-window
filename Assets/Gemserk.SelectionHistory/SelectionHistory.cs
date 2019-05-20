@@ -21,9 +21,10 @@ namespace Gemserk
 
         private int historySize = 10;
         
-        // TODO: event to know when history was modified
         public Action<Object> objectAdded;
 
+        public Action cleared;
+        
         public List<Object> History
         {
             get { return _history; }
@@ -53,6 +54,7 @@ namespace Gemserk
         public void Clear()
         {
             _history.Clear();
+            cleared?.Invoke();
         }
 
         public int GetHistoryCount()
