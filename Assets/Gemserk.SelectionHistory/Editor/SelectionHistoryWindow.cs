@@ -2,6 +2,7 @@
 using UnityEditor;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEditor.ShortcutManagement;
 
 namespace Gemserk
 {
@@ -19,12 +20,13 @@ namespace Gemserk
 	    private static Color hierarchyElementColor = new Color(0.7f, 1.0f, 0.7f);
 	    private static Color selectedElementColor = new Color(0.2f, 170.0f / 255.0f, 1.0f, 1.0f);
 
-        [MenuItem ("Window/Gemserk/Selection History %#h")]
+	    [Shortcut("Selection History Old/Show", null, KeyCode.H, ShortcutModifiers.Action | ShortcutModifiers.Shift)]
+	    [MenuItem ("Window/Gemserk/Selection History")]
 		static void Init () {
 			// Get existing open window or if none, make a new one:
 			var window = EditorWindow.GetWindow<SelectionHistoryWindow> ();
-
 			window.titleContent.text = "History";
+			window.minSize = new Vector2(300, 200);
 			window.Show();
 		}
 
