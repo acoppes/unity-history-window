@@ -115,6 +115,18 @@ namespace Gemserk.Editor
         private void AddSelectionField(Object objectAdded)
         {
             // if object field with object added already, remove it...
+
+            var previous = _historyObjectsContainer.Query<ObjectField>().Where(field => field.value == objectAdded).ToList();
+
+            if (previous.Count > 0)
+            {
+                var previousField = previous[0];
+                
+                _historyObjectsContainer.Remove(previousField.parent);
+                _historyObjectsContainer.Add(previousField.parent);
+                
+                return;
+            }
             
             var tree = _visualTreeAsset.CloneTree();
             var selectionContainer = tree.Q("Selection");
