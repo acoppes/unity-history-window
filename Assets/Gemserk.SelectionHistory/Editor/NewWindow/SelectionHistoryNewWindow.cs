@@ -120,6 +120,11 @@ public class SelectionHistoryNewWindow : EditorWindow
         var button = selectionContainer.Q<Button>();
         button.text = "Ping";
         
+        button.clickable.clicked += delegate
+        {
+            EditorGUIUtility.PingObject(objectAdded);
+        };
+        
         // selectionHistory.
         objectField.SetValueWithoutNotify(objectAdded);
         
