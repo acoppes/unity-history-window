@@ -11,6 +11,8 @@ namespace Gemserk.Editor
     {
         private static readonly string StyleSheetFileName = "SelectionHistoryNewWindow";
         private static readonly string VisualTreeFileName = "SelectionHistoryNewWindow";
+
+        private static readonly string SelectionContainerName = "Selection";
         
         private static Vector2 _windowMinSize = new Vector2(300, 200);
 
@@ -121,15 +123,21 @@ namespace Gemserk.Editor
             if (previous.Count > 0)
             {
                 var previousField = previous[0];
+
+                var objectFieldSelection = _historyObjectsContainer.Query<VisualElement>(SelectionContainerName)
+                    .Where(s => s.Q<ObjectField>() == previousField).First();
                 
-                _historyObjectsContainer.Remove(previousField.parent);
-                _historyObjectsContainer.Add(previousField.parent);
+                if (objectFieldSelection != null)
+                {
+                    _historyObjectsContainer.Remove(objectFieldSelection);
+                    _historyObjectsContainer.Add(objectFieldSelection);
+                }
                 
                 return;
             }
             
             var tree = _visualTreeAsset.CloneTree();
-            var selectionContainer = tree.Q("Selection");
+            var selectionContainer = tree.Q(SelectionContainerName);
             var objectField = selectionContainer.Q<ObjectField>( );
 
             var button = selectionContainer.Q<Button>();
