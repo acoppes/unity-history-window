@@ -16,14 +16,12 @@
 }
 
 #Selection #ObjectThumbnail {
-    flex-grow: 1;
-    background-image: none;
     max-width: 16px;
     max-height: 16px;
-    margin: 2px;
 }
 
-#Selection #ObjectName {
+#Selection #SelectionLabel {
+    flex-direction: row;
     flex-grow: 1;
     background-image: none;
     background-color: rgba(10, 10, 10, 1);
