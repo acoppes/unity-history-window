@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -8,65 +9,6 @@ using Object = UnityEngine.Object;
 
 namespace Gemserk.Editor
 {
-    public class SelectionItemElement
-    {
-        private VisualElement _parent;
-        private VisualElement _label;
-        private StyleColor _previousColor;
-
-        private Object _selectionObject;
-
-        private Image _thumbnail;
-
-        public VisualElement Parent => _parent;
-        
-        public Object SelectionObject => _selectionObject;
-        
-        public SelectionItemElement(Object selectionObject, VisualElement selection)
-        {
-            _parent = selection;
-            
-            _selectionObject = selectionObject;
-            _label = selection.Q<Label>("ObjectName");
-            _previousColor = _label.style.color;
-
-            _thumbnail = selection.Q<Image>("ObjectThumbnail");
-
-            RefreshThumbnail();
-
-            Selection.selectionChanged += OnSelectionChanged;
-            
-            _label.RegisterCallback<MouseUpEvent>(OnMouseUp);;
-
-            RefreshSelection();
-        }
-
-        private void OnMouseUp(MouseUpEvent evt)
-        {
-            if (evt.button == 0)
-                Selection.activeObject = _selectionObject;
-        }
-
-        private void OnSelectionChanged()
-        {
-            RefreshSelection();
-        }
-
-        private void RefreshSelection()
-        {
-            _label.style.color = _previousColor;
-            if (Selection.activeObject == _selectionObject)
-            {
-                _label.style.color = new StyleColor(Color.blue);
-            }
-        }
-
-        private void RefreshThumbnail()
-        {
-            _thumbnail.image = AssetPreview.GetMiniThumbnail(_selectionObject);
-        }
-    }
-    
     public class SelectionHistoryNewWindow : EditorWindow
     {
         private static readonly string StyleSheetFileName = "SelectionHistoryNewWindow";
@@ -96,7 +38,7 @@ namespace Gemserk.Editor
 
         private VisualElement _historyObjectsContainer;
         
-        private List<SelectionItemElement> _selections = new List<SelectionItemElement>();
+        private List<SelectionItemVisualElement> _selections = new List<SelectionItemVisualElement>();
 
         private static StyleSheet LoadStyleSheet()
         {
@@ -205,7 +147,29 @@ namespace Gemserk.Editor
             
             _historyObjectsContainer.Add(selectionElement);
             
-            _selections.Add(new SelectionItemElement(objectAdded, selectionElement));
+            _selections.Add(new SelectionItemVisualElement(objectAdded, selectionElement));
+        }
+
+        private void OnGUI()
+        {
+            // iterate and remove those with deleted items...
+            // if autoremvoe items
+            
+            // if (automaticRemoveDeleted)
+            selectionHistory.ClearDeleted ();
+            
+            // var deletedItems = _selections.Where(s => s.SelectionObject == null).ToList();
+            
+            _selections.ForEach(s =>
+            {
+                s.Update();
+                if (s.SelectionObject == null)
+                {
+                    _historyObjectsContainer.Remove(s.Parent);
+                }
+            });
+            _selections.RemoveAll(s => s.SelectionObject == null);
+            
         }
     }
 }
