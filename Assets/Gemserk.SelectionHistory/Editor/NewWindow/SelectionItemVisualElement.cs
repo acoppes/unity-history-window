@@ -17,8 +17,6 @@ namespace Gemserk.Editor
         public VisualElement Parent => _parent;
         
         public Object SelectionObject => _selectionObject;
-
-        private bool _registered;
         
         public SelectionItemVisualElement(Object selectionObject, VisualElement selection)
         {
@@ -31,13 +29,10 @@ namespace Gemserk.Editor
             _thumbnail = selection.Q<Image>("ObjectThumbnail");
 
             RefreshThumbnail();
-
-            Selection.selectionChanged += OnSelectionChanged;
-            _registered = true;
             
             _label.RegisterCallback<MouseUpEvent>(OnMouseUp);;
 
-            RefreshSelection();
+            RefreshLabel();
         }
 
         private void OnMouseUp(MouseUpEvent evt)
@@ -48,17 +43,15 @@ namespace Gemserk.Editor
                 EditorGUIUtility.PingObject(_selectionObject);
         }
 
-        private void OnSelectionChanged()
-        {
-            RefreshSelection();
-        }
-
-        private void RefreshSelection()
+        private void RefreshLabel()
         {
             _label.style.color = _previousColor;
             if (Selection.activeObject == _selectionObject)
             {
-                _label.style.color = new StyleColor(Color.blue);
+                _label.style.color = new StyleColor(SelectionHistoryWindowConstants.selectedElementColor);
+            } else if (!EditorUtility.IsPersistent(_selectionObject))
+            {
+                _label.style.color = new StyleColor(SelectionHistoryWindowConstants.hierarchyElementColor);
             }
         }
 
@@ -69,11 +62,9 @@ namespace Gemserk.Editor
 
         public void Update()
         {
-            if (_selectionObject == null && _registered)
-            {
-                Selection.selectionChanged -= OnSelectionChanged;
-                _registered = false;
-            }
+            if (_selectionObject == null) 
+                return;
+            RefreshLabel();
         }
     }
 }

@@ -85,12 +85,8 @@ namespace Gemserk.Editor
             AddClearButton();
             AddPreferencesButton();
             
-            var scheduledAction = root.schedule.Execute(() =>
-            {
-                // textFields.ForEach(t => t.value = m_Tank.tankName);
-                // integerFields.ForEach(t => t.value = m_Tank.tankSize);
-            });
-            scheduledAction.Every(100); // ms
+            var scheduledAction = root.schedule.Execute(OnUpdate);
+            scheduledAction.Every(30); // ms
 
             selectionHistory.objectAdded += AddSelectionField;
             selectionHistory.cleared += () =>
@@ -164,7 +160,7 @@ namespace Gemserk.Editor
             _selections.Add(new SelectionItemVisualElement(objectAdded, selectionElement));
         }
 
-        private void OnGUI()
+        private void OnUpdate()
         {
             // iterate and remove those with deleted items...
             // if autoremvoe items
