@@ -3,37 +3,47 @@ using UnityEditor;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 using Object = UnityEngine.Object;
 
 namespace Gemserk.Editor
 {
     public class SelectionItemElement
     {
+        private VisualElement _parent;
         private VisualElement _label;
-//        private ObjectField _objectField;
-
         private StyleColor _previousColor;
 
         private Object _selectionObject;
+
+        private Image _thumbnail;
         
         public SelectionItemElement(Object selectionObject, VisualElement selection)
         {
+            _parent = selection;
+            
             _selectionObject = selectionObject;
             _label = selection.Q<Label>("ObjectName");
             _previousColor = _label.style.color;
-            
+
+            _thumbnail = selection.Q<Image>("ObjectThumbnail");
+
+            RefreshThumbnail();
+
             Selection.selectionChanged += OnSelectionChanged;
         }
 
         private void OnSelectionChanged()
         {
-            //var icon = AssetPreview.GetMiniThumbnail(obj);
             _label.style.color = _previousColor;
             if (Selection.activeObject == _selectionObject)
             {
                 _label.style.color = new StyleColor(Color.blue);
             }
+        }
+
+        private void RefreshThumbnail()
+        {
+            _thumbnail.image = AssetPreview.GetMiniThumbnail(_selectionObject);
         }
     }
     
