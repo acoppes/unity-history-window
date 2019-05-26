@@ -142,7 +142,7 @@ namespace Gemserk
 		}
 
 		[MenuItem("Window/Gemserk/Next selection %#.")]
-		public static void Nextelection()
+		public static void NextSelection()
 		{
 			selectionHistory.Next();
 			Selection.activeObject = selectionHistory.GetSelection ();

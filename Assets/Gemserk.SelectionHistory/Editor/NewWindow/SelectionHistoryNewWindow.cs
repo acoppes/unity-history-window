@@ -82,15 +82,8 @@ namespace Gemserk.Editor
             
             root.styleSheets.Add(_styleSheet);
             
-            var clearButton = new Button(delegate
-            {
-                selectionHistory.Clear();
-                // _historyObjectsContainer.Clear();
-                // clear list too
-            });
-            clearButton.text = "Clear";
-            
-            root.Add(clearButton);
+            AddClearButton();
+            AddPreferencesButton();
             
             var scheduledAction = root.schedule.Execute(() =>
             {
@@ -107,6 +100,27 @@ namespace Gemserk.Editor
             };
 
             selectionHistory.History.ForEach(AddSelectionField);
+        }
+
+        private void AddClearButton()
+        {
+            var clearButton = new Button(delegate
+            {
+                selectionHistory.Clear();
+            });
+            clearButton.text = "Clear";
+            
+            rootVisualElement.Add(clearButton);
+        }
+        
+        private void AddPreferencesButton()
+        {
+            var button = new Button(delegate
+            {
+                SettingsService.OpenUserPreferences(SelectionHistoryPreferences.PreferencesPath);
+            });
+            button.text = "Preferences";
+            rootVisualElement.Add(button);
         }
 
         public void OnDisable()
