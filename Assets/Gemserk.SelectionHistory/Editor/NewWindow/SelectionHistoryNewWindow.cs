@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
@@ -7,6 +8,29 @@ using Object = UnityEngine.Object;
 
 namespace Gemserk.Editor
 {
+    public class SelectionItem
+    {
+        private VisualElement _label;
+        private ObjectField _objectField;
+
+        private StyleColor _previousColor;
+        
+        public SelectionItem(VisualElement selection)
+        {
+            _objectField = selection.Q<ObjectField>();
+            _label = selection.Q<Label>();
+            _previousColor = _label.style.color;
+        }
+
+        public void Update()
+        {
+            if (Selection.activeObject == _objectField.value)
+                _label.style.color = new StyleColor(Color.blue);
+            else
+                _label.style.color = _previousColor;
+        }
+    }
+    
     public class SelectionHistoryNewWindow : EditorWindow
     {
         private static readonly string StyleSheetFileName = "SelectionHistoryNewWindow";
@@ -35,6 +59,8 @@ namespace Gemserk.Editor
         private VisualTreeAsset _visualTreeAsset;
 
         private VisualElement _historyObjectsContainer;
+        
+        private List<SelectionItem> _selections = new List<SelectionItem>();
 
         private static StyleSheet LoadStyleSheet()
         {
@@ -99,19 +125,21 @@ namespace Gemserk.Editor
                 _historyObjectsContainer.Clear();
             };
 
-            // Selection.selectionChanged += OnSelectionChanged;
-            
-            // regenerate
-    //        _historyObjectsContainer.Clear();
-            
             selectionHistory.History.ForEach(AddSelectionField);
-            
         }
 
         public void OnDisable()
         {
             selectionHistory.objectAdded -= AddSelectionField;
             // Selection.selectionChanged -= OnSelectionChanged;
+        }
+
+        private void OnGUI()
+        {
+            foreach (var selection in _selections)
+            {
+                selection.Update();
+            }
         }
 
         private void AddSelectionField(Object objectAdded)
@@ -154,6 +182,8 @@ namespace Gemserk.Editor
             objectField.SetValueWithoutNotify(objectAdded);
             
             _historyObjectsContainer.Add(selectionContainer);
+            
+            _selections.Add(new SelectionItem(selectionContainer));
         }
     }
 }
