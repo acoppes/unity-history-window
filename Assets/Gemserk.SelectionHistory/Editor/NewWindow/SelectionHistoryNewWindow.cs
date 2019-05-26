@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
@@ -16,6 +17,10 @@ namespace Gemserk.Editor
         private Object _selectionObject;
 
         private Image _thumbnail;
+
+        public VisualElement Parent => _parent;
+        
+        public Object SelectionObject => _selectionObject;
         
         public SelectionItemElement(Object selectionObject, VisualElement selection)
         {
@@ -30,9 +35,24 @@ namespace Gemserk.Editor
             RefreshThumbnail();
 
             Selection.selectionChanged += OnSelectionChanged;
+            
+            _label.RegisterCallback<MouseUpEvent>(OnMouseUp);;
+
+            RefreshSelection();
+        }
+
+        private void OnMouseUp(MouseUpEvent evt)
+        {
+            if (evt.button == 0)
+                Selection.activeObject = _selectionObject;
         }
 
         private void OnSelectionChanged()
+        {
+            RefreshSelection();
+        }
+
+        private void RefreshSelection()
         {
             _label.style.color = _previousColor;
             if (Selection.activeObject == _selectionObject)
@@ -100,6 +120,8 @@ namespace Gemserk.Editor
         
         public void OnEnable()
         {
+            _selections.Clear();
+            
             // Each editor window contains a root VisualElement object
             var root = rootVisualElement;
 
@@ -138,6 +160,7 @@ namespace Gemserk.Editor
             selectionHistory.objectAdded += AddSelectionField;
             selectionHistory.cleared += () =>
             {
+                _selections.Clear();
                 _historyObjectsContainer.Clear();
             };
 
@@ -154,33 +177,21 @@ namespace Gemserk.Editor
         {
             // if object field with object added already, remove it...
 
-//            var previous = _historyObjectsContainer.Query<ObjectField>().Where(field => field.value == objectAdded).ToList();
-//
-//            if (previous.Count > 0)
-//            {
-//                var previousField = previous[0];
-//
-//                var objectFieldSelection = _historyObjectsContainer.Query<VisualElement>(SelectionContainerName)
-//                    .Where(s => s.Q<ObjectField>() == previousField).First();
-//                
-//                if (objectFieldSelection != null)
-//                {
-//                    _historyObjectsContainer.Remove(objectFieldSelection);
-//                    _historyObjectsContainer.Add(objectFieldSelection);
-//                }
-//                
-//                return;
-//            }
+            var previous = _selections.FirstOrDefault(s => s.SelectionObject == objectAdded);
+
+            if (previous != null)
+            {
+//                _historyObjectsContainer.Remove(previous.Parent);
+//                _historyObjectsContainer.Add(previous.Parent);
+
+                return;
+            }
             
             var tree = _visualTreeAsset.CloneTree();
             var selectionElement = tree.Q(SelectionContainerName);
 
             var button = selectionElement.Q<Button>();
             button.text = "Ping";
-            
-            // var objectField = selectionContainer.Q<ObjectField>( );
-            // objectField.pickingMode = PickingMode.Ignore;
-            // objectField.SetValueWithoutNotify(objectAdded);
 
             button.clickable.clicked += delegate
             {
