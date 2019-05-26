@@ -8,12 +8,7 @@ namespace Gemserk
 {
 	public class SelectionHistoryWindow : EditorWindow {
 
-		public static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
-		public static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
-		public static readonly string HistoryAllowDuplicatedEntriesPrefKey = "Gemserk.SelectionHistory.AllowDuplicatedEntries";
-	    public static readonly string HistoryShowHierarchyObjectsPrefKey = "Gemserk.SelectionHistory.ShowHierarchyObjects";
-	    public static readonly string HistoryShowProjectViewObjectsPrefKey = "Gemserk.SelectionHistory.ShowProjectViewObjects";
-	    public static readonly string HistoryFavoritesPrefKey = "Gemserk.SelectionHistory.Favorites";
+
 
 		public static bool shouldReloadPreferences = true;
 
@@ -42,10 +37,10 @@ namespace Gemserk
 
 		void OnEnable()
 		{
-			automaticRemoveDeleted = EditorPrefs.GetBool (HistoryAutomaticRemoveDeletedPrefKey, true);
+			automaticRemoveDeleted = EditorPrefs.GetBool (SelectionHistoryWindowConstants.HistoryAutomaticRemoveDeletedPrefKey, true);
 
 			// selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
-			selectionHistory.HistorySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
+			selectionHistory.HistorySize = EditorPrefs.GetInt (SelectionHistoryWindowConstants.HistorySizePrefKey, 10);
 
 			selectionHistory.cleared += Repaint;
 
@@ -87,12 +82,12 @@ namespace Gemserk
         void OnGUI () {
 
 			if (shouldReloadPreferences) {
-				selectionHistory.HistorySize = EditorPrefs.GetInt (SelectionHistoryWindow.HistorySizePrefKey, 10);
-				automaticRemoveDeleted = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, true);
-				allowDuplicatedEntries = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, false);
+				selectionHistory.HistorySize = EditorPrefs.GetInt (SelectionHistoryWindowConstants.HistorySizePrefKey, 10);
+				automaticRemoveDeleted = EditorPrefs.GetBool (SelectionHistoryWindowConstants.HistoryAutomaticRemoveDeletedPrefKey, true);
+				allowDuplicatedEntries = EditorPrefs.GetBool (SelectionHistoryWindowConstants.HistoryAllowDuplicatedEntriesPrefKey, false);
 
-			    showHierarchyViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, true);
-			    showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, true);
+			    showHierarchyViewObjects = EditorPrefs.GetBool(SelectionHistoryWindowConstants.HistoryShowHierarchyObjectsPrefKey, true);
+			    showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindowConstants.HistoryShowProjectViewObjectsPrefKey, true);
 
                 shouldReloadPreferences = false;
 			}
@@ -103,7 +98,7 @@ namespace Gemserk
 			if (!allowDuplicatedEntries)
 				selectionHistory.RemoveDuplicated ();
 
-            var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
+            var favoritesEnabled = EditorPrefs.GetBool(SelectionHistoryWindowConstants.HistoryFavoritesPrefKey, true);
             if (favoritesEnabled && selectionHistory.Favorites.Count > 0)
             {
                 _favoritesScrollPosition = EditorGUILayout.BeginScrollView(_favoritesScrollPosition);
@@ -223,7 +218,7 @@ namespace Gemserk
                     EditorGUIUtility.PingObject(obj);
                 }
 
-                var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
+                var favoritesEnabled = EditorPrefs.GetBool(SelectionHistoryWindowConstants.HistoryFavoritesPrefKey, true);
 
                 if (favoritesEnabled)
                 {
@@ -274,7 +269,7 @@ namespace Gemserk
 
 			var buttonStyle = windowSkin.GetStyle("SelectionButton");
 
-		    var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
+		    var favoritesEnabled = EditorPrefs.GetBool(SelectionHistoryWindowConstants.HistoryFavoritesPrefKey, true);
 
             for (int i = 0; i < history.Count; i++) {
 				var historyElement = history [i];
