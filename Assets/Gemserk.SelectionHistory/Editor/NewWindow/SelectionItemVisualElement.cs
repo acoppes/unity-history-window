@@ -44,6 +44,8 @@ namespace Gemserk.Editor
         {
             if (evt.button == 0)
                 Selection.activeObject = _selectionObject;
+            if (evt.button == 1)
+                EditorGUIUtility.PingObject(_selectionObject);
         }
 
         private void OnSelectionChanged()
