@@ -18,6 +18,8 @@ namespace Gemserk
 
 	    private static bool drawFavorites = true;
 
+	    public const string PreferencesPath = "Gemserk/Selection History";
+
 	    // [PreferenceItem("Selection History")]
 		private static void PreferencesGUI()
 		{
@@ -55,7 +57,7 @@ namespace Gemserk
 		[SettingsProvider]
 		public static SettingsProvider CreateMyCustom()
 		{
-			var provider = new SettingsProvider("Gemserk/Selection History", SettingsScope.User)
+			var provider = new SettingsProvider(PreferencesPath, SettingsScope.User)
 			{
 				label = "Selection History",
 				guiHandler = (searchContext) =>

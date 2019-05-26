@@ -23,8 +23,6 @@ namespace Gemserk
 
 		public GUISkin windowSkin;
 
-		MethodInfo openPreferencesWindow;
-
 		private static SelectionHistory selectionHistory
 		{
 			get { return SelectionHistoryContext.SelectionHistory; }
@@ -47,18 +45,6 @@ namespace Gemserk
 
 				Repaint();
 			};
-
-			try {
-				var asm = Assembly.GetAssembly (typeof(EditorWindow));
-				var t = asm.GetType ("UnityEditor.PreferencesWindow");
-				openPreferencesWindow = t.GetMethod ("ShowPreferencesWindow", BindingFlags.NonPublic | BindingFlags.Static);
-
-				//UnityEditor.SceneView;
-				// UnityEditor.Windows;
-			} catch {
-				// couldnt get preferences window...
-				openPreferencesWindow = null;
-			}
 		}
 
 		void UpdateSelection(Object obj)
@@ -143,11 +129,8 @@ namespace Gemserk
 
 		void DrawSettingsButton()
 		{
-			if (openPreferencesWindow == null)
-				return;
-			
 			if (GUILayout.Button ("Preferences")) {
-				openPreferencesWindow.Invoke(null, null);
+				SettingsService.OpenUserPreferences(SelectionHistoryPreferences.PreferencesPath);
 			}
 		}
 			
