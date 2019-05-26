@@ -14,7 +14,7 @@ xsi:schemaLocation="
 >
 
       <engine:VisualElement name="Selection" class="horizontalContainer">
-        <editor:ObjectField/>
+        <engine:Label name="ObjectName" />
         <!-- engine:Label name="Dragger" text="Drag"/ -->
         <engine:Button />
       </engine:VisualElement>

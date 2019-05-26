@@ -8,26 +8,32 @@ using Object = UnityEngine.Object;
 
 namespace Gemserk.Editor
 {
-    public class SelectionItem
+    public class SelectionItemElement
     {
         private VisualElement _label;
-        private ObjectField _objectField;
+//        private ObjectField _objectField;
 
         private StyleColor _previousColor;
+
+        private Object _selectionObject;
         
-        public SelectionItem(VisualElement selection)
+        public SelectionItemElement(Object selectionObject, VisualElement selection)
         {
-            _objectField = selection.Q<ObjectField>();
-            _label = selection.Q<Label>();
+            _selectionObject = selectionObject;
+            _label = selection.Q<Label>("ObjectName");
             _previousColor = _label.style.color;
+            
+            Selection.selectionChanged += OnSelectionChanged;
         }
 
-        public void Update()
+        private void OnSelectionChanged()
         {
-            if (Selection.activeObject == _objectField.value)
+            //var icon = AssetPreview.GetMiniThumbnail(obj);
+            _label.style.color = _previousColor;
+            if (Selection.activeObject == _selectionObject)
+            {
                 _label.style.color = new StyleColor(Color.blue);
-            else
-                _label.style.color = _previousColor;
+            }
         }
     }
     
@@ -60,7 +66,7 @@ namespace Gemserk.Editor
 
         private VisualElement _historyObjectsContainer;
         
-        private List<SelectionItem> _selections = new List<SelectionItem>();
+        private List<SelectionItemElement> _selections = new List<SelectionItemElement>();
 
         private static StyleSheet LoadStyleSheet()
         {
@@ -134,56 +140,51 @@ namespace Gemserk.Editor
             // Selection.selectionChanged -= OnSelectionChanged;
         }
 
-        private void OnGUI()
-        {
-            foreach (var selection in _selections)
-            {
-                selection.Update();
-            }
-        }
-
         private void AddSelectionField(Object objectAdded)
         {
             // if object field with object added already, remove it...
 
-            var previous = _historyObjectsContainer.Query<ObjectField>().Where(field => field.value == objectAdded).ToList();
-
-            if (previous.Count > 0)
-            {
-                var previousField = previous[0];
-
-                var objectFieldSelection = _historyObjectsContainer.Query<VisualElement>(SelectionContainerName)
-                    .Where(s => s.Q<ObjectField>() == previousField).First();
-                
-                if (objectFieldSelection != null)
-                {
-                    _historyObjectsContainer.Remove(objectFieldSelection);
-                    _historyObjectsContainer.Add(objectFieldSelection);
-                }
-                
-                return;
-            }
+//            var previous = _historyObjectsContainer.Query<ObjectField>().Where(field => field.value == objectAdded).ToList();
+//
+//            if (previous.Count > 0)
+//            {
+//                var previousField = previous[0];
+//
+//                var objectFieldSelection = _historyObjectsContainer.Query<VisualElement>(SelectionContainerName)
+//                    .Where(s => s.Q<ObjectField>() == previousField).First();
+//                
+//                if (objectFieldSelection != null)
+//                {
+//                    _historyObjectsContainer.Remove(objectFieldSelection);
+//                    _historyObjectsContainer.Add(objectFieldSelection);
+//                }
+//                
+//                return;
+//            }
             
             var tree = _visualTreeAsset.CloneTree();
-            var selectionContainer = tree.Q(SelectionContainerName);
-            var objectField = selectionContainer.Q<ObjectField>( );
+            var selectionElement = tree.Q(SelectionContainerName);
 
-            var button = selectionContainer.Q<Button>();
+            var button = selectionElement.Q<Button>();
             button.text = "Ping";
-            objectField.pickingMode = PickingMode.Ignore;
             
+            // var objectField = selectionContainer.Q<ObjectField>( );
+            // objectField.pickingMode = PickingMode.Ignore;
+            // objectField.SetValueWithoutNotify(objectAdded);
+
             button.clickable.clicked += delegate
             {
                 EditorGUIUtility.PingObject(objectAdded);
             };
             
             // selectionContainer.Q<Label>("Dragger").AddManipulator(new HistoryItemDragManipulator(this, objectAdded));
+
+            var objectName = selectionElement.Q<Label>("ObjectName");
+            objectName.text = objectAdded.name;
             
-            objectField.SetValueWithoutNotify(objectAdded);
+            _historyObjectsContainer.Add(selectionElement);
             
-            _historyObjectsContainer.Add(selectionContainer);
-            
-            _selections.Add(new SelectionItem(selectionContainer));
+            _selections.Add(new SelectionItemElement(objectAdded, selectionElement));
         }
     }
 }
