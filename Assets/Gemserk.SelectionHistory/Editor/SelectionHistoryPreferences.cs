@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Gemserk
 {
 	public static class SelectionHistoryPreferences {
-
+		
 		static bool prefsLoaded = false;
 
 		static int historySize;
@@ -18,8 +18,8 @@ namespace Gemserk
 
 	    private static bool drawFavorites = true;
 
-        [PreferenceItem("Selection History")]
-		public static void PreferencesGUI()
+	    // [PreferenceItem("Selection History")]
+		private static void PreferencesGUI()
 		{
 			if (!prefsLoaded)
 			{
@@ -50,6 +50,25 @@ namespace Gemserk
 
                 SelectionHistoryWindow.shouldReloadPreferences = true;
 			}
+		}
+
+		[SettingsProvider]
+		public static SettingsProvider CreateMyCustom()
+		{
+			var provider = new SettingsProvider("Gemserk/Selection History", SettingsScope.User)
+			{
+				label = "Selection History",
+				guiHandler = (searchContext) =>
+				{
+					// var settings = MyCustomSettings.GetSerializedSettings();
+					// int number = 5;
+					// EditorGUILayout.IntField(new GUIContent("My Number"), number);
+					PreferencesGUI();
+				},
+				// keywords = new []{ "My Number" }
+			};
+			
+			return provider;
 		}
 	}
 }

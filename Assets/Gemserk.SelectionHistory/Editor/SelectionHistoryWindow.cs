@@ -8,13 +8,8 @@ namespace Gemserk
 {
 	public class SelectionHistoryWindow : EditorWindow {
 
-
-
 		public static bool shouldReloadPreferences = true;
-
-	    private static Color hierarchyElementColor = new Color(0.7f, 1.0f, 0.7f);
-	    private static Color selectedElementColor = new Color(0.2f, 170.0f / 255.0f, 1.0f, 1.0f);
-
+		
 	    [Shortcut("Selection History Old/Show", null, KeyCode.H, ShortcutModifiers.Action | ShortcutModifiers.Shift)]
 	    [MenuItem ("Window/Gemserk/Selection History")]
 		static void Init () {
@@ -57,6 +52,9 @@ namespace Gemserk
 				var asm = Assembly.GetAssembly (typeof(EditorWindow));
 				var t = asm.GetType ("UnityEditor.PreferencesWindow");
 				openPreferencesWindow = t.GetMethod ("ShowPreferencesWindow", BindingFlags.NonPublic | BindingFlags.Static);
+
+				//UnityEditor.SceneView;
+				// UnityEditor.Windows;
 			} catch {
 				// couldnt get preferences window...
 				openPreferencesWindow = null;
@@ -176,7 +174,7 @@ namespace Gemserk
             {
                 if (!showHierarchyViewObjects)
                     return;
-                nonSelectedColor = hierarchyElementColor;
+                nonSelectedColor = SelectionHistoryWindowConstants.hierarchyElementColor;
             }
             else
             {
@@ -186,7 +184,7 @@ namespace Gemserk
 
             if (selectionHistory.IsSelected(obj))
             {
-                GUI.contentColor = selectedElementColor;
+                GUI.contentColor = SelectionHistoryWindowConstants.selectedElementColor;
             }
             else
             {
