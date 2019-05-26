@@ -10,12 +10,11 @@ namespace Gemserk
 
 		public static bool shouldReloadPreferences = true;
 		
-	    [Shortcut("Selection History Old/Show", null, KeyCode.H, ShortcutModifiers.Action | ShortcutModifiers.Shift)]
 	    [MenuItem ("Window/Gemserk/Selection History")]
 		static void Init () {
 			// Get existing open window or if none, make a new one:
 			var window = EditorWindow.GetWindow<SelectionHistoryWindow> ();
-			window.titleContent.text = "History";
+			window.titleContent.text = "OldWindow/History";
 			window.minSize = new Vector2(300, 200);
 			window.Show();
 		}

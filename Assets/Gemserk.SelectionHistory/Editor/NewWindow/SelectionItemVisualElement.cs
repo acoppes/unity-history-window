@@ -6,7 +6,7 @@ namespace Gemserk.Editor
 {
     public class SelectionItemVisualElement
     {
-        private VisualElement _parent;
+        private VisualElement _root;
         private VisualElement _label;
         private StyleColor _previousColor;
 
@@ -14,13 +14,13 @@ namespace Gemserk.Editor
 
         private Image _thumbnail;
 
-        public VisualElement Parent => _parent;
+        public VisualElement Root => _root;
         
         public Object SelectionObject => _selectionObject;
         
         public SelectionItemVisualElement(Object selectionObject, VisualElement selection)
         {
-            _parent = selection;
+            _root = selection;
             
             _selectionObject = selectionObject;
             _label = selection.Q<Label>("ObjectName");

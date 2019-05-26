@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -17,13 +16,17 @@ namespace Gemserk.Editor
         private static readonly string SelectionContainerName = "Selection";
         
         private static Vector2 _windowMinSize = new Vector2(300, 200);
+        
+        const string MenuItemOpenWindow = "Window/Gemserk/New Selection History";
 
-        [Shortcut("Selection History/Show", null, KeyCode.H, ShortcutModifiers.Action | ShortcutModifiers.Shift)]
-        [MenuItem("Window/Gemserk/New Selection History")]
+        const string ShortcutOpenWindow = "Selection History/Show";
+
+        [Shortcut(ShortcutOpenWindow, null, KeyCode.H, ShortcutModifiers.Action | ShortcutModifiers.Shift)]
+        [MenuItem(MenuItemOpenWindow)]
         public static void OpenSelectionHistoryWindow()
         {
             var window = GetWindow<SelectionHistoryNewWindow>();
-            window.titleContent = new GUIContent("SelectionHistoryNewWindow");
+            window.titleContent = new GUIContent(SelectionHistoryWindowConstants.WindowName);
             window.minSize = _windowMinSize;
         }
         
@@ -36,7 +39,7 @@ namespace Gemserk.Editor
 
         private VisualTreeAsset _visualTreeAsset;
 
-        private VisualElement _historyObjectsContainer;
+        private ScrollView _historyObjectsContainer;
         
         private List<SelectionItemVisualElement> _selections = new List<SelectionItemVisualElement>();
 
@@ -65,11 +68,10 @@ namespace Gemserk.Editor
             _selections.Clear();
             
             // Each editor window contains a root VisualElement object
-            var root = rootVisualElement;
-
-            _historyObjectsContainer = new VisualElement();
             
-            root.Add(_historyObjectsContainer);
+            _historyObjectsContainer = new ScrollView(ScrollViewMode.Vertical);
+            
+            rootVisualElement.Add(_historyObjectsContainer);
 
             _styleSheet = LoadStyleSheet();
             _visualTreeAsset = LoadTreeAsset();
@@ -80,12 +82,12 @@ namespace Gemserk.Editor
                 return;
             }
             
-            root.styleSheets.Add(_styleSheet);
+            rootVisualElement.styleSheets.Add(_styleSheet);
             
             AddClearButton();
             AddPreferencesButton();
             
-            var scheduledAction = root.schedule.Execute(OnUpdate);
+            var scheduledAction = rootVisualElement.schedule.Execute(OnUpdate);
             scheduledAction.Every(30); // ms
 
             selectionHistory.objectAdded += AddSelectionField;
@@ -96,27 +98,36 @@ namespace Gemserk.Editor
             };
 
             selectionHistory.History.ForEach(AddSelectionField);
+            
+            Selection.selectionChanged += OnSelectionChanged;
+        }
+
+        private void OnSelectionChanged()
+        {
+            var selectionItem = _selections.FirstOrDefault(s => s.SelectionObject == Selection.activeObject);
+            if (selectionItem != null)
+            {
+                _historyObjectsContainer.ScrollTo(selectionItem.Root);
+            }
         }
 
         private void AddClearButton()
         {
-            var clearButton = new Button(delegate
+            rootVisualElement.Add(new Button(delegate { selectionHistory.Clear(); })
             {
-                selectionHistory.Clear();
+                text = "Clear"
             });
-            clearButton.text = "Clear";
-            
-            rootVisualElement.Add(clearButton);
         }
         
         private void AddPreferencesButton()
         {
-            var button = new Button(delegate
+            rootVisualElement.Add(new Button(delegate
             {
                 SettingsService.OpenUserPreferences(SelectionHistoryPreferences.PreferencesPath);
+            })
+            {
+                text = "Preferences"
             });
-            button.text = "Preferences";
-            rootVisualElement.Add(button);
         }
 
         public void OnDisable()
@@ -132,9 +143,12 @@ namespace Gemserk.Editor
             var previous = _selections.FirstOrDefault(s => s.SelectionObject == objectAdded);
 
             if (previous != null)
-            {
-//                _historyObjectsContainer.Remove(previous.Parent);
-//                _historyObjectsContainer.Add(previous.Parent);
+            { 
+                _historyObjectsContainer.Remove(previous.Root);
+                _historyObjectsContainer.Add(previous.Root);
+                
+//                _historyObjectsContainer.ScrollTo(previous.Root);
+                _historyObjectsContainer.verticalScroller.value = _historyObjectsContainer.verticalScroller.highValue;
 
                 return;
             }
@@ -175,7 +189,7 @@ namespace Gemserk.Editor
                 s.Update();
                 if (s.SelectionObject == null)
                 {
-                    _historyObjectsContainer.Remove(s.Parent);
+                    _historyObjectsContainer.Remove(s.Root);
                 }
             });
             _selections.RemoveAll(s => s.SelectionObject == null);
