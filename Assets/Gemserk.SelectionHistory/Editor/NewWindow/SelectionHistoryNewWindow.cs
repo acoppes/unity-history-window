@@ -143,10 +143,12 @@ namespace Gemserk.Editor
             { 
                 _historyObjectsContainer.Remove(previous.Root);
                 _historyObjectsContainer.Add(previous.Root);
+                _historyObjectsContainer.MarkDirtyRepaint();
                 _historyObjectsContainer.schedule.Execute(() =>
                 {
                     _historyObjectsContainer.ScrollTo(previous.Root);
-                }).StartingIn(30);
+                }).StartingIn(40);
+                
                 return;
             }
             
@@ -157,11 +159,11 @@ namespace Gemserk.Editor
             
             _selections.Add(new HistoryObjectController(objectAdded, selectionElement, selectionHistory));
             
-//            _historyObjectsContainer.ScrollTo(selectionElement);
+            _historyObjectsContainer.MarkDirtyRepaint();
             _historyObjectsContainer.schedule.Execute(() =>
             {
                 _historyObjectsContainer.ScrollTo(selectionElement);
-            }).StartingIn(30);
+            }).StartingIn(40);
         }
 
         private void OnUpdate()
