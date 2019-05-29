@@ -1,0 +1,50 @@
+.droparea {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(255, 255, 255, 1);
+    border-width: 5px;
+    border-color: rgba(200, 200, 200, 1);
+}
+
+Label {
+    color: rgba(50, 50, 237, 0.6);
+    -unity-text-align: upper-center;
+}
+
+.droparea.dragover {
+    border-width: 5px;
+    border-color: rgba(255, 0, 0, 1);
+}
+
+.ghost {
+    -unity-text-align: upper-left;
+    display: none;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    background-color: rgba(100, 149, 237, 0.6);
+    color: rgba(100, 149, 237, 0.6);
+    white-space: normal;
+}
+
+.ghost.visible {
+    display: flex;
+}
+
+.box {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    background-color: rgba(0, 200, 200, 1);
+    color: rgba(255, 255, 255, 1);
+    white-space: normal;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.box.dragged {
+    background-color: rgba(255, 255, 255, 1);
+}
