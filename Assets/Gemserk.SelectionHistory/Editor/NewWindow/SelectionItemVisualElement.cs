@@ -6,6 +6,10 @@ namespace Gemserk.Editor
 {
     public class SelectionItemVisualElement
     {
+        private static readonly string SelectionNormalClass = "selection-normal";
+        private static readonly string SelectionCurrentClass = "selection-current";
+        private static readonly string SelectionInHierarchyClass = "selection-in-hierarchy";
+        
         private VisualElement _root;
         private DraggableLabel _label;
         private StyleColor _previousColor;
@@ -27,7 +31,7 @@ namespace Gemserk.Editor
             var selectionLabel = selection.Q<VisualElement>("SelectionLabel");
 
             _label = new DraggableLabel();
-            _label.SetObjectReferences(new Object[] { selectionObject });
+            _label.SetObjectReferences(selectionObject);
             _label.name = "ObjectName";
             _label.text = selectionObject.name;
             
@@ -55,13 +59,24 @@ namespace Gemserk.Editor
 
         private void RefreshLabel()
         {
-            _label.style.color = _previousColor;
+            // _label.style.color = _previousColor;
+            
+            _label.RemoveFromClassList(SelectionNormalClass);
+            _label.RemoveFromClassList(SelectionCurrentClass);
+            _label.RemoveFromClassList(SelectionInHierarchyClass);
+            
             if (Selection.activeObject == _selectionObject)
             {
-                _label.style.color = new StyleColor(SelectionHistoryWindowConstants.selectedElementColor);
+                _label.AddToClassList(SelectionCurrentClass);
+                // _label.style.color = new StyleColor(SelectionHistoryWindowConstants.selectedElementColor);
             } else if (!EditorUtility.IsPersistent(_selectionObject))
             {
-                _label.style.color = new StyleColor(SelectionHistoryWindowConstants.hierarchyElementColor);
+                _label.AddToClassList(SelectionInHierarchyClass);
+                // _label.style.color = new StyleColor(SelectionHistoryWindowConstants.hierarchyElementColor);
+            }
+            else
+            {
+                _label.AddToClassList(SelectionNormalClass);
             }
         }
 

@@ -32,8 +32,20 @@
 
 #Selection .unity-label {
     -unity-text-align: middle-left;
+}
+
+.selection-normal {
     color: rgba(255, 255, 255, 1);
 }
+
+.selection-current {
+    color: rgba(0, 200, 255, 1);
+}
+
+.selection-in-hierarchy {
+    color: #88D988;
+}
+
 
 
 #Selection > Button {
