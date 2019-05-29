@@ -5,8 +5,9 @@
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
+    "overrideReferences": true,
     "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": []
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": []
 }
