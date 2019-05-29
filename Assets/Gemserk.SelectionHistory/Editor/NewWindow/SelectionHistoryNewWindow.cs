@@ -30,10 +30,7 @@ namespace Gemserk.Editor
             window.minSize = _windowMinSize;
         }
         
-        private static SelectionHistory selectionHistory
-        {
-            get { return SelectionHistoryContext.SelectionHistory; }
-        }
+        private static SelectionHistory selectionHistory => SelectionHistoryContext.SelectionHistory;
 
         private StyleSheet _styleSheet;
 
@@ -155,7 +152,7 @@ namespace Gemserk.Editor
 
             _historyObjectsContainer.Add(selectionElement);
             
-            _selections.Add(new HistoryObjectController(objectAdded, selectionElement));
+            _selections.Add(new HistoryObjectController(objectAdded, selectionElement, selectionHistory));
         }
 
         private void OnUpdate()

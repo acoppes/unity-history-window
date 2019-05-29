@@ -17,12 +17,16 @@ namespace Gemserk.Editor
         
         private Object _selectionObject;
 
+        private SelectionHistory _selectionHistory;
+
         public VisualElement Root => _root;
         
         public Object SelectionObject => _selectionObject;
         
-        public HistoryObjectController(Object selectionObject, VisualElement selection)
+        public HistoryObjectController(Object selectionObject, VisualElement selection, SelectionHistory selectionHistory)
         {
+            _selectionHistory = selectionHistory;
+            
             _root = selection;
             
             _selectionObject = selectionObject;
@@ -50,7 +54,10 @@ namespace Gemserk.Editor
         private void OnMouseUp(MouseUpEvent evt)
         {
             if (evt.button == 0)
+            {
+                _selectionHistory.SetSelection(_selectionObject);
                 Selection.activeObject = _selectionObject;
+            }
             if (evt.button == 1)
                 PingHistoryObject();
         }
