@@ -7,7 +7,7 @@ namespace Gemserk.Editor
     public class SelectionItemVisualElement
     {
         private VisualElement _root;
-        private VisualElement _label;
+        private DraggableLabel _label;
         private StyleColor _previousColor;
 
         private Object _selectionObject;
@@ -23,14 +23,24 @@ namespace Gemserk.Editor
             _root = selection;
             
             _selectionObject = selectionObject;
-            _label = selection.Q<Label>("ObjectName");
+            
+            var selectionLabel = selection.Q<VisualElement>("SelectionLabel");
+
+            _label = new DraggableLabel();
+            _label.SetObjectReferences(new Object[] { selectionObject });
+            _label.name = "ObjectName";
+            _label.text = selectionObject.name;
+            
+            selectionLabel.Add(_label);
+
+            // _label = selection.Q<Label>("ObjectName");
             _previousColor = _label.style.color;
 
             _thumbnail = selection.Q<Image>("ObjectThumbnail");
 
             RefreshThumbnail();
             
-            _label.RegisterCallback<MouseUpEvent>(OnMouseUp);;
+            _label.RegisterCallback<MouseUpEvent>(OnMouseUp);
 
             RefreshLabel();
         }

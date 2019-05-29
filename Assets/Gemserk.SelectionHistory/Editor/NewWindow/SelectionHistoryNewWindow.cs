@@ -166,8 +166,8 @@ namespace Gemserk.Editor
             
             // selectionContainer.Q<Label>("Dragger").AddManipulator(new HistoryItemDragManipulator(this, objectAdded));
 
-            var objectName = selectionElement.Q<Label>("ObjectName");
-            objectName.text = objectAdded.name;
+            // var objectName = selectionElement.Q<Label>("ObjectName");
+            // objectName.text = objectAdded.name;
             
             _historyObjectsContainer.Add(selectionElement);
             
