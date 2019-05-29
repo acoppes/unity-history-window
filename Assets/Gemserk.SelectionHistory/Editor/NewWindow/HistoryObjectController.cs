@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 namespace Gemserk.Editor
 {
-    public class SelectionItemVisualElement
+    public class HistoryObjectController
     {
         private static readonly string SelectionNormalClass = "selection-normal";
         private static readonly string SelectionCurrentClass = "selection-current";
@@ -24,7 +24,7 @@ namespace Gemserk.Editor
         
         public Object SelectionObject => _selectionObject;
         
-        public SelectionItemVisualElement(Object selectionObject, VisualElement selection)
+        public HistoryObjectController(Object selectionObject, VisualElement selection)
         {
             _root = selection;
             

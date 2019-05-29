@@ -41,7 +41,7 @@ namespace Gemserk.Editor
 
         private ScrollView _historyObjectsContainer;
         
-        private List<SelectionItemVisualElement> _selections = new List<SelectionItemVisualElement>();
+        private List<HistoryObjectController> _selections = new List<HistoryObjectController>();
 
         private static StyleSheet LoadStyleSheet()
         {
@@ -155,7 +155,7 @@ namespace Gemserk.Editor
 
             _historyObjectsContainer.Add(selectionElement);
             
-            _selections.Add(new SelectionItemVisualElement(objectAdded, selectionElement));
+            _selections.Add(new HistoryObjectController(objectAdded, selectionElement));
         }
 
         private void OnUpdate()
