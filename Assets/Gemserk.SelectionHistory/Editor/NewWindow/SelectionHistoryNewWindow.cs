@@ -17,7 +17,7 @@ namespace Gemserk.Editor
         
         private static Vector2 _windowMinSize = new Vector2(300, 200);
         
-        const string MenuItemOpenWindow = "Window/Gemserk/New Selection History";
+        const string MenuItemOpenWindow = "Window/Gemserk/Selection History";
 
         const string ShortcutOpenWindow = "Selection History/Show";
 

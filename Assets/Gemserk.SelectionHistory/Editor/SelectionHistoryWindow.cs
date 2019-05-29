@@ -10,7 +10,7 @@ namespace Gemserk
 
 		public static bool shouldReloadPreferences = true;
 		
-	    [MenuItem ("Window/Gemserk/Selection History")]
+	    [MenuItem ("Window/Gemserk/Selection History Old")]
 		static void Init () {
 			// Get existing open window or if none, make a new one:
 			var window = EditorWindow.GetWindow<SelectionHistoryWindow> ();
