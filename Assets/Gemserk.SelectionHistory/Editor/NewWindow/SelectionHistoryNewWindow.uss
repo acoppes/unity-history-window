@@ -8,17 +8,6 @@
     flex-grow: 1;
 }
 
-#HistoryObject > ObjectField {
-    flex-grow: 1;
-}
-
-#HistoryObject ObjectFieldDisplay {
-    background-image: none;
-    background-color: rgba(10, 10, 10, 1);
-    border-color: rgba(0, 0, 0, 1);
-    border-width: 1px;
-}
-
 #HistoryObject #ObjectThumbnail {
     max-width: 16px;
     max-height: 16px;

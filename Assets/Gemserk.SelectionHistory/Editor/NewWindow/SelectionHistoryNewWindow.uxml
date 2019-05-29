@@ -13,6 +13,13 @@ xsi:schemaLocation="
 "
 >
 
+      <engine:VisualElement name="HistoryWindow">
+        <engine:ScrollView name="FavoritesContainer" class="history-selection-container">
+        </engine:ScrollView>
+        <engine:ScrollView name="HistoryContainer" class="history-selection-container">
+        </engine:ScrollView>
+      </engine:VisualElement>
+
       <engine:VisualElement name="HistoryObject" class="horizontalContainer">
         <engine:VisualElement name="HistoryObjectLabel">
           <engine:Image name="ObjectThumbnail" />

@@ -36,6 +36,8 @@ namespace Gemserk.Editor
 
         private VisualTreeAsset _visualTreeAsset;
 
+        private VisualElement _windowRoot;
+        private ScrollView _favoritesContainer;
         private ScrollView _historyObjectsContainer;
         
         private List<HistoryObjectController> _selections = new List<HistoryObjectController>();
@@ -64,13 +66,6 @@ namespace Gemserk.Editor
         {
             _selections.Clear();
             
-            // Each editor window contains a root VisualElement object
-            
-            _historyObjectsContainer = new ScrollView(ScrollViewMode.Vertical);
-            _historyObjectsContainer.AddToClassList("history-selection-container");
-            
-            rootVisualElement.Add(_historyObjectsContainer);
-
             _styleSheet = LoadStyleSheet();
             _visualTreeAsset = LoadTreeAsset();
 
@@ -81,6 +76,16 @@ namespace Gemserk.Editor
             }
             
             rootVisualElement.styleSheets.Add(_styleSheet);
+
+            _windowRoot = _visualTreeAsset.CloneTree().Q<VisualElement>("HistoryWindow");
+            _favoritesContainer = _windowRoot.Q<ScrollView>("FavoritesContainer");
+            _historyObjectsContainer = _windowRoot.Q<ScrollView>("HistoryContainer");
+            
+            // _favoritesContainer.Add(new Label());
+            
+            // TODO: favorites window?
+            
+            rootVisualElement.Add(_windowRoot);
             
             AddClearButton();
             AddPreferencesButton();
