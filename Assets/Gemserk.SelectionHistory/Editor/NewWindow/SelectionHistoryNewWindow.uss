@@ -35,14 +35,17 @@
 }
 
 .selection-normal {
+    flex-grow: 1;
     color: rgba(255, 255, 255, 1);
 }
 
 .selection-current {
+    flex-grow: 1;
     color: rgba(0, 200, 255, 1);
 }
 
 .selection-in-hierarchy {
+    flex-grow: 1;
     color: #88D988;
 }
 
