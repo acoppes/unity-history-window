@@ -139,30 +139,29 @@ namespace Gemserk.Editor
 
             var previous = _selections.FirstOrDefault(s => s.SelectionObject == objectAdded);
 
-            if (previous != null)
-            { 
+            VisualElement historyObject = null;
+
+            if (previous == null)
+            {
+                var tree = _visualTreeAsset.CloneTree();
+                historyObject = tree.Q(SelectionContainerName);
+
+                _historyObjectsContainer.Add(historyObject);
+
+                _selections.Add(new HistoryObjectController(objectAdded, historyObject, selectionHistory));
+            }
+            else
+            {
+                historyObject = previous.Root;
+
                 _historyObjectsContainer.Remove(previous.Root);
                 _historyObjectsContainer.Add(previous.Root);
-                _historyObjectsContainer.MarkDirtyRepaint();
-                _historyObjectsContainer.schedule.Execute(() =>
-                {
-                    _historyObjectsContainer.ScrollTo(previous.Root);
-                }).StartingIn(40);
-                
-                return;
             }
-            
-            var tree = _visualTreeAsset.CloneTree();
-            var selectionElement = tree.Q(SelectionContainerName);
 
-            _historyObjectsContainer.Add(selectionElement);
-            
-            _selections.Add(new HistoryObjectController(objectAdded, selectionElement, selectionHistory));
-            
             _historyObjectsContainer.MarkDirtyRepaint();
             _historyObjectsContainer.schedule.Execute(() =>
             {
-                _historyObjectsContainer.ScrollTo(selectionElement);
+                _historyObjectsContainer.ScrollTo(historyObject);
             }).StartingIn(40);
         }
 
