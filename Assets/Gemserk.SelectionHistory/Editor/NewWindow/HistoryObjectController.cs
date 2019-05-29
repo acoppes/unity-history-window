@@ -12,13 +12,10 @@ namespace Gemserk.Editor
         
         private VisualElement _root;
         private DraggableLabel _label;
+        private Image _thumbnail;
         private Button _pingButton;
         
-        private StyleColor _previousColor;
-
         private Object _selectionObject;
-
-        private Image _thumbnail;
 
         public VisualElement Root => _root;
         
@@ -30,7 +27,7 @@ namespace Gemserk.Editor
             
             _selectionObject = selectionObject;
             
-            var selectionLabel = selection.Q<VisualElement>("SelectionLabel");
+            var labelParent = selection.Q<VisualElement>("HistoryObjectLabel");
 
             _label = new DraggableLabel();
             _label.SetObjectReferences(selectionObject);
@@ -38,10 +35,7 @@ namespace Gemserk.Editor
             _label.text = selectionObject.name;
             _label.RegisterCallback<MouseUpEvent>(OnMouseUp);
             
-            selectionLabel.Add(_label);
-
-            // _label = selection.Q<Label>("ObjectName");
-            _previousColor = _label.style.color;
+            labelParent.Add(_label);
 
             _thumbnail = selection.Q<Image>("ObjectThumbnail");
 
@@ -68,8 +62,6 @@ namespace Gemserk.Editor
 
         private void RefreshLabel()
         {
-            // _label.style.color = _previousColor;
-            
             _label.RemoveFromClassList(SelectionNormalClass);
             _label.RemoveFromClassList(SelectionCurrentClass);
             _label.RemoveFromClassList(SelectionInHierarchyClass);
@@ -77,11 +69,9 @@ namespace Gemserk.Editor
             if (Selection.activeObject == _selectionObject)
             {
                 _label.AddToClassList(SelectionCurrentClass);
-                // _label.style.color = new StyleColor(SelectionHistoryWindowConstants.selectedElementColor);
             } else if (!EditorUtility.IsPersistent(_selectionObject))
             {
                 _label.AddToClassList(SelectionInHierarchyClass);
-                // _label.style.color = new StyleColor(SelectionHistoryWindowConstants.hierarchyElementColor);
             }
             else
             {

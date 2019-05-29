@@ -1,26 +1,26 @@
-#Selection {
+#HistoryObject {
     padding: 1px;
     background-color: rgba(25, 25, 25, 0);
     flex-direction: row;
 }
 
-#Selection > ObjectField {
+#HistoryObject > ObjectField {
     flex-grow: 1;
 }
 
-#Selection ObjectFieldDisplay {
+#HistoryObject ObjectFieldDisplay {
     background-image: none;
     background-color: rgba(10, 10, 10, 1);
     border-color: rgba(0, 0, 0, 1);
     border-width: 1px;
 }
 
-#Selection #ObjectThumbnail {
+#HistoryObject #ObjectThumbnail {
     max-width: 16px;
     max-height: 16px;
 }
 
-#Selection #SelectionLabel {
+#HistoryObject #HistoryObjectLabel {
     flex-direction: row;
     flex-grow: 1;
     background-image: none;
@@ -30,7 +30,7 @@
     margin-right: 5px;
 }
 
-#Selection .unity-label {
+#HistoryObject .unity-label {
     -unity-text-align: middle-left;
 }
 
@@ -49,13 +49,11 @@
     color: #88D988;
 }
 
-
-
-#Selection > Button {
+#HistoryObject > Button {
     min-width: 60px;
     -unity-text-align: middle-center;
 }
 
-#Selection > #Dragger {
+#HistoryObject > #Dragger {
     cursor: pan;
 }

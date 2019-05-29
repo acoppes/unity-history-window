@@ -13,10 +13,9 @@ xsi:schemaLocation="
 "
 >
 
-      <engine:VisualElement name="Selection" class="horizontalContainer">
-        <engine:VisualElement name="SelectionLabel">
+      <engine:VisualElement name="HistoryObject" class="horizontalContainer">
+        <engine:VisualElement name="HistoryObjectLabel">
           <engine:Image name="ObjectThumbnail" />
-          <!-- engine:Label name="ObjectName" / -->
         </engine:VisualElement>
         <!-- engine:Label name="Dragger" text="Drag"/ -->
         <engine:Button />

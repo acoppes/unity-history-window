@@ -13,7 +13,7 @@ namespace Gemserk.Editor
         private static readonly string StyleSheetFileName = "SelectionHistoryNewWindow";
         private static readonly string VisualTreeFileName = "SelectionHistoryNewWindow";
 
-        private static readonly string SelectionContainerName = "Selection";
+        private static readonly string SelectionContainerName = "HistoryObject";
         
         private static Vector2 _windowMinSize = new Vector2(300, 200);
         
