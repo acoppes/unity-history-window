@@ -146,29 +146,13 @@ namespace Gemserk.Editor
             { 
                 _historyObjectsContainer.Remove(previous.Root);
                 _historyObjectsContainer.Add(previous.Root);
-                
-//                _historyObjectsContainer.ScrollTo(previous.Root);
                 _historyObjectsContainer.verticalScroller.value = _historyObjectsContainer.verticalScroller.highValue;
-
                 return;
             }
             
             var tree = _visualTreeAsset.CloneTree();
             var selectionElement = tree.Q(SelectionContainerName);
 
-            var button = selectionElement.Q<Button>();
-            button.text = "Ping";
-
-            button.clickable.clicked += delegate
-            {
-                EditorGUIUtility.PingObject(objectAdded);
-            };
-            
-            // selectionContainer.Q<Label>("Dragger").AddManipulator(new HistoryItemDragManipulator(this, objectAdded));
-
-            // var objectName = selectionElement.Q<Label>("ObjectName");
-            // objectName.text = objectAdded.name;
-            
             _historyObjectsContainer.Add(selectionElement);
             
             _selections.Add(new SelectionItemVisualElement(objectAdded, selectionElement));

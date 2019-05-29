@@ -6,9 +6,9 @@ namespace Gemserk.Editor
 {
     public class DraggableLabel : Label
     {
-        public static string s_DragDataType = "DraggableLabel";
+        private static string s_DragDataType = "DraggableLabel";
  
-        enum DragState
+        public enum DragState
         {
             AtRest,
             Ready,
@@ -19,9 +19,9 @@ namespace Gemserk.Editor
         
         private Object m_ObjectReference;
 
-        public void SetObjectReferences(Object reference)
+        public void SetObjectReferences(Object objectReference)
         {
-            m_ObjectReference = reference;
+            m_ObjectReference = objectReference;
         }
  
         public DraggableLabel()
@@ -33,7 +33,7 @@ namespace Gemserk.Editor
             RegisterCallback<MouseUpEvent>(OnMouseUpEvent);
         }
  
-        void OnMouseDownEvent(MouseDownEvent e)
+        private void OnMouseDownEvent(MouseDownEvent e)
         {
             if (e.target == this && e.button == 0)
             {
@@ -41,13 +41,12 @@ namespace Gemserk.Editor
             }
         }
  
-        public void PrepareDragging()
+        private void PrepareDragging()
         {
             m_DragState = DragState.Ready;
-            Debug.LogFormat("DraggableLabel: {0}", m_ObjectReference.name);
         }
  
-        void OnMouseMoveEvent(MouseMoveEvent e)
+        private void OnMouseMoveEvent(MouseMoveEvent e)
         {
             if (m_DragState == DragState.Ready)
             {
@@ -74,7 +73,7 @@ namespace Gemserk.Editor
             }
         }
  
-        void OnMouseUpEvent(MouseUpEvent e)
+        private void OnMouseUpEvent(MouseUpEvent e)
         {
             if (m_DragState == DragState.Ready && e.button == 0)
             {

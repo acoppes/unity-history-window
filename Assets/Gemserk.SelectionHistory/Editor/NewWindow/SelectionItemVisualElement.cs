@@ -12,6 +12,8 @@ namespace Gemserk.Editor
         
         private VisualElement _root;
         private DraggableLabel _label;
+        private Button _pingButton;
+        
         private StyleColor _previousColor;
 
         private Object _selectionObject;
@@ -34,6 +36,7 @@ namespace Gemserk.Editor
             _label.SetObjectReferences(selectionObject);
             _label.name = "ObjectName";
             _label.text = selectionObject.name;
+            _label.RegisterCallback<MouseUpEvent>(OnMouseUp);
             
             selectionLabel.Add(_label);
 
@@ -42,10 +45,11 @@ namespace Gemserk.Editor
 
             _thumbnail = selection.Q<Image>("ObjectThumbnail");
 
-            RefreshThumbnail();
-            
-            _label.RegisterCallback<MouseUpEvent>(OnMouseUp);
+            _pingButton = selection.Q<Button>();
+            _pingButton.text = "Ping";
+            _pingButton.clickable.clicked += PingHistoryObject;
 
+            RefreshThumbnail();
             RefreshLabel();
         }
 
@@ -54,7 +58,12 @@ namespace Gemserk.Editor
             if (evt.button == 0)
                 Selection.activeObject = _selectionObject;
             if (evt.button == 1)
-                EditorGUIUtility.PingObject(_selectionObject);
+                PingHistoryObject();
+        }
+
+        private void PingHistoryObject()
+        {
+            EditorGUIUtility.PingObject(_selectionObject);
         }
 
         private void RefreshLabel()
