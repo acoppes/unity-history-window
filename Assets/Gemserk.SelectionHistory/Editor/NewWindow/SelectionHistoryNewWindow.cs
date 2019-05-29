@@ -67,6 +67,7 @@ namespace Gemserk.Editor
             // Each editor window contains a root VisualElement object
             
             _historyObjectsContainer = new ScrollView(ScrollViewMode.Vertical);
+            _historyObjectsContainer.AddToClassList("history-selection-container");
             
             rootVisualElement.Add(_historyObjectsContainer);
 
@@ -84,9 +85,8 @@ namespace Gemserk.Editor
             AddClearButton();
             AddPreferencesButton();
             
-            var scheduledAction = rootVisualElement.schedule.Execute(OnUpdate);
-            scheduledAction.Every(30); // ms
-
+            rootVisualElement.schedule.Execute(OnUpdate).Every(30);
+            
             selectionHistory.objectAdded += AddSelectionField;
             selectionHistory.cleared += () =>
             {
@@ -143,7 +143,10 @@ namespace Gemserk.Editor
             { 
                 _historyObjectsContainer.Remove(previous.Root);
                 _historyObjectsContainer.Add(previous.Root);
-                _historyObjectsContainer.verticalScroller.value = _historyObjectsContainer.verticalScroller.highValue;
+                _historyObjectsContainer.schedule.Execute(() =>
+                {
+                    _historyObjectsContainer.ScrollTo(previous.Root);
+                }).StartingIn(30);
                 return;
             }
             
@@ -153,6 +156,12 @@ namespace Gemserk.Editor
             _historyObjectsContainer.Add(selectionElement);
             
             _selections.Add(new HistoryObjectController(objectAdded, selectionElement, selectionHistory));
+            
+//            _historyObjectsContainer.ScrollTo(selectionElement);
+            _historyObjectsContainer.schedule.Execute(() =>
+            {
+                _historyObjectsContainer.ScrollTo(selectionElement);
+            }).StartingIn(30);
         }
 
         private void OnUpdate()

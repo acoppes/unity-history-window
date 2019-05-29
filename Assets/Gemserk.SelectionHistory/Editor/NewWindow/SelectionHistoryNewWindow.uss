@@ -4,6 +4,10 @@
     flex-direction: row;
 }
 
+.history-selection-container {
+    flex-grow: 1;
+}
+
 #HistoryObject > ObjectField {
     flex-grow: 1;
 }
