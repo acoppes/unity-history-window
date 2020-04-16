@@ -1,8 +1,8 @@
 {
     "name": "Gemserk.SelectionHistory.Tests",
     "references": [
-        "GUID:5456f3d86baf8f549893ef314817131a",
-        "GUID:8685a1b89c0783d4da3f517cac3e0b69"
+        "Gemserk.SelectionHistory",
+        "Gemserk.SelectionHistory.Editor"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"
@@ -15,6 +15,5 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": false,
-    "defineConstraints": [],
-    "versionDefines": []
+    "defineConstraints": []
 }
