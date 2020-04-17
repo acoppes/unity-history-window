@@ -1,9 +1,11 @@
 {
   "name": "com.gemserk.selectionhistory",
+  "version": "1.0.3",
   "displayName": "Selection History by Gemserk",
-  "version": "1.0.2",
-  "unity": "2018.1",
   "description": "Selection history from http://blog.gemserk.com/2017/02/13/a-simple-selection-history-window-for-unity/ and https://github.com/acoppes/unity-history-window",
+  "unity": "2018.1",
+  "unityRelease": "1f1",
+  "dependencies": { },
   "keywords": [
     "ui",
     "tools",
