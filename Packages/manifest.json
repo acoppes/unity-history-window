@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.gemserk.upmgitpusher": "ssh://git@github.com/acoppes/upmgitpusher.git#com.gemserk.upmgitpusher-0.0.6",
+    "com.gemserk.upmgitpusher": "ssh://git@github.com/acoppes/upmgitpusher.git#com.gemserk.upmgitpusher-0.0.7",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.collab-proxy": "1.2.16",
@@ -45,8 +45,8 @@
   },
   "lock": {
     "com.gemserk.upmgitpusher": {
-      "revision": "com.gemserk.upmgitpusher-0.0.6",
-      "hash": "435320349178ec1394f3a581ea854fcc8b1f4f9b"
+      "revision": "com.gemserk.upmgitpusher-0.0.7",
+      "hash": "18bad9703939cd275932ac6133fcb412b86f1fb4"
     }
   }
 }
