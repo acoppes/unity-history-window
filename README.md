@@ -11,3 +11,27 @@ It is really useful when editing stuff and following a link to an object referen
 * Pings (focus) objects from the history (with right click or Ping button).
 * Drag objects from history to other object fields to link them.
 * Drag assets (folders, scripts, etc) from history to the project browser to move them.
+
+# Install using UPM
+
+Just open Unity Package Manager and select add package from git URL and add this `git@github.com:acoppes/unity-history-window.git#upm-package-1.0.2`
+
+Or add it manually to the `manifest.json`, like this:
+
+```
+  "dependencies": {
+    "com.gemserk.selectionhistory": "git@github.com:acoppes/unity-history-window.git#upm-package-1.0.2",
+    ...
+  }
+```
+ 
+
+# Download 
+
+[Unity Package](release/unity-selection-history.unitypackage?raw=true)
+
+# Demo
+
+![Alt text](screenshots/demo.gif?raw=true "Demo")
+
+![Alt text](screenshots/demodrag.gif?raw=true "Demo Drag")
