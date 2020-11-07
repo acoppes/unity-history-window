@@ -20,7 +20,7 @@ Or add it manually to the `manifest.json`, like this:
 
 ```
   "dependencies": {
-    "com.gemserk.selectionhistory": "git@github.com:acoppes/unity-history-window.git#upm-package-1.0.2",
+    "com.gemserk.selectionhistory": "git+ssh://git@github.com/acoppes/unity-history-window.git#upm-package-1.0.2",
     ...
   }
 ```
