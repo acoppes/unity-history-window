@@ -323,7 +323,9 @@ namespace Gemserk
 			var eventType = currentEvent.type;
 
 			if (eventType == EventType.MouseDrag && currentEvent.button == 0) {
-
+				
+				#if !UNITY_EDITOR_OSX
+				
 				if (currentObject != null) {
 					DragAndDrop.PrepareStartDrag ();
 
@@ -350,6 +352,7 @@ namespace Gemserk
 				}
 
 				Event.current.Use ();
+				#endif
 
 			} else if (eventType == EventType.MouseUp) {
 
