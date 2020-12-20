@@ -14,17 +14,18 @@ It is really useful when editing stuff and following a link to an object referen
 
 # Install using UPM
 
-Just open Unity Package Manager and select add package from git URL and add this `git@github.com:acoppes/unity-history-window.git#upm-package-1.0.2`
+This package can be installed using [OpenUPM](https://openupm.com).
+
+You can also install it by opening Unity Package Manager and selecting add package from git URL and add this `git@github.com:acoppes/unity-history-window.git#1.0.4` or `https://github.com/acoppes/unity-history-window.git#1.0.4` (if you prefer https).
 
 Or add it manually to the `manifest.json`, like this:
 
 ```
   "dependencies": {
-    "com.gemserk.selectionhistory": "git+ssh://git@github.com/acoppes/unity-history-window.git#upm-package-1.0.2",
+    "com.gemserk.selectionhistory": "git+ssh://git@github.com/acoppes/unity-history-window.git#1.0.4",
     ...
   }
 ```
- 
 
 # Download 
 
