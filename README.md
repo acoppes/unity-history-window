@@ -1,5 +1,7 @@
 # Unity Selection History Window
 
+[![openupm](https://img.shields.io/npm/v/com.gemserk.selectionhistory?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.gemserk.selectionhistory/)
+
 This is a small plugin that keeps a history of the Unity's Editor object selection (it stores in the background) and displays it in a Window to easily access it. 
 
 It is really useful when editing stuff and following a link to an object reference to see some details and then go back to previous selection.
