@@ -1,4 +1,4 @@
-name: Create UPM Branch
+name: Create UPM Release Branch
 on: 
   create:
     branches:
