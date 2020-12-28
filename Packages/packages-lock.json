@@ -1,11 +1,11 @@
 {
   "dependencies": {
     "com.gemserk.upmgitpusher": {
-      "version": "ssh://git@github.com/acoppes/upmgitpusher.git#com.gemserk.upmgitpusher-0.0.7",
+      "version": "0.0.16",
       "depth": 0,
-      "source": "git",
+      "source": "registry",
       "dependencies": {},
-      "hash": "18bad9703939cd275932ac6133fcb412b86f1fb4"
+      "url": "https://package.openupm.com"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
