@@ -21,8 +21,9 @@ jobs:
           git branch -d ${{env.UPM_BRANCH_NAME}} &> /dev/null || echo ${{env.UPM_BRANCH_NAME}} branch not found
           git subtree split -P "$PKG_ROOT" -b ${{env.UPM_BRANCH_NAME}}
           git checkout ${{env.UPM_BRANCH_NAME}}
+          git tag ${{env.UPM_BRANCH_NAME}}-${{env.TAG_NAME}}
           git push -f -u origin ${{env.UPM_BRANCH_NAME}}
     env:
       PKG_ROOT: Assets/Gemserk.SelectionHistory
       TAG_NAME: ${{github.event.ref}}
-      UPM_BRANCH_NAME: com.gemserk.selectionhistory-$TAG_NAME
+      UPM_BRANCH_NAME: com.gemserk.selectionhistory
