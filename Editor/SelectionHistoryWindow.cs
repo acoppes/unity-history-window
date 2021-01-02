@@ -2,6 +2,7 @@
 using UnityEditor;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEditor.ShortcutManagement;
 
 namespace Gemserk
 {
@@ -34,6 +35,7 @@ namespace Gemserk
 	    private static Color selectedElementColor = new Color(0.2f, 170.0f / 255.0f, 1.0f, 1.0f);
 
         [MenuItem ("Window/Gemserk/Selection History %#h")]
+        // [Shortcut("Selection History/Open Selection Hist", KeyCode.Mouse4)]
 		static void Init () {
 			// Get existing open window or if none, make a new one:
 			var window = EditorWindow.GetWindow<SelectionHistoryWindow> ();
@@ -180,6 +182,7 @@ namespace Gemserk
 		}
 			
 		[MenuItem("Window/Gemserk/Previous selection %#,")]
+		[Shortcut("Selection History/Previous Selection")]
 		public static void PreviousSelection()
 		{
 			selectionHistory.Previous ();
@@ -187,6 +190,7 @@ namespace Gemserk
 		}
 
 		[MenuItem("Window/Gemserk/Next selection %#.")]
+		[Shortcut("Selection History/Next Selection")]
 		public static void Nextelection()
 		{
 			selectionHistory.Next();
