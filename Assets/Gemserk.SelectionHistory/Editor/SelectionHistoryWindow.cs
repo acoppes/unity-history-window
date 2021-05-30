@@ -128,7 +128,7 @@ namespace Gemserk
 				selectionHistory.RemoveDuplicated ();
 
             var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
-            if (favoritesEnabled && selectionHistory.Favorites.Count > 0)
+            if (favoritesEnabled && selectionHistory.HasFavorites)
             {
                 _favoritesScrollPosition = EditorGUILayout.BeginScrollView(_favoritesScrollPosition);
                 DrawFavorites();
@@ -259,7 +259,7 @@ namespace Gemserk
                 if (favoritesEnabled)
                 {
                     var pinString = "Pin";
-                    var isFavorite = selectionHistory.IsFavorite(obj);
+                    var isFavorite = e.isFavorite;
 
                     if (isFavorite)
                     {
@@ -268,7 +268,7 @@ namespace Gemserk
 
                     if (GUILayout.Button(pinString, windowSkin.button))
                     {
-                        selectionHistory.ToggleFavorite(obj);
+	                    e.ToggleFavorite();
                         Repaint();
                     }
                 }
@@ -284,13 +284,15 @@ namespace Gemserk
 	    {
 	        var originalColor = GUI.contentColor;
 
-	        var favorites = selectionHistory.Favorites;
+	        var entries = selectionHistory.History;
 
-	        var buttonStyle = windowSkin.GetStyle("SelectionButton");
+	        // var buttonStyle = windowSkin.GetStyle("SelectionButton");
 
-	        for (var i = 0; i < favorites.Count; i++)
+	        for (var i = 0; i < entries.Count; i++)
 	        {
-	            var favorite = favorites[i];
+	            var favorite = entries[i];
+	            if (!favorite.isFavorite)
+		            continue;
                 DrawElement(favorite, i, originalColor);
 	        }
 
@@ -303,13 +305,13 @@ namespace Gemserk
 
 			var history = selectionHistory.History;
 
-			var buttonStyle = windowSkin.GetStyle("SelectionButton");
+			// var buttonStyle = windowSkin.GetStyle("SelectionButton");
 
 		    var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
 
             for (var i = 0; i < history.Count; i++) {
 				var historyElement = history [i];
-                if (selectionHistory.IsFavorite(historyElement.reference) && favoritesEnabled)
+                if (historyElement.isFavorite && favoritesEnabled)
                     continue;
 			    DrawElement(historyElement, i, originalColor);
             }

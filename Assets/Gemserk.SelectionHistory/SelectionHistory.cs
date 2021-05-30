@@ -14,6 +14,8 @@ namespace Gemserk
         {
             public Object reference;
 
+            public bool isFavorite;
+
             private string _name;
 
             public string name => reference == null ? _name : reference.name;
@@ -48,15 +50,19 @@ namespace Gemserk
             {
                 return reference == null;
             }
+
+            public void ToggleFavorite()
+            {
+                isFavorite = !isFavorite;
+            }
         }
 
         [SerializeField] 
         private List<Entry> _history = new List<Entry>(100);
 
-        [SerializeField] 
-        private List<Entry> _favorites = new List<Entry>(100);
-
         private int currentSelectionIndex;
+
+        public bool HasFavorites => _history.Count(e => e.isFavorite) > 0;
 
         private Entry currentSelection
         {
@@ -73,8 +79,6 @@ namespace Gemserk
         private int historySize = 10;
 
         public List<Entry> History => _history;
-
-        public List<Entry> Favorites => _favorites;
 
         public int HistorySize
         {
@@ -164,7 +168,6 @@ namespace Gemserk
             var currentSelectionWasNull = currentSelection == null ? true : currentSelection.ReferenceIsNull();
             
             _history.RemoveAll(e => e.ReferenceIsNull());
-            _favorites.RemoveAll(f => f.ReferenceIsNull());
 
             currentSelectionIndex -= deletedCount;
 
@@ -197,24 +200,5 @@ namespace Gemserk
                 currentSelectionIndex = _history.Count - 1;
         
         }
-
-        public bool IsFavorite(Object obj)
-        {
-            return _favorites.Find(f => f.reference.Equals(obj)) != null;
-        }
-
-        public void ToggleFavorite(Object obj)
-        {
-            if (IsFavorite(obj))
-            {
-                _favorites.RemoveAll(f => f.reference.Equals(obj));
-            }
-            else
-            {
-                _favorites.Add(new Entry(obj));
-            }
-        }
-        
-
     }
 }
