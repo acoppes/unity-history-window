@@ -148,7 +148,7 @@ namespace Gemserk
 		}
 
 		[Test]
-		public void ClearDeletedItemsShouldntSelectIfSelectionDeleted()
+		public void ClearDeletedItems_ShouldNotSelect_IfSelectionDeleted()
 		{
 			var selectionHistory = new SelectionHistory();
 
@@ -169,7 +169,7 @@ namespace Gemserk
 
 			Assert.IsFalse(selectionHistory.IsSelected(0));
 			Assert.IsFalse(selectionHistory.IsSelected(1));
-			Assert.AreEqual(selectionHistory.GetHistoryCount(), 2);
+			Assert.That(selectionHistory.GetHistoryCount(), Is.EqualTo(2));
 		}
 
 		[Test]
