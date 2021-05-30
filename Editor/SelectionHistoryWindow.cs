@@ -197,11 +197,13 @@ namespace Gemserk
 			Selection.activeObject = selectionHistory.GetSelection ();
 		}
 
-		private void DrawElement(Object obj, int i, Color originalColor)
+		private void DrawElement(SelectionHistory.Entry e, int i, Color originalColor)
 	    {
 	        var buttonStyle = windowSkin.GetStyle("SelectionButton");
 			buttonStyle.fixedWidth = position.width - buttonsWidth;
 			var nonSelectedColor = originalColor;
+
+			var obj = e.reference;
 
 			if (!EditorUtility.IsPersistent(obj))
             {
@@ -286,7 +288,7 @@ namespace Gemserk
 	        for (var i = 0; i < favorites.Count; i++)
 	        {
 	            var favorite = favorites[i];
-                DrawElement(favorite.reference, i, originalColor);
+                DrawElement(favorite, i, originalColor);
 	        }
 
 	        GUI.contentColor = originalColor;
@@ -306,7 +308,7 @@ namespace Gemserk
 				var historyElement = history [i];
                 if (selectionHistory.IsFavorite(historyElement.reference) && favoritesEnabled)
                     continue;
-			    DrawElement(historyElement.reference, i, originalColor);
+			    DrawElement(historyElement, i, originalColor);
             }
 
 			GUI.contentColor = originalColor;
