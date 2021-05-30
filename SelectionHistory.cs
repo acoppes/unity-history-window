@@ -14,6 +14,16 @@ namespace Gemserk
         {
             public Object reference;
 
+            private string _name;
+
+            public string name => reference == null ? _name : reference.name;
+
+            public Entry(Object reference)
+            {
+                this.reference = reference;
+                _name = reference.name;
+            }
+
             public bool Equals(Entry other)
             {
                 if (ReferenceEquals(null, other)) return false;
@@ -109,10 +119,7 @@ namespace Gemserk
             
             if (!isLastSelected && !isCurrentSelection)
             {
-                _history.Add(new Entry
-                {
-                    reference = selection
-                });
+                _history.Add(new Entry(selection));
                 currentSelectionIndex = _history.Count - 1;
             }
 
@@ -204,10 +211,7 @@ namespace Gemserk
             }
             else
             {
-                _favorites.Add(new Entry
-                {
-                    reference = obj
-                });
+                _favorites.Add(new Entry(obj));
             }
         }
         

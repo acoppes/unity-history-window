@@ -16,7 +16,7 @@ namespace Gemserk
 	}
 
 	public class SelectionHistoryWindow : EditorWindow {
-		const float buttonsWidth = 120f;
+		private const float buttonsWidth = 120f;
 
 		public static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
 		public static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
@@ -25,18 +25,19 @@ namespace Gemserk
 	    public static readonly string HistoryShowProjectViewObjectsPrefKey = "Gemserk.SelectionHistory.ShowProjectViewObjects";
 	    public static readonly string HistoryFavoritesPrefKey = "Gemserk.SelectionHistory.Favorites";
 
-        static SelectionHistory selectionHistory = new SelectionHistory();
+	    private static SelectionHistory selectionHistory = new SelectionHistory();
 
-		static readonly bool debugEnabled = false;
+	    private static readonly bool debugEnabled = false;
 
 		public static bool shouldReloadPreferences = true;
 
 	    private static Color hierarchyElementColor = new Color(0.7f, 1.0f, 0.7f);
 	    private static Color selectedElementColor = new Color(0.2f, 170.0f / 255.0f, 1.0f, 1.0f);
-
+	    private static Color unreferencedObjectColor = new Color(0.4f, 0.4f, 0.4f);
+	    
         [MenuItem ("Window/Gemserk/Selection History %#h")]
         // [Shortcut("Selection History/Open Selection Hist", KeyCode.Mouse4)]
-		static void Init () {
+        private static void Init () {
 			// Get existing open window or if none, make a new one:
 			var window = EditorWindow.GetWindow<SelectionHistoryWindow> ();
 
@@ -44,7 +45,7 @@ namespace Gemserk
 			window.Show();
 		}
 
-		static void SelectionRecorder ()
+        private static void SelectionRecorder ()
 		{
 			if (Selection.activeObject != null) {
 				if (debugEnabled) {
@@ -63,9 +64,9 @@ namespace Gemserk
 
 		public GUISkin windowSkin;
 
-		MethodInfo openPreferencesWindow;
+		private MethodInfo openPreferencesWindow;
 
-		void OnEnable()
+		private void OnEnable()
 		{
 			automaticRemoveDeleted = EditorPrefs.GetBool (HistoryAutomaticRemoveDeletedPrefKey, true);
 
@@ -91,7 +92,7 @@ namespace Gemserk
 			}
 		}
 
-		void UpdateSelection(Object obj)
+		private void UpdateSelection(Object obj)
 		{
 		    selectionHistory.SetSelection(obj);
             Selection.activeObject = obj;
@@ -101,13 +102,13 @@ namespace Gemserk
 	    private Vector2 _favoritesScrollPosition;
 		private Vector2 _historyScrollPosition;
 
-		bool automaticRemoveDeleted;
-		bool allowDuplicatedEntries;
+		private bool automaticRemoveDeleted;
+		private bool allowDuplicatedEntries;
 
-	    bool showHierarchyViewObjects;
-	    bool showProjectViewObjects;
+		private bool showHierarchyViewObjects;
+		private bool showProjectViewObjects;
 
-        void OnGUI () {
+		private void OnGUI () {
 
 			if (shouldReloadPreferences) {
 				selectionHistory.HistorySize = EditorPrefs.GetInt (SelectionHistoryWindow.HistorySizePrefKey, 10);
@@ -155,14 +156,14 @@ namespace Gemserk
 			}
 
 			if (!automaticRemoveDeleted) {
-				if (GUILayout.Button ("Remove Deleted")) {
+				if (GUILayout.Button ("Remove Unreferenced")) {
 					selectionHistory.ClearDeleted ();
 					Repaint ();
 				}
 			} 
 
 			if (allowDuplicatedEntries) {
-				if (GUILayout.Button ("Remove Duplciated")) {
+				if (GUILayout.Button ("Remove Duplicated")) {
 					selectionHistory.RemoveDuplicated ();
 					Repaint ();
 				}
@@ -171,7 +172,7 @@ namespace Gemserk
 			DrawSettingsButton ();
 		}
 
-		void DrawSettingsButton()
+		private void DrawSettingsButton()
 		{
 			if (openPreferencesWindow == null)
 				return;
@@ -228,19 +229,21 @@ namespace Gemserk
 
             var rect = EditorGUILayout.BeginHorizontal();
 
-            if (obj == null)
+            if (e.ReferenceIsNull())
             {
-                GUILayout.Label("Deleted", buttonStyle);
+	            GUI.contentColor = unreferencedObjectColor;
+                GUILayout.Label(e.name, buttonStyle);
             }
             else
             {
                 var icon = AssetPreview.GetMiniThumbnail(obj);
 
-                GUIContent content = new GUIContent();
-
-                content.image = icon;
-                content.text = obj.name;
-
+                var content = new GUIContent
+                {
+	                image = icon, 
+	                text = obj.name
+                };
+                
                 // chnanged to label to be able to handle events for drag
                 GUILayout.Label(content, buttonStyle);
 
@@ -277,7 +280,7 @@ namespace Gemserk
             ButtonLogic(rect, obj);
         }
 
-	    void DrawFavorites()
+		private void DrawFavorites()
 	    {
 	        var originalColor = GUI.contentColor;
 
@@ -314,7 +317,7 @@ namespace Gemserk
 			GUI.contentColor = originalColor;
 		}
 
-		void ButtonLogic(Rect rect, Object currentObject)
+	    private void ButtonLogic(Rect rect, Object currentObject)
 		{
 			var currentEvent = Event.current;
 
