@@ -17,13 +17,15 @@ namespace Gemserk {
 
         private static bool drawFavorites = true;
 
+        private const int defaultHistorySize = 500;
+
         [SettingsProvider]
         public static SettingsProvider CreateSelectionHistorySettingsProvider() {
             var provider = new SettingsProvider("Selection History", SettingsScope.User) {
                 label = "Selection History",
                 guiHandler = (searchContext) => {
                     if (!prefsLoaded) {
-                        historySize = EditorPrefs.GetInt(SelectionHistoryWindow.HistorySizePrefKey, 10);
+                        historySize = EditorPrefs.GetInt(SelectionHistoryWindow.HistorySizePrefKey, defaultHistorySize);
                         autoremoveDeleted = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, true);
                         autoRemoveDuplicated = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, false);
                         showHierarchyObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, true);
