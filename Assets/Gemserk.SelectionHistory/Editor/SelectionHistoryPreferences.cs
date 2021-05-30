@@ -35,7 +35,7 @@ namespace Gemserk {
                     }
 
                     historySize = EditorGUILayout.IntField("History Size", historySize);
-                    autoremoveDeleted = EditorGUILayout.Toggle("Auto Remove Deleted", autoremoveDeleted);
+                    autoremoveDeleted = EditorGUILayout.Toggle("Auto Remove Unreferenced", autoremoveDeleted);
                     autoRemoveDuplicated = EditorGUILayout.Toggle("Allow duplicated entries", autoRemoveDuplicated);
                     showHierarchyObjects = EditorGUILayout.Toggle("Show HierarchyView objects", showHierarchyObjects);
                     showProjectViewObjects = EditorGUILayout.Toggle("Show ProjectView objects", showProjectViewObjects);
