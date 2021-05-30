@@ -165,7 +165,7 @@ namespace Gemserk
         {
             var deletedCount = _history.Count(e => e.ReferenceIsNull());
 
-            var currentSelectionWasNull = currentSelection.ReferenceIsNull();
+            var currentSelectionWasNull = currentSelection == null ? true : currentSelection.ReferenceIsNull();
             
             _history.RemoveAll(e => e.ReferenceIsNull());
             _favorites.RemoveAll(f => f.ReferenceIsNull());

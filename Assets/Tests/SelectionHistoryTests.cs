@@ -112,7 +112,7 @@ namespace Gemserk
 		}
 
 		[Test]
-		public void ClearDeletedEntriesShouldKeepSelectedIndex()
+		public void ClearDeletedEntries_ShouldKeepSelectedIndex_IfNotDeleted()
 		{
 			var selectionHistory = new SelectionHistory();
 
@@ -148,7 +148,7 @@ namespace Gemserk
 		}
 
 		[Test]
-		public void ClearDeletedItems_ShouldNotSelect_IfSelectionDeleted()
+		public void ClearDeletedEntries_ShouldNotKeepSelectedIndex_IfDeleted()
 		{
 			var selectionHistory = new SelectionHistory();
 
