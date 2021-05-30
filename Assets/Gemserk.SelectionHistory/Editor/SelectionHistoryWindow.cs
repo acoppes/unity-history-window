@@ -1,17 +1,83 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections.Generic;
 using System.Reflection;
+using UnityEditor.SceneManagement;
 using UnityEditor.ShortcutManagement;
+using UnityEngine.SceneManagement;
 
 namespace Gemserk
 {
 	[InitializeOnLoad]
-	public static class SelectionHistoryInitialized
+	public static class SelectionHistoryInitialization
 	{
-		static SelectionHistoryInitialized()
+		static SelectionHistoryInitialization()
 		{
-			SelectionHistoryWindow.RegisterSelectionListener ();
+			SelectionHistoryWindow.RegisterSelectionListener();
+		}
+	}
+
+	[InitializeOnLoad]
+	public static class StoreSceneSelection
+	{
+		static StoreSceneSelection()
+		{
+			EditorSceneManager.sceneClosing += StoreSceneSelectionOnSceneClosing;
+			EditorSceneManager.sceneOpened += StoreSceneSelectionOnSceneOpened;
+		}
+
+		private static void StoreSceneSelectionOnSceneOpened(Scene scene, OpenSceneMode mode)
+		{
+			var selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+
+			if (selectionHistory == null)
+				return;
+			
+			var entries = selectionHistory.History;
+
+			foreach (var entry in entries)
+			{
+				if (!string.IsNullOrEmpty(entry.globalObjectId))
+				{
+					// This only parses the global id but that doesnt mean its object is not null
+					if (GlobalObjectId.TryParse(entry.globalObjectId, out var globalObjectId))
+					{
+						var reference = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
+						if (reference != null)
+						{
+							// Debug.Log($"Restoring scene object reference {entry.name} from GlobalId");
+							entry.reference = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
+							entry.globalObjectId = null;
+						}
+					}
+				}
+			}
+		}
+
+		private static void StoreSceneSelectionOnSceneClosing(Scene scene, bool removingScene)
+		{
+			if (!removingScene)
+				return;
+			
+			var selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+
+			if (selectionHistory == null)
+				return;
+			
+			var entries = selectionHistory.History;
+			foreach (var entry in entries)
+			{
+				if (entry.reference != null && entry.reference is GameObject go)
+				{
+					// GameObject's scene is being unloaded here...
+					if (go.scene == scene)
+					{
+						entry.sceneName = scene.name;
+						entry.globalObjectId = GlobalObjectId.GetGlobalObjectIdSlow(go).ToString();
+						// Debug.Log($"Storing scene object reference {entry.name} as GlobalId");
+						// entry.state = SelectionHistory.Entry.State.ReferenceUnloaded;
+					}
+				}
+			}
 		}
 	}
 

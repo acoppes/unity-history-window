@@ -26,7 +26,7 @@ MonoBehaviour:
     m_Scopes:
     - com.gemserk.upmgitpusher
     m_IsDefault: 0
-  m_UserSelectedRegistryName: Open UPM
+  m_UserSelectedRegistryName: 
   m_UserAddingNewScopedRegistry: 0
   m_RegistryInfoDraft:
     m_ErrorMessage: 
