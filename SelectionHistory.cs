@@ -9,21 +9,63 @@ namespace Gemserk
     [Serializable]
     public class SelectionHistory
     {
+        [Serializable]
+        public class Entry : IEquatable<Entry>
+        {
+            public Object reference;
+
+            public bool Equals(Entry other)
+            {
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return Equals(reference, other.reference);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((Entry) obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return (reference != null ? reference.GetHashCode() : 0);
+            }
+        }
+        
+        [Serializable]
+        public class Favorite
+        {
+            public Object reference;
+        }
+        
         [SerializeField] 
-        private List<Object> _history = new List<Object>(100);
+        private List<Entry> _history = new List<Entry>(100);
 
         [SerializeField] 
-        private List<Object> _favorites = new List<Object>(100);
+        private List<Favorite> _favorites = new List<Favorite>(100);
 
         private int currentSelectionIndex;
 
-        private Object currentSelection;
+        private Entry currentSelection
+        {
+            get
+            {
+                if (currentSelectionIndex >= 0 && currentSelectionIndex < _history.Count)
+                {
+                    return _history[currentSelectionIndex];
+                }
+                return null;
+            }
+        }
 
         private int historySize = 10;
 
-        public List<Object> History => _history;
+        public List<Entry> History => _history;
 
-        public List<Object> Favorites => _favorites;
+        public List<Favorite> Favorites => _favorites;
 
         public int HistorySize
         {
@@ -38,7 +80,7 @@ namespace Gemserk
 
         public bool IsSelected(Object obj)
         {
-            return currentSelection == obj;
+            return currentSelection.reference.Equals(obj);
         }
 
         public void Clear()
@@ -53,7 +95,7 @@ namespace Gemserk
 
         public Object GetSelection()
         {
-            return currentSelection;
+            return currentSelection.reference;
         }
 
         public void UpdateSelection(Object selection)
@@ -63,13 +105,19 @@ namespace Gemserk
 
             var lastSelectedObject = _history.Count > 0 ? _history.Last() : null;
 
-            if (lastSelectedObject != selection && currentSelection != selection)
+            var isLastSelected = lastSelectedObject != null && lastSelectedObject.reference == selection;
+            var isCurrentSelection = currentSelection != null && currentSelection.reference == selection;
+            
+            if (!isLastSelected && !isCurrentSelection)
             {
-                _history.Add(selection);
+                _history.Add(new Entry
+                {
+                    reference = selection
+                });
                 currentSelectionIndex = _history.Count - 1;
             }
 
-            currentSelection = selection;
+            // currentSelection = selection;
 
             if (_history.Count > historySize)
             {
@@ -86,7 +134,6 @@ namespace Gemserk
             currentSelectionIndex--;
             if (currentSelectionIndex < 0)
                 currentSelectionIndex = 0;
-            currentSelection = _history[currentSelectionIndex];
         }
 
         public void Next()
@@ -97,13 +144,11 @@ namespace Gemserk
             currentSelectionIndex++;
             if (currentSelectionIndex >= _history.Count)
                 currentSelectionIndex = _history.Count - 1;
-            currentSelection = _history[currentSelectionIndex];
         }
 
         public void SetSelection(Object obj)
         {
-            currentSelectionIndex = _history.IndexOf(obj);
-            currentSelection = obj;
+            currentSelectionIndex = _history.FindIndex(e => e.reference.Equals(obj));
         }
 
         public void ClearDeleted()
@@ -124,7 +169,7 @@ namespace Gemserk
 
         public void RemoveDuplicated()
         {
-            var tempList = new List<Object>(_history);
+            var tempList = new List<Entry>(_history);
 
             foreach (var item in tempList)
             {
@@ -147,15 +192,22 @@ namespace Gemserk
 
         public bool IsFavorite(Object obj)
         {
-            return _favorites.Contains(obj);
+            return _favorites.Find(f => f.reference.Equals(obj)) != null;
         }
 
         public void ToggleFavorite(Object obj)
         {
-            if (_favorites.Contains(obj))
-                _favorites.Remove(obj);
+            if (IsFavorite(obj))
+            {
+                _favorites.RemoveAll(f => f.reference.Equals(obj));
+            }
             else
-                _favorites.Add(obj);
+            {
+                _favorites.Add(new Favorite
+                {
+                    reference = obj
+                });
+            }
         }
         
 
