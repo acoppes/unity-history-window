@@ -12,18 +12,46 @@ namespace Gemserk
         [Serializable]
         public class Entry : IEquatable<Entry>
         {
+            // public enum State
+            // {
+            //     Referenced = 0,
+            //     ReferenceDeleted = 1,
+            //     ReferenceUnloaded = 2
+            // }
+
+            // public State state = State.Referenced;
+            
             public Object reference;
 
             public bool isFavorite;
 
-            private string _name;
+            public string sceneName;
+            public string globalObjectId;
 
-            public string name => reference == null ? _name : reference.name;
+            private string unreferencedObjectName;
+
+            public string name
+            {
+                get
+                {
+                    if (reference != null)
+                    {
+                        return reference.name;
+                    }
+
+                    if (string.IsNullOrEmpty(globalObjectId))
+                    {
+                        return unreferencedObjectName;
+                    }
+
+                    return $"Scene:{sceneName}/{unreferencedObjectName}";
+                }   
+            }
 
             public Entry(Object reference)
             {
                 this.reference = reference;
-                _name = reference.name;
+                unreferencedObjectName = reference.name;
             }
 
             public bool Equals(Entry other)
