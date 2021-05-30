@@ -33,12 +33,22 @@ namespace Gemserk
             {
                 return (reference != null ? reference.GetHashCode() : 0);
             }
+
+            public bool ReferenceIsNull()
+            {
+                return reference == null;
+            }
         }
         
         [Serializable]
         public class Favorite
         {
             public Object reference;
+
+            public bool ReferenceIsNull()
+            {
+                return reference == null;
+            }
         }
         
         [SerializeField] 
@@ -153,17 +163,19 @@ namespace Gemserk
 
         public void ClearDeleted()
         {
-            var deletedCount = _history.Count(e => e == null);
+            var deletedCount = _history.Count(e => e.ReferenceIsNull());
 
-            _history.RemoveAll(e => e == null);
-            _favorites.RemoveAll(d => d == null);
+            var currentSelectionWasNull = currentSelection.ReferenceIsNull();
+            
+            _history.RemoveAll(e => e.ReferenceIsNull());
+            _favorites.RemoveAll(f => f.ReferenceIsNull());
 
             currentSelectionIndex -= deletedCount;
 
             if (currentSelectionIndex < 0)
                 currentSelectionIndex = 0;
 
-            if (currentSelection == null)
+            if (currentSelectionWasNull)
                 currentSelectionIndex = -1;
         }
 
