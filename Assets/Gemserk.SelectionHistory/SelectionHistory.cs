@@ -39,23 +39,12 @@ namespace Gemserk
                 return reference == null;
             }
         }
-        
-        [Serializable]
-        public class Favorite
-        {
-            public Object reference;
 
-            public bool ReferenceIsNull()
-            {
-                return reference == null;
-            }
-        }
-        
         [SerializeField] 
         private List<Entry> _history = new List<Entry>(100);
 
         [SerializeField] 
-        private List<Favorite> _favorites = new List<Favorite>(100);
+        private List<Entry> _favorites = new List<Entry>(100);
 
         private int currentSelectionIndex;
 
@@ -75,7 +64,7 @@ namespace Gemserk
 
         public List<Entry> History => _history;
 
-        public List<Favorite> Favorites => _favorites;
+        public List<Entry> Favorites => _favorites;
 
         public int HistorySize
         {
@@ -215,7 +204,7 @@ namespace Gemserk
             }
             else
             {
-                _favorites.Add(new Favorite
+                _favorites.Add(new Entry
                 {
                     reference = obj
                 });
