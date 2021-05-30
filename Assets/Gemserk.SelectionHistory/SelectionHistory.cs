@@ -9,32 +9,26 @@ namespace Gemserk
     [Serializable]
     public class SelectionHistory
     {
-        [SerializeField]
-        List<Object> _history = new List<Object>(100);
+        [SerializeField] 
+        private List<Object> _history = new List<Object>(100);
 
-        [SerializeField]
-        List<Object> _favorites = new List<Object>(100);
+        [SerializeField] 
+        private List<Object> _favorites = new List<Object>(100);
 
-        int currentSelectionIndex;
+        private int currentSelectionIndex;
 
-        Object currentSelection;
+        private Object currentSelection;
 
-        int historySize = 10;
+        private int historySize = 10;
 
-        public List<Object> History
-        {
-            get { return _history; }
-        }
+        public List<Object> History => _history;
 
-        public List<Object> Favorites
-        {
-            get { return _favorites; }
-        }
+        public List<Object> Favorites => _favorites;
 
         public int HistorySize
         {
-            get { return historySize; }
-            set { historySize = value; }
+            get => historySize;
+            set => historySize = value;
         }
 
         public bool IsSelected(int index)
