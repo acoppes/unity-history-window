@@ -16,6 +16,9 @@ namespace Gemserk {
         private static bool showProjectViewObjects = true;
 
         private static bool drawFavorites = true;
+        
+        private static bool showUnloadedObjects = true;
+        private static bool showDestroyedObjects = false;
 
         private const int defaultHistorySize = 500;
 
@@ -31,6 +34,10 @@ namespace Gemserk {
                         showHierarchyObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, true);
                         showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, true);
                         drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryFavoritesPrefKey, true);
+
+                        showUnloadedObjects = EditorPrefs.GetBool(SelectionHistoryWindow.ShowUnloadedObjectsKey, true);
+                        showDestroyedObjects = EditorPrefs.GetBool(SelectionHistoryWindow.ShowDestroyedObjectsKey, false);
+
                         prefsLoaded = true;
                     }
 
@@ -41,6 +48,18 @@ namespace Gemserk {
                     showProjectViewObjects = EditorGUILayout.Toggle("Show ProjectView objects", showProjectViewObjects);
                     drawFavorites = EditorGUILayout.Toggle("Favorites Enabled", drawFavorites);
 
+                    showUnloadedObjects = EditorGUILayout.Toggle(new GUIContent()
+                    {
+                        text = "Show Unloaded Objects",
+                        tooltip = "Toggle to show/hide objects from unloaded scenes."
+                    }, showUnloadedObjects);
+                    
+                    showDestroyedObjects = EditorGUILayout.Toggle(new GUIContent()
+                    {
+                        text = "Show Destroyed Objects",
+                        tooltip = "Toggle to show/hide unreferenced or destroyed objects."
+                    }, showDestroyedObjects);
+
                     if (GUI.changed) {
                         EditorPrefs.SetInt(SelectionHistoryWindow.HistorySizePrefKey, historySize);
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, autoremoveDeleted);
@@ -49,6 +68,9 @@ namespace Gemserk {
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, showHierarchyObjects);
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, showProjectViewObjects);
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryFavoritesPrefKey, drawFavorites);
+                        
+                        EditorPrefs.SetBool(SelectionHistoryWindow.ShowUnloadedObjectsKey, showUnloadedObjects);
+                        EditorPrefs.SetBool(SelectionHistoryWindow.ShowDestroyedObjectsKey, showDestroyedObjects);
 
                         SelectionHistoryWindow.shouldReloadPreferences = true;
                     }

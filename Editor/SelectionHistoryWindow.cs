@@ -91,6 +91,9 @@ namespace Gemserk
 	    public static readonly string HistoryShowProjectViewObjectsPrefKey = "Gemserk.SelectionHistory.ShowProjectViewObjects";
 	    public static readonly string HistoryFavoritesPrefKey = "Gemserk.SelectionHistory.Favorites";
 
+	    public static readonly string ShowUnloadedObjectsKey = "Gemserk.SelectionHistory.ShowUnloadedObjects";
+	    public static readonly string ShowDestroyedObjectsKey = "Gemserk.SelectionHistory.ShowDestroyedObjects";
+	    
 	    private static SelectionHistory selectionHistory = new SelectionHistory();
 
 	    private static readonly bool debugEnabled = false;
@@ -222,7 +225,7 @@ namespace Gemserk
 			}
 
 			if (!automaticRemoveDeleted) {
-				if (GUILayout.Button ("Remove Unreferenced")) {
+				if (GUILayout.Button ("Remove Destroyed")) {
 					selectionHistory.ClearDeleted ();
 					Repaint ();
 				}
@@ -264,7 +267,8 @@ namespace Gemserk
 			Selection.activeObject = selectionHistory.GetSelection ();
 		}
 
-		private void DrawElement(SelectionHistory.Entry e, int i, Color originalColor)
+		private void DrawElement(SelectionHistory.Entry e, int i, Color originalColor, 
+			bool showUnloaded, bool showDestroyed)
 	    {
 	        var buttonStyle = windowSkin.GetStyle("SelectionButton");
 			buttonStyle.fixedWidth = position.width - buttonsWidth;
@@ -297,12 +301,26 @@ namespace Gemserk
 
             if (e.GetReferenceState() == SelectionHistory.Entry.State.ReferenceDestroyed)
             {
-	            GUI.contentColor = unreferencedObjectColor;
-                GUILayout.Label(e.name, buttonStyle);
+	            if (showDestroyed)
+	            {
+		            GUI.contentColor = unreferencedObjectColor;
+		            GUILayout.Label(new GUIContent()
+		            {
+			            text = $"Destroyed:{e.name}",
+			            tooltip = $"Object destroyed or referenced lost."
+		            }, buttonStyle);
+	            }
             } else if (e.GetReferenceState() == SelectionHistory.Entry.State.ReferenceUnloaded)
             {
-	            GUI.contentColor = unreferencedObjectColor;
-	            GUILayout.Label($"Scene:{e.sceneName}/{e.name}", buttonStyle);
+	            if (showUnloaded)
+	            {
+		            GUI.contentColor = unreferencedObjectColor;
+		            GUILayout.Label(new GUIContent()
+		            {
+			            text = $"Scene:{e.sceneName}/{e.name}",
+			            tooltip = $"Object from unloaded scene {e.sceneName}"
+		            }, buttonStyle);
+	            }
             }
             else
             {
@@ -357,13 +375,16 @@ namespace Gemserk
 	        var entries = selectionHistory.History;
 
 	        // var buttonStyle = windowSkin.GetStyle("SelectionButton");
+	        
+	        var showUnloaded = EditorPrefs.GetBool (ShowUnloadedObjectsKey, true);
+	        var showDestroyed = EditorPrefs.GetBool (ShowDestroyedObjectsKey, false);
 
 	        for (var i = 0; i < entries.Count; i++)
 	        {
 	            var favorite = entries[i];
 	            if (!favorite.isFavorite)
 		            continue;
-                DrawElement(favorite, i, originalColor);
+                DrawElement(favorite, i, originalColor, showUnloaded, showDestroyed);
 	        }
 
 	        GUI.contentColor = originalColor;
@@ -378,12 +399,15 @@ namespace Gemserk
 			// var buttonStyle = windowSkin.GetStyle("SelectionButton");
 
 		    var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
-
+		    
+		    var showUnloaded = EditorPrefs.GetBool (ShowUnloadedObjectsKey, true);
+		    var showDestroyed = EditorPrefs.GetBool (ShowDestroyedObjectsKey, false);
+		    
             for (var i = 0; i < history.Count; i++) {
 				var historyElement = history [i];
                 if (historyElement.isFavorite && favoritesEnabled)
                     continue;
-			    DrawElement(historyElement, i, originalColor);
+			    DrawElement(historyElement, i, originalColor, showUnloaded, showDestroyed);
             }
 
 			GUI.contentColor = originalColor;
