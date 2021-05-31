@@ -17,15 +17,15 @@ It is really useful when editing stuff and following a link to an object referen
 
 # Install using UPM
 
-This package can be installed using [OpenUPM](https://openupm.com).
+This package can be installed using [OpenUPM](https://openupm.com/packages/com.gemserk.selectionhistory/).
 
-You can also install it by opening Unity Package Manager and selecting add package from git URL and add this `git@github.com:acoppes/unity-history-window.git#1.0.4` or `https://github.com/acoppes/unity-history-window.git#1.0.4` (if you prefer https).
+You can also install it by opening Unity Package Manager and selecting add package from git URL and add this `https://github.com/acoppes/unity-history-window.git#1.0.8`.
 
 Or add it manually to the `manifest.json`, like this:
 
 ```
   "dependencies": {
-    "com.gemserk.selectionhistory": "git+ssh://git@github.com/acoppes/unity-history-window.git#1.0.4",
+    "com.gemserk.selectionhistory": "https://github.com/acoppes/unity-history-window.git#1.0.8"
     ...
   }
 ```
