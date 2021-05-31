@@ -82,6 +82,18 @@ namespace Gemserk
 		}
 	}
 
+	public static class SelectionHistoryEntryExtensions
+	{
+		public static string GetName(this SelectionHistory.Entry e, bool appendScene)
+		{
+			if (appendScene && e.isSceneInstance)
+			{
+				return $"{e.sceneName}/{e.name}";
+			}
+			return e.name;
+		}
+	}
+
 	public class SelectionHistoryWindow : EditorWindow {
 		private const float buttonsWidth = 120f;
 
@@ -279,7 +291,7 @@ namespace Gemserk
 		}
 
 		private void DrawElement(SelectionHistory.Entry e, int i, Color originalColor, 
-			bool showUnloaded, bool showDestroyed)
+			bool showUnloaded, bool showDestroyed, bool appendScene)
 	    {
 	        var buttonStyle = windowSkin.GetStyle("SelectionButton");
 			buttonStyle.fixedWidth = position.width - buttonsWidth;
@@ -317,7 +329,7 @@ namespace Gemserk
 		            GUI.contentColor = unreferencedObjectColor;
 		            GUILayout.Label(new GUIContent()
 		            {
-			            text = $"Destroyed:{e.name}",
+			            text = $"{e.GetName(appendScene)} (Destroyed)",
 			            tooltip = $"Object destroyed or referenced lost."
 		            }, buttonStyle);
 	            }
@@ -328,7 +340,7 @@ namespace Gemserk
 		            GUI.contentColor = unreferencedObjectColor;
 		            GUILayout.Label(new GUIContent()
 		            {
-			            text = $"{e.sceneName}/{e.name}",
+			            text = e.GetName(appendScene),
 			            tooltip = $"Object from unloaded scene {e.sceneName}"
 		            }, buttonStyle);
 		            
@@ -346,14 +358,9 @@ namespace Gemserk
                 var content = new GUIContent
                 {
 	                image = icon, 
-	                text = e.name
+	                text = e.GetName(appendScene)
                 };
 
-                if (e.isSceneInstance)
-                {
-	                content.text = $"{e.sceneName}/{e.name}";
-                }
-                
                 // chnanged to label to be able to handle events for drag
                 GUILayout.Label(content, buttonStyle);
 
@@ -406,7 +413,7 @@ namespace Gemserk
 	            var favorite = entries[i];
 	            if (!favorite.isFavorite)
 		            continue;
-                DrawElement(favorite, i, originalColor, showUnloaded, showDestroyed);
+                DrawElement(favorite, i, originalColor, showUnloaded, showDestroyed, true);
 	        }
 
 	        GUI.contentColor = originalColor;
@@ -429,7 +436,7 @@ namespace Gemserk
 				var historyElement = history [i];
                 if (historyElement.isFavorite && favoritesEnabled)
                     continue;
-			    DrawElement(historyElement, i, originalColor, showUnloaded, showDestroyed);
+			    DrawElement(historyElement, i, originalColor, showUnloaded, showDestroyed, true);
             }
 
 			GUI.contentColor = originalColor;
