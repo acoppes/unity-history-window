@@ -26,6 +26,8 @@ namespace Gemserk
             public bool isFavorite;
 
             public string sceneName;
+            public string scenePath;
+            
             public string globalObjectId;
 
             private string unreferencedObjectName;
@@ -191,13 +193,13 @@ namespace Gemserk
             currentSelectionIndex = _history.FindIndex(e => e.reference.Equals(obj));
         }
 
-        public void ClearDeleted()
+        public void RemoveEntries(Entry.State state)
         {
-            var deletedCount = _history.Count(e => e.GetReferenceState() == Entry.State.ReferenceDestroyed);
+            var deletedCount = _history.Count(e => e.GetReferenceState() == state);
 
-            var currentSelectionDestroyed = currentSelection == null || currentSelection.GetReferenceState() == Entry.State.ReferenceDestroyed;
+            var currentSelectionDestroyed = currentSelection == null || currentSelection.GetReferenceState() == state;
             
-            _history.RemoveAll(e => e.GetReferenceState() == Entry.State.ReferenceDestroyed);
+            _history.RemoveAll(e => e.GetReferenceState() == state);
 
             currentSelectionIndex -= deletedCount;
 

@@ -47,6 +47,9 @@ namespace Gemserk
 							// Debug.Log($"Restoring scene object reference {entry.name} from GlobalId");
 							entry.reference = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
 							entry.globalObjectId = null;
+
+							entry.sceneName = null;
+							entry.scenePath = null;
 						}
 					}
 				}
@@ -73,6 +76,10 @@ namespace Gemserk
 					{
 						entry.sceneName = scene.name;
 						entry.globalObjectId = GlobalObjectId.GetGlobalObjectIdSlow(go).ToString();
+
+						entry.scenePath = scene.path;
+						// var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(scene.path);
+						// AssetDatabase.GetAssetPath(scene);
 						// Debug.Log($"Storing scene object reference {entry.name} as GlobalId");
 						// entry.state = SelectionHistory.Entry.State.ReferenceUnloaded;
 					}
@@ -191,10 +198,10 @@ namespace Gemserk
 			}
 
 			if (automaticRemoveDeleted)
-				selectionHistory.ClearDeleted ();
+				selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
 
 			if (!allowDuplicatedEntries)
-				selectionHistory.RemoveDuplicated ();
+				selectionHistory.RemoveDuplicated();
 
             var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
             if (favoritesEnabled && selectionHistory.HasFavorites)
@@ -204,12 +211,15 @@ namespace Gemserk
                 EditorGUILayout.EndScrollView();
                 EditorGUILayout.Separator();
             }
+            
+            var showUnloaded = EditorPrefs.GetBool (ShowUnloadedObjectsKey, true);
+            var showDestroyed = EditorPrefs.GetBool (ShowDestroyedObjectsKey, false);
         
-            bool changedBefore = GUI.changed;
+            var changedBefore = GUI.changed;
 
 			_historyScrollPosition = EditorGUILayout.BeginScrollView(_historyScrollPosition);
 
-			bool changedAfter = GUI.changed;
+			var changedAfter = GUI.changed;
 
 			if (!changedBefore && changedAfter) {
 				Debug.Log ("changed");
@@ -224,21 +234,28 @@ namespace Gemserk
 				Repaint();
 			}
 
-			if (!automaticRemoveDeleted) {
+			if (!automaticRemoveDeleted && showDestroyed) {
 				if (GUILayout.Button ("Remove Destroyed")) {
-					selectionHistory.ClearDeleted ();
-					Repaint ();
+					selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
+					Repaint();
+				}
+			} 
+			
+			if (showUnloaded) {
+				if (GUILayout.Button ("Remove Unloaded")) {
+					selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceUnloaded);
+					Repaint();
 				}
 			} 
 
 			if (allowDuplicatedEntries) {
 				if (GUILayout.Button ("Remove Duplicated")) {
 					selectionHistory.RemoveDuplicated ();
-					Repaint ();
+					Repaint();
 				}
 			} 
 
-			DrawSettingsButton ();
+			DrawSettingsButton();
 		}
 
 		private void DrawSettingsButton()
@@ -320,6 +337,12 @@ namespace Gemserk
 			            text = $"Scene:{e.sceneName}/{e.name}",
 			            tooltip = $"Object from unloaded scene {e.sceneName}"
 		            }, buttonStyle);
+		            
+		            GUI.contentColor = originalColor;
+		            if (GUILayout.Button("Ping", windowSkin.button))
+		            {
+			            PingEntry(e);
+		            }
 	            }
             }
             else
@@ -339,7 +362,7 @@ namespace Gemserk
 
                 if (GUILayout.Button("Ping", windowSkin.button))
                 {
-                    EditorGUIUtility.PingObject(obj);
+	                PingEntry(e);
                 }
 
                 var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
@@ -365,7 +388,7 @@ namespace Gemserk
 
             EditorGUILayout.EndHorizontal();
 
-            ButtonLogic(rect, obj);
+            ButtonLogic(rect, e);
         }
 
 		private void DrawFavorites()
@@ -413,9 +436,10 @@ namespace Gemserk
 			GUI.contentColor = originalColor;
 		}
 
-	    private void ButtonLogic(Rect rect, Object currentObject)
+	    private void ButtonLogic(Rect rect, SelectionHistory.Entry e)
 		{
 			var currentEvent = Event.current;
+			var currentObject = e.reference;
 
 			if (currentEvent == null)
 				return;
@@ -461,18 +485,31 @@ namespace Gemserk
 
 			} else if (eventType == EventType.MouseUp) {
 
-				if (currentObject != null) {
-					if (Event.current.button == 0) {
-						UpdateSelection (currentObject);
-					} else {
-						EditorGUIUtility.PingObject (currentObject);
+				if (Event.current.button == 0) {
+					if (currentObject != null)
+					{
+						UpdateSelection(currentObject);
 					}
+				} else {
+					PingEntry(e);
 				}
-
+				
 				Event.current.Use ();
 			}
 
 		}
+
+	    private void PingEntry(SelectionHistory.Entry e)
+	    {
+		    if (e.GetReferenceState() == SelectionHistory.Entry.State.ReferenceUnloaded)
+		    {
+			    var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(e.scenePath);
+			    EditorGUIUtility.PingObject(sceneAsset);
+		    } else
+		    {
+			    EditorGUIUtility.PingObject(e.reference);
+		    }
+	    }
 
 	}
 }
