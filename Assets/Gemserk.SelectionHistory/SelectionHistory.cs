@@ -12,12 +12,12 @@ namespace Gemserk
         [Serializable]
         public class Entry : IEquatable<Entry>
         {
-            // public enum State
-            // {
-            //     Referenced = 0,
-            //     ReferenceDeleted = 1,
-            //     ReferenceUnloaded = 2
-            // }
+            public enum State
+            {
+                Referenced = 0,
+                ReferenceDestroyed = 1,
+                ReferenceUnloaded = 2
+            }
 
             // public State state = State.Referenced;
             
@@ -38,13 +38,7 @@ namespace Gemserk
                     {
                         return reference.name;
                     }
-
-                    if (string.IsNullOrEmpty(globalObjectId))
-                    {
-                        return unreferencedObjectName;
-                    }
-
-                    return $"Scene:{sceneName}/{unreferencedObjectName}";
+                    return unreferencedObjectName;
                 }   
             }
 
@@ -74,9 +68,13 @@ namespace Gemserk
                 return (reference != null ? reference.GetHashCode() : 0);
             }
 
-            public bool ReferenceIsNull()
+            public State GetReferenceState()
             {
-                return reference == null;
+                if (reference != null)
+                    return State.Referenced;
+                if (!string.IsNullOrEmpty(globalObjectId))
+                    return State.ReferenceUnloaded;
+                return State.ReferenceDestroyed;
             }
 
             public void ToggleFavorite()
@@ -121,7 +119,11 @@ namespace Gemserk
 
         public bool IsSelected(Object obj)
         {
-            return currentSelection.reference.Equals(obj);
+            if (currentSelection == null)
+                return false;
+            if (currentSelection.GetReferenceState() == Entry.State.Referenced)
+                return currentSelection.reference.Equals(obj);
+            return false;
         }
 
         public void Clear()
@@ -191,18 +193,18 @@ namespace Gemserk
 
         public void ClearDeleted()
         {
-            var deletedCount = _history.Count(e => e.ReferenceIsNull());
+            var deletedCount = _history.Count(e => e.GetReferenceState() == Entry.State.ReferenceDestroyed);
 
-            var currentSelectionWasNull = currentSelection == null ? true : currentSelection.ReferenceIsNull();
+            var currentSelectionDestroyed = currentSelection == null || currentSelection.GetReferenceState() == Entry.State.ReferenceDestroyed;
             
-            _history.RemoveAll(e => e.ReferenceIsNull());
+            _history.RemoveAll(e => e.GetReferenceState() == Entry.State.ReferenceDestroyed);
 
             currentSelectionIndex -= deletedCount;
 
             if (currentSelectionIndex < 0)
                 currentSelectionIndex = 0;
 
-            if (currentSelectionWasNull)
+            if (currentSelectionDestroyed)
                 currentSelectionIndex = -1;
         }
 
