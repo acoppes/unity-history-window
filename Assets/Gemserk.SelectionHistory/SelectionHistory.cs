@@ -32,6 +32,8 @@ namespace Gemserk
 
             private string unreferencedObjectName;
 
+            public bool isSceneInstance => !string.IsNullOrEmpty(sceneName);
+
             public string name
             {
                 get
@@ -48,6 +50,15 @@ namespace Gemserk
             {
                 this.reference = reference;
                 unreferencedObjectName = reference.name;
+
+                if (reference is GameObject go)
+                {
+                    if (go.scene != null)
+                    {
+                        sceneName = go.scene.name;
+                        scenePath = go.scene.path;
+                    }
+                }
             }
 
             public bool Equals(Entry other)
