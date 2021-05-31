@@ -9,6 +9,7 @@ It is really useful when editing stuff and following a link to an object referen
 # Features
 
 * Stores history of selected objects (custom count).
+* Store selection from unloaded scenes.
 * Selects objects from the history (with left click).
 * Pings (focus) objects from the history (with right click or Ping button).
 * Drag objects from history to other object fields to link them.

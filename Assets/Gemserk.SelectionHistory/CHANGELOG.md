@@ -1,3 +1,7 @@
+# 1.0.7
+
+* Feature: store selection from unloaded scenes.
+
 # 1.0.4
 
 * Fixed missing .meta was failing on reimporting package in readonly folder.
