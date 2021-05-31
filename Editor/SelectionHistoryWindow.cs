@@ -295,10 +295,14 @@ namespace Gemserk
 
             var rect = EditorGUILayout.BeginHorizontal();
 
-            if (e.ReferenceIsNull())
+            if (e.GetReferenceState() == SelectionHistory.Entry.State.ReferenceDestroyed)
             {
 	            GUI.contentColor = unreferencedObjectColor;
                 GUILayout.Label(e.name, buttonStyle);
+            } else if (e.GetReferenceState() == SelectionHistory.Entry.State.ReferenceUnloaded)
+            {
+	            GUI.contentColor = unreferencedObjectColor;
+	            GUILayout.Label($"Scene:{e.sceneName}/{e.name}", buttonStyle);
             }
             else
             {
