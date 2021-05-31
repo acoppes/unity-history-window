@@ -47,9 +47,6 @@ namespace Gemserk
 							// Debug.Log($"Restoring scene object reference {entry.name} from GlobalId");
 							entry.reference = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
 							entry.globalObjectId = null;
-
-							entry.sceneName = null;
-							entry.scenePath = null;
 						}
 					}
 				}
@@ -74,10 +71,7 @@ namespace Gemserk
 					// GameObject's scene is being unloaded here...
 					if (go.scene == scene)
 					{
-						entry.sceneName = scene.name;
 						entry.globalObjectId = GlobalObjectId.GetGlobalObjectIdSlow(go).ToString();
-
-						entry.scenePath = scene.path;
 						// var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(scene.path);
 						// AssetDatabase.GetAssetPath(scene);
 						// Debug.Log($"Storing scene object reference {entry.name} as GlobalId");
@@ -334,7 +328,7 @@ namespace Gemserk
 		            GUI.contentColor = unreferencedObjectColor;
 		            GUILayout.Label(new GUIContent()
 		            {
-			            text = $"Scene:{e.sceneName}/{e.name}",
+			            text = $"{e.sceneName}/{e.name}",
 			            tooltip = $"Object from unloaded scene {e.sceneName}"
 		            }, buttonStyle);
 		            
@@ -352,8 +346,13 @@ namespace Gemserk
                 var content = new GUIContent
                 {
 	                image = icon, 
-	                text = obj.name
+	                text = e.name
                 };
+
+                if (e.isSceneInstance)
+                {
+	                content.text = $"{e.sceneName}/{e.name}";
+                }
                 
                 // chnanged to label to be able to handle events for drag
                 GUILayout.Label(content, buttonStyle);
