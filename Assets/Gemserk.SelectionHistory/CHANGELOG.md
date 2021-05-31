@@ -1,3 +1,7 @@
+# 1.0.8
+
+* Now scene is pinged when pressing ping for unloaded objects.
+
 # 1.0.7
 
 * Feature: store selection from unloaded scenes.
