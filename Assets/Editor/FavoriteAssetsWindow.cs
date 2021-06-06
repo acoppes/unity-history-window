@@ -28,18 +28,29 @@ public class FavoriteAssetsWindow : EditorWindow
         //
         // // Import UXML
         
-        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/FavoriteAssetsWindow.uxml");
+        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/FavoriteElement.uxml");
         
         var scroll = new ScrollView(ScrollViewMode.Vertical);
         root.Add(scroll);
+
+        var guids = AssetDatabase.FindAssets("t:Scene");
+        var sceneAsset = 
+            guids.Select(g => AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetDatabase.GUIDToAssetPath(g))).First();
         
         for (var i = 0; i < 50; i++)
         {
             var tree = visualTree.CloneTree();
-            var favoriteElement = tree.Q<ObjectField>("Favorite");
-            favoriteElement.allowSceneObjects = false;
-            favoriteElement.objectType = typeof(SceneAsset);
-            scroll.Add(favoriteElement);
+            
+            var icon = tree.Q<Image>("Icon");
+            icon.image = AssetPreview.GetMiniThumbnail(sceneAsset);
+            
+            var favoriteElement = tree.Q<Button>("Favorite");
+            favoriteElement.text = sceneAsset.name;
+            favoriteElement.clicked += delegate
+            {
+                EditorGUIUtility.PingObject(sceneAsset);
+            };
+            scroll.Add(tree);
         }
 
         // A stylesheet can be added to a VisualElement.
