@@ -1,10 +1,24 @@
 .favorite {
     font-size: 12px;
     -unity-text-align: middle-left;
+    margin: 2px;
+    padding: 3px;
+    background-color: black;
+}
+
+.favorite Label {
+    margin-left: 17px;
+}
+
+.favorite ObjectField {
+    visibility: hidden;
 }
 
 .favorite Image {
-    max-width: 14px;
-    max-height: 12px;
-    margin-top: 2px;
+    max-width: 16px;
+    max-height: 14px;
+    margin-top: 4px;
+    margin-left: 4px;
+    visibility: initial;
+    position: absolute;
 }
