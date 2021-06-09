@@ -5,9 +5,10 @@
     xmlns:editor="UnityEditor.UIElements"
     xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
 >
+    
     <engine:VisualElement class="favorite">
-        <engine:Image name="Icon" class="unity-image unity-object-field-display__icon"/>
-        <engine:Button text="default" name="Favorite"/>
+        <engine:Label text="default" name="Favorite"/>
+        <engine:Image name="Icon" />
     </engine:VisualElement>
     
     

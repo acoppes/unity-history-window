@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -6,10 +7,6 @@ namespace Gemserk
 {
     public class FavoriteAssetsWindow : EditorWindow
     {
-        private static FavoriteAssetsWindow instance;
-
-        public static bool IsOpen => instance != null;
-
         [MenuItem("Window/Gemserk/Favorites")]
         public static void ShowExample()
         {
@@ -25,8 +22,6 @@ namespace Gemserk
 
         private void OnDisable()
         {
-            instance = null;
-            
             if (_favorites != null)
             {
                 _favorites.OnFavoritesUpdated -= OnFavoritesUpdated;
@@ -35,8 +30,6 @@ namespace Gemserk
 
         public void OnEnable()
         {
-            instance = this;
-            
             _favorites = FavoritesController.Favorites;
             _favorites.OnFavoritesUpdated += OnFavoritesUpdated;
             
@@ -81,18 +74,27 @@ namespace Gemserk
                 if (assetReference == null)
                     continue;
                 
-                var tree = favoriteElementTreeAsset.CloneTree();
+                var elementTree = favoriteElementTreeAsset.CloneTree();
             
-                var icon = tree.Q<Image>("Icon");
-                icon.image = AssetPreview.GetMiniThumbnail(assetReference);
-            
-                var favoriteElement = tree.Q<Button>("Favorite");
-                favoriteElement.text = assetReference.name;
-                favoriteElement.clicked += delegate
+                elementTree.RegisterCallback(delegate(MouseUpEvent e)
                 {
+                    // Debug.Log("callback");
                     EditorGUIUtility.PingObject(assetReference);
-                };
-                scroll.Add(tree);
+                });
+                
+                var icon = elementTree.Q<Image>("Icon");
+                if (icon != null)
+                {
+                    icon.image = AssetPreview.GetMiniThumbnail(assetReference);
+                }
+                
+                var label = elementTree.Q<Label>("Favorite");
+                if (label != null)
+                {
+                    label.text = assetReference.name;
+                }
+
+                scroll.Add(elementTree);
             }
 
         }
