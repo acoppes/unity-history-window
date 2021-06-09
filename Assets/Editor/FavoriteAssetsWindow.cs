@@ -1,9 +1,6 @@
-using System;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 
 [InitializeOnLoad]
 public static class FavoriteAssetsWindowInitialization
@@ -16,11 +13,11 @@ public static class FavoriteAssetsWindowInitialization
 
 public class FavoriteAssetsWindow : EditorWindow
 {
-    [MenuItem("Window/UIElements/FavoriteAssetsWindow")]
+    [MenuItem("Window/Gemserk/Favorites")]
     public static void ShowExample()
     {
         var wnd = GetWindow<FavoriteAssetsWindow>();
-        wnd.titleContent = new GUIContent("FavoriteAssetsWindow");
+        wnd.titleContent = new GUIContent("Favorites");
     }
     
     public static void RegisterSelectionListener()
@@ -39,7 +36,7 @@ public class FavoriteAssetsWindow : EditorWindow
                     return;
             }
             
-            var favoritesController = FavoritesController.Instance;
+            var favoritesController = FavoritesSingleton.Instance;
             favoritesController.AddFavorite(new Favorites.Favorite
             {
                 reference = Selection.activeObject
@@ -47,24 +44,26 @@ public class FavoriteAssetsWindow : EditorWindow
         } 
     }
 
-    private FavoritesController _favoritesController;
+    private Favorites _favorites;
 
     public StyleSheet styleSheet;
 
+    public VisualTreeAsset favoriteElementTreeAsset;
+
     private void OnDisable()
     {
-        if (_favoritesController != null)
+        if (_favorites != null)
         {
-            _favoritesController.OnFavoritesUpdated -= OnFavoritesUpdated;
+            _favorites.OnFavoritesUpdated -= OnFavoritesUpdated;
         }
     }
 
     public void OnEnable()
     {
-        _favoritesController = FavoritesController.Instance;
-        _favoritesController.OnFavoritesUpdated += OnFavoritesUpdated;
+        _favorites = FavoritesSingleton.Instance;
+        _favorites.OnFavoritesUpdated += OnFavoritesUpdated;
             
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/FavoriteAssetsWindow.uss");
+        // var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/FavoriteAssetsWindow.uss");
 
         // Each editor window contains a root VisualElement object
         var root = rootVisualElement;
@@ -93,21 +92,15 @@ public class FavoriteAssetsWindow : EditorWindow
     {
         var root = rootVisualElement;
         
-        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/FavoriteElement.uxml");
+        // var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/FavoriteElement.uxml");
         
         var scroll = new ScrollView(ScrollViewMode.Vertical);
         root.Add(scroll);
 
-        // var guids = AssetDatabase.FindAssets("t:Scene");
-        // var sceneAsset = 
-        //     guids.Select(g => AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetDatabase.GUIDToAssetPath(g))).First();
-
-        var favorites = _favoritesController.GetFavorites();
-        
-        for (var i = 0; i < favorites.favoritesList.Count; i++)
+        for (var i = 0; i < _favorites.favoritesList.Count; i++)
         {
-            var assetReference = favorites.favoritesList[i].reference;
-            var tree = visualTree.CloneTree();
+            var assetReference = _favorites.favoritesList[i].reference;
+            var tree = favoriteElementTreeAsset.CloneTree();
             
             var icon = tree.Q<Image>("Icon");
             icon.image = AssetPreview.GetMiniThumbnail(assetReference);
