@@ -33,7 +33,7 @@ namespace Gemserk {
                         autoRemoveDuplicated = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, false);
                         showHierarchyObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, true);
                         showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, true);
-                        drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryFavoritesPrefKey, true);
+                        drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowPinButtonPrefKey, true);
 
                         showUnloadedObjects = EditorPrefs.GetBool(SelectionHistoryWindow.ShowUnloadedObjectsKey, true);
                         showDestroyedObjects = EditorPrefs.GetBool(SelectionHistoryWindow.ShowDestroyedObjectsKey, false);
@@ -46,7 +46,7 @@ namespace Gemserk {
                     autoRemoveDuplicated = EditorGUILayout.Toggle("Allow duplicated entries", autoRemoveDuplicated);
                     showHierarchyObjects = EditorGUILayout.Toggle("Show HierarchyView objects", showHierarchyObjects);
                     showProjectViewObjects = EditorGUILayout.Toggle("Show ProjectView objects", showProjectViewObjects);
-                    drawFavorites = EditorGUILayout.Toggle("Favorites Enabled", drawFavorites);
+                    drawFavorites = EditorGUILayout.Toggle("Show Pin to favorites button", drawFavorites);
 
                     showUnloadedObjects = EditorGUILayout.Toggle(new GUIContent()
                     {
@@ -67,7 +67,7 @@ namespace Gemserk {
 
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, showHierarchyObjects);
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, showProjectViewObjects);
-                        EditorPrefs.SetBool(SelectionHistoryWindow.HistoryFavoritesPrefKey, drawFavorites);
+                        EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowPinButtonPrefKey, drawFavorites);
                         
                         EditorPrefs.SetBool(SelectionHistoryWindow.ShowUnloadedObjectsKey, showUnloadedObjects);
                         EditorPrefs.SetBool(SelectionHistoryWindow.ShowDestroyedObjectsKey, showDestroyedObjects);

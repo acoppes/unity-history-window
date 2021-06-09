@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Gemserk.Favorites
   m_EditorClassIdentifier: 
   favoritesList:
+  - reference: {fileID: 102900000, guid: 90e93f7f9be371140b0194c9f963b5b5, type: 3}
   - reference: {fileID: 11500000, guid: e46ed68ab8cd4db47a8b49d87ce68639, type: 3}
-  - reference: {fileID: 102900000, guid: 4a1a59f0b5083c04590c927442d6b9ff, type: 3}

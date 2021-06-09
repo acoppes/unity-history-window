@@ -4,50 +4,18 @@ using UnityEngine.UIElements;
 
 namespace Gemserk
 {
-    // [InitializeOnLoad]
-    // public static class FavoriteAssetsWindowInitialization
-    // {
-    //     static FavoriteAssetsWindowInitialization()
-    //     {
-    //         FavoriteAssetsWindow.RegisterSelectionListener();
-    //     }
-    // }
-
     public class FavoriteAssetsWindow : EditorWindow
     {
+        private static FavoriteAssetsWindow instance;
+
+        public static bool IsOpen => instance != null;
+
         [MenuItem("Window/Gemserk/Favorites")]
         public static void ShowExample()
         {
             var wnd = GetWindow<FavoriteAssetsWindow>();
             wnd.titleContent = new GUIContent("Favorites");
         }
-    
-        // public static void RegisterSelectionListener()
-        // {
-        //     Selection.selectionChanged += SelectionRecorder;
-        // }
-        //
-        // private static void SelectionRecorder ()
-        // {
-        //     if (Selection.activeObject != null) {
-        //         // just for testing...
-        //     
-        //         if (Selection.activeObject is GameObject go)
-        //         {
-        //             if (go.scene != null)
-        //                 return;
-        //         }
-        //     
-        //         var favorites = FavoritesController.Favorites;
-        //         if (favorites != null)
-        //         {
-        //             favorites.AddFavorite(new Favorites.Favorite
-        //             {
-        //                 reference = Selection.activeObject
-        //             });
-        //         }
-        //     } 
-        // }
 
         private Favorites _favorites;
 
@@ -57,6 +25,8 @@ namespace Gemserk
 
         private void OnDisable()
         {
+            instance = null;
+            
             if (_favorites != null)
             {
                 _favorites.OnFavoritesUpdated -= OnFavoritesUpdated;
@@ -65,6 +35,8 @@ namespace Gemserk
 
         public void OnEnable()
         {
+            instance = this;
+            
             _favorites = FavoritesController.Favorites;
             _favorites.OnFavoritesUpdated += OnFavoritesUpdated;
             
