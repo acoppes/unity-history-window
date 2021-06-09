@@ -23,8 +23,6 @@ namespace Gemserk
             
             public Object reference;
 
-            public bool isFavorite;
-
             public string sceneName;
             public string scenePath;
             
@@ -89,19 +87,12 @@ namespace Gemserk
                     return State.ReferenceUnloaded;
                 return State.ReferenceDestroyed;
             }
-
-            public void ToggleFavorite()
-            {
-                isFavorite = !isFavorite;
-            }
         }
 
         [SerializeField] 
         private List<Entry> _history = new List<Entry>(100);
 
         private int currentSelectionIndex;
-
-        public bool HasFavorites => _history.Count(e => e.isFavorite) > 0;
 
         private Entry currentSelection
         {

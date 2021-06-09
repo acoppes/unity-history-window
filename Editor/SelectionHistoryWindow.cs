@@ -102,7 +102,8 @@ namespace Gemserk
 		public static readonly string HistoryAllowDuplicatedEntriesPrefKey = "Gemserk.SelectionHistory.AllowDuplicatedEntries";
 	    public static readonly string HistoryShowHierarchyObjectsPrefKey = "Gemserk.SelectionHistory.ShowHierarchyObjects";
 	    public static readonly string HistoryShowProjectViewObjectsPrefKey = "Gemserk.SelectionHistory.ShowProjectViewObjects";
-	    public static readonly string HistoryFavoritesPrefKey = "Gemserk.SelectionHistory.Favorites";
+
+	    public static readonly string HistoryShowPinButtonPrefKey = "Gemserk.SelectionHistory.ShowFavoritesPinButton";
 
 	    public static readonly string ShowUnloadedObjectsKey = "Gemserk.SelectionHistory.ShowUnloadedObjects";
 	    public static readonly string ShowDestroyedObjectsKey = "Gemserk.SelectionHistory.ShowDestroyedObjects";
@@ -209,16 +210,7 @@ namespace Gemserk
 			if (!allowDuplicatedEntries)
 				selectionHistory.RemoveDuplicated();
 
-            var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
-            if (favoritesEnabled && selectionHistory.HasFavorites)
-            {
-                _favoritesScrollPosition = EditorGUILayout.BeginScrollView(_favoritesScrollPosition);
-                DrawFavorites();
-                EditorGUILayout.EndScrollView();
-                EditorGUILayout.Separator();
-            }
-            
-            var showUnloaded = EditorPrefs.GetBool (ShowUnloadedObjectsKey, true);
+			var showUnloaded = EditorPrefs.GetBool (ShowUnloadedObjectsKey, true);
             var showDestroyed = EditorPrefs.GetBool (ShowDestroyedObjectsKey, false);
         
             var changedBefore = GUI.changed;
@@ -290,7 +282,7 @@ namespace Gemserk
 			Selection.activeObject = selectionHistory.GetSelection ();
 		}
 
-		private void DrawElement(SelectionHistory.Entry e, int i, Color originalColor, 
+		private void DrawElement(SelectionHistory.Entry e, Color originalColor, 
 			bool showUnloaded, bool showDestroyed, bool appendScene)
 	    {
 	        var buttonStyle = windowSkin.GetStyle("SelectionButton");
@@ -365,15 +357,14 @@ namespace Gemserk
                 GUILayout.Label(content, buttonStyle);
 
                 GUI.contentColor = originalColor;
-
                 if (GUILayout.Button("Ping", windowSkin.button))
                 {
 	                PingEntry(e);
                 }
 
-                var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
+                var showPinFavoriteButton = EditorPrefs.GetBool(HistoryShowPinButtonPrefKey, true);
 
-                if (favoritesEnabled && !e.isSceneInstance)
+                if (showPinFavoriteButton && !e.isSceneInstance)
                 {
 	                var favorites = FavoritesController.Favorites;
 	                
@@ -400,7 +391,6 @@ namespace Gemserk
 			                    reference = e.reference
 		                    });
 	                    }
-	                    // e.ToggleFavorite();
                         Repaint();
                     }
                 }
@@ -412,46 +402,18 @@ namespace Gemserk
             ButtonLogic(rect, e);
         }
 
-		private void DrawFavorites()
-	    {
-	        var originalColor = GUI.contentColor;
-
-	        var entries = selectionHistory.History;
-
-	        // var buttonStyle = windowSkin.GetStyle("SelectionButton");
-	        
-	        var showUnloaded = EditorPrefs.GetBool (ShowUnloadedObjectsKey, true);
-	        var showDestroyed = EditorPrefs.GetBool (ShowDestroyedObjectsKey, false);
-
-	        for (var i = 0; i < entries.Count; i++)
-	        {
-	            var favorite = entries[i];
-	            if (!favorite.isFavorite)
-		            continue;
-                DrawElement(favorite, i, originalColor, showUnloaded, showDestroyed, true);
-	        }
-
-	        GUI.contentColor = originalColor;
-        }
-
-	    private void DrawHistory()
+		private void DrawHistory()
 		{
 			var originalColor = GUI.contentColor;
 
 			var history = selectionHistory.History;
-
-			// var buttonStyle = windowSkin.GetStyle("SelectionButton");
-
-		    var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
-		    
-		    var showUnloaded = EditorPrefs.GetBool (ShowUnloadedObjectsKey, true);
+			
+			var showUnloaded = EditorPrefs.GetBool (ShowUnloadedObjectsKey, true);
 		    var showDestroyed = EditorPrefs.GetBool (ShowDestroyedObjectsKey, false);
 		    
-            for (var i = 0; i < history.Count; i++) {
-				var historyElement = history [i];
-                if (historyElement.isFavorite && favoritesEnabled)
-                    continue;
-			    DrawElement(historyElement, i, originalColor, showUnloaded, showDestroyed, true);
+            foreach (var historyElement in history)
+            {
+	            DrawElement(historyElement, originalColor, showUnloaded, showDestroyed, true);
             }
 
 			GUI.contentColor = originalColor;
