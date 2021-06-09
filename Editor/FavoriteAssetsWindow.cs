@@ -4,14 +4,14 @@ using UnityEngine.UIElements;
 
 namespace Gemserk
 {
-    [InitializeOnLoad]
-    public static class FavoriteAssetsWindowInitialization
-    {
-        static FavoriteAssetsWindowInitialization()
-        {
-            FavoriteAssetsWindow.RegisterSelectionListener();
-        }
-    }
+    // [InitializeOnLoad]
+    // public static class FavoriteAssetsWindowInitialization
+    // {
+    //     static FavoriteAssetsWindowInitialization()
+    //     {
+    //         FavoriteAssetsWindow.RegisterSelectionListener();
+    //     }
+    // }
 
     public class FavoriteAssetsWindow : EditorWindow
     {
@@ -22,32 +22,32 @@ namespace Gemserk
             wnd.titleContent = new GUIContent("Favorites");
         }
     
-        public static void RegisterSelectionListener()
-        {
-            Selection.selectionChanged += SelectionRecorder;
-        }
-    
-        private static void SelectionRecorder ()
-        {
-            if (Selection.activeObject != null) {
-                // just for testing...
-            
-                if (Selection.activeObject is GameObject go)
-                {
-                    if (go.scene != null)
-                        return;
-                }
-            
-                var favorites = FavoritesSingleton.Instance;
-                if (favorites != null)
-                {
-                    favorites.AddFavorite(new Favorites.Favorite
-                    {
-                        reference = Selection.activeObject
-                    });
-                }
-            } 
-        }
+        // public static void RegisterSelectionListener()
+        // {
+        //     Selection.selectionChanged += SelectionRecorder;
+        // }
+        //
+        // private static void SelectionRecorder ()
+        // {
+        //     if (Selection.activeObject != null) {
+        //         // just for testing...
+        //     
+        //         if (Selection.activeObject is GameObject go)
+        //         {
+        //             if (go.scene != null)
+        //                 return;
+        //         }
+        //     
+        //         var favorites = FavoritesController.Favorites;
+        //         if (favorites != null)
+        //         {
+        //             favorites.AddFavorite(new Favorites.Favorite
+        //             {
+        //                 reference = Selection.activeObject
+        //             });
+        //         }
+        //     } 
+        // }
 
         private Favorites _favorites;
 
@@ -65,7 +65,7 @@ namespace Gemserk
 
         public void OnEnable()
         {
-            _favorites = FavoritesSingleton.Instance;
+            _favorites = FavoritesController.Favorites;
             _favorites.OnFavoritesUpdated += OnFavoritesUpdated;
             
             // var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/FavoriteAssetsWindow.uss");

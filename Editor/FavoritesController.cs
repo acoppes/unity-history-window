@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace Gemserk
 {
-    public class FavoritesSingleton
+    public class FavoritesController
     {
         private static Favorites _favoritesInstance;
     
-        public static Favorites Instance
+        public static Favorites Favorites
         {
             get
             {
