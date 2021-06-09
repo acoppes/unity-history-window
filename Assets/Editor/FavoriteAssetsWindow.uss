@@ -3,7 +3,7 @@
     -unity-text-align: middle-left;
 }
 
-.favorite Image2 {
+.favorite Image {
     max-width: 14px;
     max-height: 12px;
     margin-top: 2px;

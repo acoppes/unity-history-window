@@ -6,7 +6,6 @@
     xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
 >
     <engine:VisualElement class="favorite">
-        <editor:ObjectField/>
         <engine:Image name="Icon" class="unity-image unity-object-field-display__icon"/>
         <engine:Button text="default" name="Favorite"/>
     </engine:VisualElement>
