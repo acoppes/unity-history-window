@@ -373,11 +373,15 @@ namespace Gemserk
 
                 var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
 
-                if (favoritesEnabled)
+                if (favoritesEnabled && !e.isSceneInstance)
                 {
-                    var pinString = "Pin";
-                    var isFavorite = e.isFavorite;
-
+	                var favorites = FavoritesController.Favorites;
+	                
+	                var pinString = "Pin";
+                    // var isFavorite = e.isFavorite;
+                    
+                    var isFavorite = favorites.IsFavorite(e.reference);
+                    
                     if (isFavorite)
                     {
                         pinString = "Unpin";
@@ -385,7 +389,18 @@ namespace Gemserk
 
                     if (GUILayout.Button(pinString, windowSkin.button))
                     {
-	                    e.ToggleFavorite();
+	                    if (isFavorite)
+	                    {
+		                    favorites.RemoveFavorite(e.reference);
+	                    }
+	                    else
+	                    {
+		                    favorites.AddFavorite(new Favorites.Favorite
+		                    {
+			                    reference = e.reference
+		                    });
+	                    }
+	                    // e.ToggleFavorite();
                         Repaint();
                     }
                 }
