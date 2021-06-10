@@ -123,8 +123,12 @@ namespace Gemserk
         private static void Init () {
 			// Get existing open window or if none, make a new one:
 			var window = EditorWindow.GetWindow<SelectionHistoryWindow> ();
-
-			window.titleContent.text = "History";
+			
+			var titleContent = EditorGUIUtility.IconContent(UnityBuiltInIcons.refreshIconName);
+			titleContent.text = "History";
+			titleContent.tooltip = "Objects selection history";
+			window.titleContent = titleContent;
+			
 			window.Show();
 		}
 
