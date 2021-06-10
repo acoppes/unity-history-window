@@ -3,7 +3,11 @@
     -unity-text-align: middle-left;
     margin: 2px;
     padding: 3px;
+}
+
+.favorite #Ping{
     background-color: black;
+    margin-right: 16px;
 }
 
 .favorite Label {
@@ -14,11 +18,19 @@
     visibility: hidden;
 }
 
-.favorite Image {
+.favorite #Icon {
     max-width: 16px;
     max-height: 14px;
-    margin-top: 4px;
-    margin-left: 4px;
     visibility: initial;
     position: absolute;
+    align-self: flex-start;
+}
+
+.favorite #RemoveIcon {
+    max-width: 16px;
+    max-height: 14px;
+    margin: 4px;
+    visibility: initial;
+    position: absolute;
+    align-self: flex-end;
 }
