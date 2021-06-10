@@ -7,8 +7,11 @@
 >
     
     <engine:VisualElement class="favorite">
-        <engine:Label text="default" name="Favorite"/>
-        <engine:Image name="Icon" />
+        <engine:VisualElement name="Ping">
+            <engine:Label text="default" name="Favorite"/>
+            <engine:Image name="Icon" />    
+        </engine:VisualElement>
+        <engine:Image name="RemoveIcon" />
     </engine:VisualElement>
     
     

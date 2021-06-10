@@ -8,6 +8,10 @@ namespace Gemserk
 {
     public class FavoriteAssetsWindow : EditorWindow
     {
+        private const string favoriteIconBuiltinName = "d_Favorite Icon";
+        private const string removeIconBuiltinName = "d_ol_minus";
+        private const string tagIconBuiltinName = "AssetLabelIcon";
+        
         [MenuItem("Window/Gemserk/Favorites")]
         public static void OpenWindow()
         {
@@ -98,17 +102,32 @@ namespace Gemserk
                     continue;
                 
                 var elementTree = favoriteElementTreeAsset.CloneTree();
-            
-                elementTree.RegisterCallback(delegate(MouseUpEvent e)
+
+                var ping = elementTree.Q<VisualElement>("Ping");
+                if (ping != null)
                 {
-                    // Debug.Log("callback");
-                    EditorGUIUtility.PingObject(assetReference);
-                });
+                    ping.RegisterCallback(delegate(MouseUpEvent e)
+                    {
+                        EditorGUIUtility.PingObject(assetReference);
+                    });
+                }
                 
                 var icon = elementTree.Q<Image>("Icon");
                 if (icon != null)
                 {
                     icon.image = AssetPreview.GetMiniThumbnail(assetReference);
+                }
+                
+                var removeIcon = elementTree.Q<Image>("RemoveIcon");
+                if (removeIcon != null)
+                {
+                    // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
+                    removeIcon.image = EditorGUIUtility.IconContent(removeIconBuiltinName).image;
+                    
+                    removeIcon.RegisterCallback(delegate(MouseUpEvent e)
+                    {
+                        FavoritesController.Favorites.RemoveFavorite(assetReference);
+                    });
                 }
                 
                 var label = elementTree.Q<Label>("Favorite");
