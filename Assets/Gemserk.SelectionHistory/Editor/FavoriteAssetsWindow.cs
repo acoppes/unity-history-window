@@ -8,9 +8,7 @@ namespace Gemserk
 {
     public class FavoriteAssetsWindow : EditorWindow
     {
-        private const string favoriteIconBuiltinName = "d_Favorite Icon";
-        private const string removeIconBuiltinName = "d_ol_minus";
-        private const string tagIconBuiltinName = "AssetLabelIcon";
+
         
         [MenuItem("Window/Gemserk/Favorites")]
         public static void OpenWindow()
@@ -122,7 +120,7 @@ namespace Gemserk
                 if (removeIcon != null)
                 {
                     // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
-                    removeIcon.image = EditorGUIUtility.IconContent(removeIconBuiltinName).image;
+                    removeIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.removeIconName).image;
                     
                     removeIcon.RegisterCallback(delegate(MouseUpEvent e)
                     {
