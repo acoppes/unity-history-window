@@ -1,5 +1,6 @@
 using System;
 using UnityEditor;
+using UnityEditor.ShortcutManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -8,10 +9,32 @@ namespace Gemserk
     public class FavoriteAssetsWindow : EditorWindow
     {
         [MenuItem("Window/Gemserk/Favorites")]
-        public static void ShowExample()
+        public static void OpenWindow()
         {
             var wnd = GetWindow<FavoriteAssetsWindow>();
             wnd.titleContent = new GUIContent("Favorites");
+        }
+
+        [MenuItem("Assets/Favorite Item")]
+        [Shortcut("Gemserk/Favorite Item", null, KeyCode.F, ShortcutModifiers.Shift | ShortcutModifiers.Alt)]
+        public static void Favorite()
+        {
+            var favorites = FavoritesController.Favorites;
+
+            var selectedObjects = Selection.objects;
+            foreach (var reference in selectedObjects)
+            {
+                if (favorites.IsFavorite(reference))
+                    continue;
+            
+                if (favorites.CanBeFavorite(Selection.activeObject))
+                {
+                    favorites.AddFavorite(new Favorites.Favorite
+                    {
+                        reference = reference
+                    });   
+                }
+            }
         }
 
         private Favorites _favorites;
