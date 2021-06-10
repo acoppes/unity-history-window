@@ -9,6 +9,8 @@ MonoImporter:
       type: 3}
   - favoriteElementTreeAsset: {fileID: 9197481963319205126, guid: fcf928e2ae210cb4f899f2b33bc6451f,
       type: 3}
+  - dragElementAsset: {fileID: 9197481963319205126, guid: b8b630f4eeeb40b4e8c739dbb35a8455,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
