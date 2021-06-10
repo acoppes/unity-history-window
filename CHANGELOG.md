@@ -1,3 +1,9 @@
+# 1.1.0
+
+* Separated Favorite assets in a new window and removed from history window.
+* There is now a Favorites asset to keep track of user's favorites, can be ignored or not from scm, depends on what the user want. 
+* Added icons for both windows title bar. 
+
 # 1.0.8
 
 * Now scene is pinged when pressing ping for unloaded objects.
