@@ -1,4 +1,3 @@
-using System;
 using UnityEditor;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
@@ -21,11 +20,15 @@ namespace Gemserk
         [MenuItem("Assets/Favorite Item")]
         [Shortcut("Gemserk/Favorite Item", null, KeyCode.F, ShortcutModifiers.Shift | ShortcutModifiers.Alt)]
         public static void Favorite()
+        { 
+            FavoriteElements(Selection.objects);
+        }
+
+        private static void FavoriteElements(Object[] references)
         {
             var favorites = FavoritesController.Favorites;
 
-            var selectedObjects = Selection.objects;
-            foreach (var reference in selectedObjects)
+            foreach (var reference in references)
             {
                 if (favorites.IsFavorite(reference))
                     continue;
@@ -45,7 +48,7 @@ namespace Gemserk
         public StyleSheet styleSheet;
 
         public VisualTreeAsset favoriteElementTreeAsset;
-
+        
         private void OnDisable()
         {
             if (_favorites != null)
@@ -70,6 +73,18 @@ namespace Gemserk
             // root.Add(label);
             //
             // // Import UXML
+            
+            root.RegisterCallback<DragPerformEvent>(evt =>
+            {
+                DragAndDrop.AcceptDrag();
+                FavoriteElements(DragAndDrop.objectReferences);
+            });
+            
+            root.RegisterCallback<DragUpdatedEvent>(evt =>
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+            });
+            
 
             ReloadRoot();
             // A stylesheet can be added to a VisualElement.
@@ -87,9 +102,9 @@ namespace Gemserk
         private void ReloadRoot()
         {
             var root = rootVisualElement;
-        
+
             // var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/FavoriteElement.uxml");
-        
+
             var scroll = new ScrollView(ScrollViewMode.Vertical);
             root.Add(scroll);
 
@@ -138,6 +153,9 @@ namespace Gemserk
                 scroll.Add(elementTree);
             }
 
+            var dragArea = new VisualElement();
+            dragArea.style.flexGrow = 1;
+            root.Add(dragArea);
         }
     }
 }
