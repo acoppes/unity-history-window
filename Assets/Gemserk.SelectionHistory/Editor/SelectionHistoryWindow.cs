@@ -363,10 +363,10 @@ namespace Gemserk
                 }
 
                 var showPinFavoriteButton = EditorPrefs.GetBool(HistoryShowPinButtonPrefKey, true);
-
-                if (showPinFavoriteButton && !e.isSceneInstance)
+                
+                var favorites = FavoritesController.Favorites;
+                if (showPinFavoriteButton && favorites.CanBeFavorite(e.reference))
                 {
-	                var favorites = FavoritesController.Favorites;
 	                
 	                var pinString = "Pin";
                     // var isFavorite = e.isFavorite;
@@ -380,18 +380,8 @@ namespace Gemserk
 
                     if (GUILayout.Button(pinString, windowSkin.button))
                     {
-	                    if (isFavorite)
-	                    {
-		                    favorites.RemoveFavorite(e.reference);
-	                    }
-	                    else
-	                    {
-		                    favorites.AddFavorite(new Favorites.Favorite
-		                    {
-			                    reference = e.reference
-		                    });
-	                    }
-                        Repaint();
+	                    favorites.ToggleFavorite(e.reference);
+	                    Repaint();
                     }
                 }
 
