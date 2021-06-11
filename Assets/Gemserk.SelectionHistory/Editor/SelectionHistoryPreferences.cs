@@ -12,12 +12,10 @@ namespace Gemserk {
 
         static bool autoRemoveDuplicated;
 
-        private static bool showHierarchyObjects = true;
         private static bool showProjectViewObjects = true;
 
         private static bool drawFavorites = true;
         
-        private static bool showUnloadedObjects = true;
         private static bool showDestroyedObjects = false;
 
         private const int defaultHistorySize = 500;
@@ -31,11 +29,8 @@ namespace Gemserk {
                         historySize = EditorPrefs.GetInt(SelectionHistoryWindow.HistorySizePrefKey, defaultHistorySize);
                         autoremoveDestroyed = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, true);
                         autoRemoveDuplicated = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, false);
-                        showHierarchyObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, true);
                         showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, true);
                         drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowPinButtonPrefKey, true);
-
-                        showUnloadedObjects = EditorPrefs.GetBool(SelectionHistoryWindow.ShowUnloadedObjectsKey, true);
                         showDestroyedObjects = EditorPrefs.GetBool(SelectionHistoryWindow.ShowDestroyedObjectsKey, false);
 
                         prefsLoaded = true;
@@ -44,16 +39,9 @@ namespace Gemserk {
                     historySize = EditorGUILayout.IntField("History Size", historySize);
                     autoremoveDestroyed = EditorGUILayout.Toggle("Auto Remove Destroyed", autoremoveDestroyed);
                     autoRemoveDuplicated = EditorGUILayout.Toggle("Allow duplicated entries", autoRemoveDuplicated);
-                    showHierarchyObjects = EditorGUILayout.Toggle("Show HierarchyView objects", showHierarchyObjects);
                     showProjectViewObjects = EditorGUILayout.Toggle("Show ProjectView objects", showProjectViewObjects);
                     drawFavorites = EditorGUILayout.Toggle("Show Pin to favorites button", drawFavorites);
 
-                    showUnloadedObjects = EditorGUILayout.Toggle(new GUIContent()
-                    {
-                        text = "Show Unloaded Objects",
-                        tooltip = "Toggle to show/hide objects from unloaded scenes."
-                    }, showUnloadedObjects);
-                    
                     showDestroyedObjects = EditorGUILayout.Toggle(new GUIContent()
                     {
                         text = "Show Destroyed Objects",
@@ -65,11 +53,9 @@ namespace Gemserk {
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, autoremoveDestroyed);
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, autoRemoveDuplicated);
 
-                        EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, showHierarchyObjects);
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, showProjectViewObjects);
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowPinButtonPrefKey, drawFavorites);
                         
-                        EditorPrefs.SetBool(SelectionHistoryWindow.ShowUnloadedObjectsKey, showUnloadedObjects);
                         EditorPrefs.SetBool(SelectionHistoryWindow.ShowDestroyedObjectsKey, showDestroyedObjects);
 
                         SelectionHistoryWindow.shouldReloadPreferences = true;

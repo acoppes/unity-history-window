@@ -404,6 +404,11 @@ namespace Gemserk
 			
 			var showUnloaded = EditorPrefs.GetBool (ShowUnloadedObjectsKey, true);
 		    var showDestroyed = EditorPrefs.GetBool (ShowDestroyedObjectsKey, false);
+
+		    if (!showHierarchyViewObjects)
+		    {
+			    showUnloaded = false;
+		    }
 		    
             foreach (var historyElement in history)
             {
@@ -490,21 +495,34 @@ namespace Gemserk
 
 	    public void AddItemsToMenu(GenericMenu menu)
 	    {
-		    menu.AddItem(new GUIContent("Show Hierarchy Objects"), 
-			    EditorPrefs.GetBool(HistoryShowHierarchyObjectsPrefKey, true), ToggleShowHierarchyView);
+		    AddMenuItemForPreference(menu, HistoryShowHierarchyObjectsPrefKey, "HierarchyView Objects", 
+			    "Toggle to show/hide objects from scene hierarchy view.");
+		 
+		    if (showHierarchyViewObjects)
+		    {
+			    AddMenuItemForPreference(menu, ShowUnloadedObjectsKey, "Unloaded Objects", 
+				    "Toggle to show/hide unloaded objects from scenes hierarchy view.");
+		    } 
 	    }
 
-	    private void ToggleShowHierarchyView()
+	    private void AddMenuItemForPreference(GenericMenu menu, string preference, string text, string tooltip)
 	    {
-		    showHierarchyViewObjects = ToggleBoolEditorPref(HistoryShowHierarchyObjectsPrefKey, true);
-		    Repaint();
+		    const bool defaultValue = true;
+		    var value = EditorPrefs.GetBool(preference, defaultValue);
+		    var name = value ? $"Hide {text}" : $"Show {text}";
+		    menu.AddItem(new GUIContent(name, tooltip), false, delegate
+		    {
+			    ToggleBoolEditorPref(preference, defaultValue);
+			    shouldReloadPreferences = true;
+			    Repaint();
+		    });
 	    }
 
-	    private static bool ToggleBoolEditorPref(string preferenceName, bool defaultValue)
+	    private static void ToggleBoolEditorPref(string preferenceName, bool defaultValue)
 	    {
 		    var newValue = !EditorPrefs.GetBool(preferenceName, defaultValue);
 		    EditorPrefs.SetBool(preferenceName, newValue);
-		    return newValue;
+		    // return newValue;
 	    }
 	}
 }

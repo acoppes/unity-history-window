@@ -4,6 +4,7 @@
 * There is now a Favorites asset to keep track of user's favorites, can be ignored or not from scm, depends on what the user want. 
 * Added icons for both windows title bar. 
 * Drag objects to fav window favorites them
+* Added some settings to selection history window custom menu. 
 
 # 1.0.8
 
