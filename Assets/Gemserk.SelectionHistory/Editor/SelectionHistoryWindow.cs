@@ -181,17 +181,20 @@ namespace Gemserk
 		private bool automaticRemoveDeleted;
 		private bool allowDuplicatedEntries;
 
-		private bool showHierarchyViewObjects;
 		private bool showProjectViewObjects;
 
+		public static bool ShowHierarchyViewObjects =>
+			EditorPrefs.GetBool(HistoryShowHierarchyObjectsPrefKey, true);
+		
+		public static bool ShowUnloadedObjects =>
+			EditorPrefs.GetBool(ShowUnloadedObjectsKey, true);
+		
 		private void OnGUI () {
 
 			if (shouldReloadPreferences) {
 				selectionHistory.HistorySize = EditorPrefs.GetInt (SelectionHistoryWindow.HistorySizePrefKey, 10);
 				automaticRemoveDeleted = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, true);
 				allowDuplicatedEntries = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, false);
-
-			    showHierarchyViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, true);
 			    showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, true);
 
                 shouldReloadPreferences = false;
@@ -274,7 +277,7 @@ namespace Gemserk
 
 			if (!EditorUtility.IsPersistent(obj))
             {
-                if (!showHierarchyViewObjects)
+                if (!ShowHierarchyViewObjects)
                     return;
                 nonSelectedColor = hierarchyElementColor;
             }
@@ -382,7 +385,7 @@ namespace Gemserk
 			var showUnloaded = EditorPrefs.GetBool (ShowUnloadedObjectsKey, true);
 		    var showDestroyed = EditorPrefs.GetBool (ShowDestroyedObjectsKey, false);
 
-		    if (!showHierarchyViewObjects)
+		    if (!ShowHierarchyViewObjects)
 		    {
 			    showUnloaded = false;
 		    }
@@ -475,7 +478,7 @@ namespace Gemserk
 		    AddMenuItemForPreference(menu, HistoryShowHierarchyObjectsPrefKey, "HierarchyView Objects", 
 			    "Toggle to show/hide objects from scene hierarchy view.");
 		 
-		    if (showHierarchyViewObjects)
+		    if (ShowHierarchyViewObjects)
 		    {
 			    AddMenuItemForPreference(menu, ShowUnloadedObjectsKey, "Unloaded Objects", 
 				    "Toggle to show/hide unloaded objects from scenes hierarchy view.");

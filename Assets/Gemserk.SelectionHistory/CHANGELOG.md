@@ -6,6 +6,7 @@
 * Drag objects to fav window favorites them
 * Added some settings to selection history window custom menu. 
 * New history window using UIElements
+* Now user preferences for selection history can be open from custom menu.
 
 # 1.0.8
 
