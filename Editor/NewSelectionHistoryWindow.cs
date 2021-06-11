@@ -28,11 +28,14 @@ namespace Gemserk
         private void OnDisable()
         {
             EditorSceneManager.sceneClosed -= OnSceneClosed;
+            EditorSceneManager.sceneOpened -= OnSceneOpened;
         }
 
         public void OnEnable()
         {
             EditorSceneManager.sceneClosed += OnSceneClosed;
+            EditorSceneManager.sceneOpened += OnSceneOpened;
+            
             var root = rootVisualElement;
             root.styleSheets.Add(styleSheet);
             
@@ -74,6 +77,11 @@ namespace Gemserk
             //     DragAndDrop.visualMode = DragAndDropVisualMode.Move;
             // });
             
+            ReloadRoot();
+        }
+
+        private void OnSceneOpened(Scene scene, OpenSceneMode mode)
+        {
             ReloadRoot();
         }
 
@@ -120,6 +128,19 @@ namespace Gemserk
                 
                 var elementTree = historyElementViewTree.CloneTree();
 
+                if (!referenced)
+                {
+                    elementTree.AddToClassList("unreferencedObject");
+                }
+                else if (entry.isSceneInstance)
+                {
+                    elementTree.AddToClassList("sceneObject");
+                }
+                else
+                {
+                    elementTree.AddToClassList("assetObject");
+                }
+
                 if (referenced)
                 {
                     var dragArea = elementTree.Q<VisualElement>("DragArea");
@@ -129,7 +150,7 @@ namespace Gemserk
                         {
                             if (evt.button == 1)
                             {
-                                EditorGUIUtility.PingObject(entry.reference);
+                                SelectionHistoryWindow.PingEntry(entry);
                                 return;
                             }
                         
@@ -156,7 +177,7 @@ namespace Gemserk
                     pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
                     pingIcon.RegisterCallback(delegate(MouseUpEvent e)
                     {
-                        EditorGUIUtility.PingObject(entry.reference);
+                        SelectionHistoryWindow.PingEntry(entry);
                     });
                 }
                 
