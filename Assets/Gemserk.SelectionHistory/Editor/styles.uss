@@ -46,6 +46,18 @@
     border-radius: 3px;
 }
 
+.unreferencedObject Label {
+    color: #5D5D5D;
+}
+
+.sceneObject Label { 
+    color: darkseagreen;
+}
+
+.assetObject Label {
+    
+}
+
 .history Label {
     margin-left: 17px;
 }

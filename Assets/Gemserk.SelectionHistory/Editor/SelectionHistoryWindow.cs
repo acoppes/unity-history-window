@@ -461,7 +461,7 @@ namespace Gemserk
 
 		}
 
-	    private void PingEntry(SelectionHistory.Entry e)
+	    public static void PingEntry(SelectionHistory.Entry e)
 	    {
 		    if (e.GetReferenceState() == SelectionHistory.Entry.State.ReferenceUnloaded)
 		    {
