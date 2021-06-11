@@ -94,7 +94,7 @@ namespace Gemserk
 		}
 	}
 
-	public class SelectionHistoryWindow : EditorWindow {
+	public class SelectionHistoryWindow : EditorWindow, IHasCustomMenu {
 		private const float buttonsWidth = 120f;
 
 		public static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
@@ -488,5 +488,23 @@ namespace Gemserk
 		    }
 	    }
 
+	    public void AddItemsToMenu(GenericMenu menu)
+	    {
+		    menu.AddItem(new GUIContent("Show Hierarchy Objects"), 
+			    EditorPrefs.GetBool(HistoryShowHierarchyObjectsPrefKey, true), ToggleShowHierarchyView);
+	    }
+
+	    private void ToggleShowHierarchyView()
+	    {
+		    showHierarchyViewObjects = ToggleBoolEditorPref(HistoryShowHierarchyObjectsPrefKey, true);
+		    Repaint();
+	    }
+
+	    private static bool ToggleBoolEditorPref(string preferenceName, bool defaultValue)
+	    {
+		    var newValue = !EditorPrefs.GetBool(preferenceName, defaultValue);
+		    EditorPrefs.SetBool(preferenceName, newValue);
+		    return newValue;
+	    }
 	}
 }
