@@ -15,8 +15,6 @@ namespace Gemserk {
         private static bool showProjectViewObjects = true;
 
         private static bool drawFavorites = true;
-        
-        private static bool showDestroyedObjects = false;
 
         private const int defaultHistorySize = 500;
 
@@ -31,7 +29,6 @@ namespace Gemserk {
                         autoRemoveDuplicated = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, false);
                         showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, true);
                         drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowPinButtonPrefKey, true);
-                        showDestroyedObjects = EditorPrefs.GetBool(SelectionHistoryWindow.ShowDestroyedObjectsKey, false);
 
                         prefsLoaded = true;
                     }
@@ -42,12 +39,6 @@ namespace Gemserk {
                     showProjectViewObjects = EditorGUILayout.Toggle("Show ProjectView objects", showProjectViewObjects);
                     drawFavorites = EditorGUILayout.Toggle("Show Pin to favorites button", drawFavorites);
 
-                    showDestroyedObjects = EditorGUILayout.Toggle(new GUIContent()
-                    {
-                        text = "Show Destroyed Objects",
-                        tooltip = "Toggle to show/hide unreferenced or destroyed objects."
-                    }, showDestroyedObjects);
-
                     if (GUI.changed) {
                         EditorPrefs.SetInt(SelectionHistoryWindow.HistorySizePrefKey, historySize);
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, autoremoveDestroyed);
@@ -55,8 +46,6 @@ namespace Gemserk {
 
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, showProjectViewObjects);
                         EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowPinButtonPrefKey, drawFavorites);
-                        
-                        EditorPrefs.SetBool(SelectionHistoryWindow.ShowDestroyedObjectsKey, showDestroyedObjects);
 
                         SelectionHistoryWindow.shouldReloadPreferences = true;
                     }
