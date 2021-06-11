@@ -57,3 +57,13 @@
     position: absolute;
     align-self: flex-start;
 }
+
+.history #PingIcon {
+    max-width: 16px;
+    max-height: 14px;
+    margin: 4px;
+    padding-right: 0px;
+    right: 0px;
+    position: absolute;
+    /* align-self: flex-end; */
+}

@@ -7,7 +7,7 @@
 >
     
     <engine:VisualElement class="history">
-        <engine:VisualElement name="Ping">
+        <engine:VisualElement name="DragArea">
             <engine:Label text="default" name="Name"/>
             <engine:Image name="Icon" />    
         </engine:VisualElement>
