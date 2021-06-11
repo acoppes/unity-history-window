@@ -1,99 +1,8 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Reflection;
-using UnityEditor.SceneManagement;
-using UnityEditor.ShortcutManagement;
-using UnityEngine.SceneManagement;
 
 namespace Gemserk
 {
-	[InitializeOnLoad]
-	public static class SelectionHistoryInitialization
-	{
-		static SelectionHistoryInitialization()
-		{
-			SelectionHistoryWindow.RegisterSelectionListener();
-		}
-	}
-
-	[InitializeOnLoad]
-	public static class StoreSceneSelection
-	{
-		static StoreSceneSelection()
-		{
-			EditorSceneManager.sceneClosing += StoreSceneSelectionOnSceneClosing;
-			EditorSceneManager.sceneOpened += StoreSceneSelectionOnSceneOpened;
-		}
-
-		private static void StoreSceneSelectionOnSceneOpened(Scene scene, OpenSceneMode mode)
-		{
-			var selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
-
-			if (selectionHistory == null)
-				return;
-			
-			var entries = selectionHistory.History;
-
-			foreach (var entry in entries)
-			{
-				if (!string.IsNullOrEmpty(entry.globalObjectId))
-				{
-					// This only parses the global id but that doesnt mean its object is not null
-					if (GlobalObjectId.TryParse(entry.globalObjectId, out var globalObjectId))
-					{
-						var reference = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
-						if (reference != null)
-						{
-							// Debug.Log($"Restoring scene object reference {entry.name} from GlobalId");
-							entry.reference = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
-							entry.globalObjectId = null;
-						}
-					}
-				}
-			}
-		}
-
-		private static void StoreSceneSelectionOnSceneClosing(Scene scene, bool removingScene)
-		{
-			if (!removingScene)
-				return;
-			
-			var selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
-
-			if (selectionHistory == null)
-				return;
-			
-			var entries = selectionHistory.History;
-			foreach (var entry in entries)
-			{
-				if (entry.reference != null && entry.reference is GameObject go)
-				{
-					// GameObject's scene is being unloaded here...
-					if (go.scene == scene)
-					{
-						entry.globalObjectId = GlobalObjectId.GetGlobalObjectIdSlow(go).ToString();
-						// var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(scene.path);
-						// AssetDatabase.GetAssetPath(scene);
-						// Debug.Log($"Storing scene object reference {entry.name} as GlobalId");
-						// entry.state = SelectionHistory.Entry.State.ReferenceUnloaded;
-					}
-				}
-			}
-		}
-	}
-
-	public static class SelectionHistoryEntryExtensions
-	{
-		public static string GetName(this SelectionHistory.Entry e, bool appendScene)
-		{
-			if (appendScene && e.isSceneInstance)
-			{
-				return $"{e.sceneName}/{e.name}";
-			}
-			return e.name;
-		}
-	}
-
 	public class SelectionHistoryWindow : EditorWindow, IHasCustomMenu {
 		private const float buttonsWidth = 120f;
 
@@ -132,29 +41,10 @@ namespace Gemserk
 			window.Show();
 		}
 
-        private static void SelectionRecorder ()
-		{
-			if (Selection.activeObject != null) {
-				if (debugEnabled) {
-					Debug.Log ("Recording new selection: " + Selection.activeObject.name);
-				}
-
-				selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
-				selectionHistory.UpdateSelection (Selection.activeObject);
-			} 
-		}
-
-		public static void RegisterSelectionListener()
-		{
-			Selection.selectionChanged += SelectionRecorder;
-		}
-
-		public GUISkin windowSkin;
+        public GUISkin windowSkin;
 
 		private void OnEnable()
 		{
-			automaticRemoveDeleted = EditorPrefs.GetBool (HistoryAutomaticRemoveDeletedPrefKey, true);
-
 			selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
 			selectionHistory.HistorySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
 
@@ -178,10 +68,13 @@ namespace Gemserk
 	    private Vector2 _favoritesScrollPosition;
 		private Vector2 _historyScrollPosition;
 
-		private bool automaticRemoveDeleted;
-		private bool allowDuplicatedEntries;
-
 		private bool showProjectViewObjects;
+		
+		public static bool AutomaticRemoveDeleted =>
+			EditorPrefs.GetBool(HistoryAutomaticRemoveDeletedPrefKey, true);
+		
+		public static bool AllowDuplicatedEntries =>
+			EditorPrefs.GetBool(HistoryAllowDuplicatedEntriesPrefKey, false);
 
 		public static bool ShowHierarchyViewObjects =>
 			EditorPrefs.GetBool(HistoryShowHierarchyObjectsPrefKey, true);
@@ -189,21 +82,22 @@ namespace Gemserk
 		public static bool ShowUnloadedObjects =>
 			EditorPrefs.GetBool(ShowUnloadedObjectsKey, true);
 		
+		public static bool ShowDestroyedObjects =>
+			EditorPrefs.GetBool(ShowDestroyedObjectsKey, false);
+		
 		private void OnGUI () {
 
 			if (shouldReloadPreferences) {
 				selectionHistory.HistorySize = EditorPrefs.GetInt (SelectionHistoryWindow.HistorySizePrefKey, 10);
-				automaticRemoveDeleted = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, true);
-				allowDuplicatedEntries = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, false);
 			    showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, true);
 
                 shouldReloadPreferences = false;
 			}
 
-			if (automaticRemoveDeleted)
+			if (AutomaticRemoveDeleted)
 				selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
 
-			if (!allowDuplicatedEntries)
+			if (!AllowDuplicatedEntries)
 				selectionHistory.RemoveDuplicated();
 
 			var showUnloaded = EditorPrefs.GetBool (ShowUnloadedObjectsKey, true);
@@ -228,7 +122,7 @@ namespace Gemserk
 				Repaint();
 			}
 
-			if (!automaticRemoveDeleted && showDestroyed) {
+			if (!AutomaticRemoveDeleted && showDestroyed) {
 				if (GUILayout.Button ("Remove Destroyed")) {
 					selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
 					Repaint();
@@ -242,7 +136,7 @@ namespace Gemserk
 				}
 			} 
 
-			if (allowDuplicatedEntries) {
+			if (AllowDuplicatedEntries) {
 				if (GUILayout.Button ("Remove Duplicated")) {
 					selectionHistory.RemoveDuplicated ();
 					Repaint();
@@ -250,21 +144,7 @@ namespace Gemserk
 			}
 		}
 
-		[MenuItem("Window/Gemserk/Previous selection %#,")]
-		[Shortcut("Selection History/Previous Selection")]
-		public static void PreviousSelection()
-		{
-			selectionHistory.Previous ();
-			Selection.activeObject = selectionHistory.GetSelection ();
-		}
 
-		[MenuItem("Window/Gemserk/Next selection %#.")]
-		[Shortcut("Selection History/Next Selection")]
-		public static void Nextelection()
-		{
-			selectionHistory.Next();
-			Selection.activeObject = selectionHistory.GetSelection ();
-		}
 
 		private void DrawElement(SelectionHistory.Entry e, Color originalColor, 
 			bool showUnloaded, bool showDestroyed, bool appendScene)

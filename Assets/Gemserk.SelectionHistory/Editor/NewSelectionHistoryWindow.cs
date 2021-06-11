@@ -53,30 +53,10 @@ namespace Gemserk
                         var scrollOffset = mainScroll.scrollOffset;
                         scrollOffset.y = float.MaxValue;
                         mainScroll.scrollOffset = scrollOffset;
-                        // _historyScrollPosition.y = float.MaxValue;
                     }
                 }
             };
-            
-            // root.RegisterCallback<DragPerformEvent>(evt =>
-            // {
-            //     DragAndDrop.AcceptDrag();
-            //     FavoriteElements(DragAndDrop.objectReferences);
-            // });
-            //
-            //  
-            // box.RegisterCallback<MouseDownEvent>(evt =>
-            // {
-            //     DragAndDrop.PrepareStartDrag();
-            //     DragAndDrop.StartDrag("Dragging");
-            //     DragAndDrop.objectReferences = new Object[] { prefab };
-            // });
-            
-            // root.RegisterCallback<DragUpdatedEvent>(evt =>
-            // {
-            //     DragAndDrop.visualMode = DragAndDropVisualMode.Move;
-            // });
-            
+
             ReloadRoot();
         }
 
@@ -95,6 +75,12 @@ namespace Gemserk
             var root = rootVisualElement;
             
             root.Clear();
+            
+            if (SelectionHistoryWindow.AutomaticRemoveDeleted)
+                selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
+
+            if (!SelectionHistoryWindow.AllowDuplicatedEntries)
+                selectionHistory.RemoveDuplicated();
 
             var scroll = new ScrollView(ScrollViewMode.Vertical)
             {
@@ -109,6 +95,7 @@ namespace Gemserk
 
             var showHierarchyElements = SelectionHistoryWindow.ShowHierarchyViewObjects;
             var showUnloadedObjects = SelectionHistoryWindow.ShowUnloadedObjects;
+            var showDestroyedObjects = SelectionHistoryWindow.ShowDestroyedObjects;
 
             for (var i = 0; i < entries.Count; i++)
             {
@@ -121,7 +108,12 @@ namespace Gemserk
 
                 var referenced = entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced;
                 
-                if (!showUnloadedObjects && !referenced)
+                if (!showUnloadedObjects && entry.GetReferenceState() == SelectionHistory.Entry.State.ReferenceUnloaded)
+                {
+                    continue;
+                }
+                
+                if (!showDestroyedObjects && entry.GetReferenceState() == SelectionHistory.Entry.State.ReferenceDestroyed)
                 {
                     continue;
                 }
@@ -190,16 +182,40 @@ namespace Gemserk
                 scroll.Add(elementTree);
             }
 
-            var clearButton = new Button
-            {
-                text = "Clear"
-            };
-            clearButton.clicked += delegate
+            var clearButton = new Button(delegate
             {
                 selectionHistory.Clear();
                 ReloadRoot();
-            };
+            }) {text = "Clear"};
             root.Add(clearButton);
+
+            if (showUnloadedObjects)
+            {
+                var removeUnloadedButton = new Button(delegate
+                {
+                    selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceUnloaded);
+                    ReloadRoot();
+                }) {text = "Remove Unloaded"};
+                root.Add(removeUnloadedButton);
+            }
+            
+            if (showDestroyedObjects)
+            {
+                var removeDestroyedButton = new Button(delegate
+                {
+                    selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
+                    ReloadRoot();
+                }) {text = "Remove destroyed"};
+                root.Add(removeDestroyedButton);
+            }
+            
+            //
+            // if (allowDuplicatedEntries) {
+            //     if (GUILayout.Button ("Remove Duplicated")) {
+            //         selectionHistory.RemoveDuplicated ();
+            //         Repaint();
+            //     }
+            // }
         }
 
         public void AddItemsToMenu(GenericMenu menu)
