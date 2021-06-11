@@ -5,6 +5,7 @@
 * Added icons for both windows title bar. 
 * Drag objects to fav window favorites them
 * Added some settings to selection history window custom menu. 
+* New history window using UIElements
 
 # 1.0.8
 

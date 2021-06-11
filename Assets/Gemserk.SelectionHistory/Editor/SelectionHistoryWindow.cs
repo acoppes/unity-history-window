@@ -151,8 +151,6 @@ namespace Gemserk
 
 		public GUISkin windowSkin;
 
-		private MethodInfo openPreferencesWindow;
-
 		private void OnEnable()
 		{
 			automaticRemoveDeleted = EditorPrefs.GetBool (HistoryAutomaticRemoveDeletedPrefKey, true);
@@ -168,15 +166,6 @@ namespace Gemserk
 
 				Repaint();
 			};
-
-			try {
-				var asm = Assembly.GetAssembly (typeof(EditorWindow));
-				var t = asm.GetType ("UnityEditor.PreferencesWindow");
-				openPreferencesWindow = t.GetMethod ("ShowPreferencesWindow", BindingFlags.NonPublic | BindingFlags.Static);
-			} catch {
-				// couldnt get preferences window...
-				openPreferencesWindow = null;
-			}
 		}
 
 		private void UpdateSelection(Object obj)
@@ -255,21 +244,9 @@ namespace Gemserk
 					selectionHistory.RemoveDuplicated ();
 					Repaint();
 				}
-			} 
-
-			DrawSettingsButton();
-		}
-
-		private void DrawSettingsButton()
-		{
-			if (openPreferencesWindow == null)
-				return;
-			
-			if (GUILayout.Button ("Preferences")) {
-				openPreferencesWindow.Invoke(null, null);
 			}
 		}
-			
+
 		[MenuItem("Window/Gemserk/Previous selection %#,")]
 		[Shortcut("Selection History/Previous Selection")]
 		public static void PreviousSelection()
@@ -506,6 +483,11 @@ namespace Gemserk
 		    
 		    AddMenuItemForPreference(menu, ShowDestroyedObjectsKey, "Destroyed Objects", 
 			    "Toggle to show/hide unreferenced or destroyed objects.");
+		    
+		    menu.AddItem(new GUIContent("Open preferences"), false, delegate
+		    {
+			    SettingsService.OpenUserPreferences("Selection History");
+		    });
 	    }
 
 	    private void AddMenuItemForPreference(GenericMenu menu, string preference, string text, string tooltip)
