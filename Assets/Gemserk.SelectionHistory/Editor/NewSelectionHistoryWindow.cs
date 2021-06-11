@@ -96,18 +96,35 @@ namespace Gemserk
                 var entry = entries[i];
                 
                 var elementTree = historyElementViewTree.CloneTree();
-
-                if (entry.reference != null)
+                
+                if (entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced)
                 {
-                    var ping = elementTree.Q<VisualElement>("Ping");
-                    if (ping != null)
+
+                }
+                
+                if (entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced)
+                {
+                    var dragArea = elementTree.Q<VisualElement>("DragArea");
+                    if (dragArea != null)
                     {
-                        ping.RegisterCallback(delegate(MouseUpEvent e)
+                        dragArea.RegisterCallback<MouseDownEvent>(evt =>
                         {
-                            EditorGUIUtility.PingObject(entry.reference);
+                            if (evt.button == 1)
+                            {
+                                EditorGUIUtility.PingObject(entry.reference);
+                                return;
+                            }
+                        
+                            DragAndDrop.PrepareStartDrag();
+                            DragAndDrop.StartDrag("Dragging");
+                            DragAndDrop.objectReferences = new Object[] {entry.reference};
+                        });
+                        dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
+                        {
+                            DragAndDrop.visualMode = DragAndDropVisualMode.Move;
                         });
                     }
-
+                    
                     var icon = elementTree.Q<Image>("Icon");
                     if (icon != null)
                     {
@@ -115,17 +132,15 @@ namespace Gemserk
                     }
                 }
                 
-                // var removeIcon = elementTree.Q<Image>("RemoveIcon");
-                // if (removeIcon != null)
-                // {
-                //     // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
-                //     removeIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.removeIconName).image;
-                //     
-                //     removeIcon.RegisterCallback(delegate(MouseUpEvent e)
-                //     {
-                //         FavoritesController.Favorites.RemoveFavorite(assetReference);
-                //     });
-                // }
+                var pingIcon = elementTree.Q<Image>("PingIcon");
+                if (pingIcon != null)
+                {
+                    pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.pickObjectIconName).image;
+                    pingIcon.RegisterCallback(delegate(MouseUpEvent e)
+                    {
+                        EditorGUIUtility.PingObject(entry.reference);
+                    });
+                }
                 
                 var label = elementTree.Q<Label>("Name");
                 if (label != null)
@@ -134,7 +149,6 @@ namespace Gemserk
                 }
 
                 scroll.Add(elementTree);
-                // lastObject = elementTree;
             }
 
             var clearButton = new Button
@@ -147,12 +161,6 @@ namespace Gemserk
                 ReloadRoot();
             };
             root.Add(clearButton);
-
-            // if (lastObject != null)
-            // {
-            //     scroll.scrollOffset = 
-            //     scroll.ScrollTo(lastObject);
-            // }
         }
     }
 }

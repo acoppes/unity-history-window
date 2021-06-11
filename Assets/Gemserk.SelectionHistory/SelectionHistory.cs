@@ -32,6 +32,8 @@ namespace Gemserk
 
             public bool isSceneInstance => !string.IsNullOrEmpty(sceneName);
 
+            public bool isAsset => !isSceneInstance;
+
             public string name
             {
                 get
