@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace Gemserk
 {
-    public class NewSelectionHistoryWindow : EditorWindow
+    public class NewSelectionHistoryWindow : EditorWindow, IHasCustomMenu
     {
         [MenuItem("Window/Gemserk/New Selection History")]
         public static void OpenWindow()
@@ -96,12 +96,7 @@ namespace Gemserk
                 var entry = entries[i];
                 
                 var elementTree = historyElementViewTree.CloneTree();
-                
-                if (entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced)
-                {
-
-                }
-                
+        
                 if (entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced)
                 {
                     var dragArea = elementTree.Q<VisualElement>("DragArea");
@@ -135,7 +130,7 @@ namespace Gemserk
                 var pingIcon = elementTree.Q<Image>("PingIcon");
                 if (pingIcon != null)
                 {
-                    pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.pickObjectIconName).image;
+                    pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
                     pingIcon.RegisterCallback(delegate(MouseUpEvent e)
                     {
                         EditorGUIUtility.PingObject(entry.reference);
@@ -161,6 +156,49 @@ namespace Gemserk
                 ReloadRoot();
             };
             root.Add(clearButton);
+        }
+
+        public void AddItemsToMenu(GenericMenu menu)
+        {
+            var showHierarchyViewObjects =
+                EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, true);
+            
+            AddMenuItemForPreference(menu, SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, "HierarchyView Objects", 
+                "Toggle to show/hide objects from scene hierarchy view.");
+		 
+            if (showHierarchyViewObjects)
+            {
+                AddMenuItemForPreference(menu, SelectionHistoryWindow.ShowUnloadedObjectsKey, "Unloaded Objects", 
+                    "Toggle to show/hide unloaded objects from scenes hierarchy view.");
+            } 
+		    
+            AddMenuItemForPreference(menu, SelectionHistoryWindow.ShowDestroyedObjectsKey, "Destroyed Objects", 
+                "Toggle to show/hide unreferenced or destroyed objects.");
+            
+            menu.AddItem(new GUIContent("Open preferences"), false, delegate
+            {
+                SettingsService.OpenUserPreferences("Selection History");
+            });
+        }
+
+        private void AddMenuItemForPreference(GenericMenu menu, string preference, string text, string tooltip)
+        {
+            const bool defaultValue = true;
+            var value = EditorPrefs.GetBool(preference, defaultValue);
+            var name = value ? $"Hide {text}" : $"Show {text}";
+            menu.AddItem(new GUIContent(name, tooltip), false, delegate
+            {
+                ToggleBoolEditorPref(preference, defaultValue);
+                // shouldReloadPreferences = true;
+                Repaint();
+            });
+        }
+
+        private static void ToggleBoolEditorPref(string preferenceName, bool defaultValue)
+        {
+            var newValue = !EditorPrefs.GetBool(preferenceName, defaultValue);
+            EditorPrefs.SetBool(preferenceName, newValue);
+            // return newValue;
         }
     }
 }
