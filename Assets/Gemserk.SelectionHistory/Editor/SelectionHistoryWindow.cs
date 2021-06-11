@@ -503,6 +503,9 @@ namespace Gemserk
 			    AddMenuItemForPreference(menu, ShowUnloadedObjectsKey, "Unloaded Objects", 
 				    "Toggle to show/hide unloaded objects from scenes hierarchy view.");
 		    } 
+		    
+		    AddMenuItemForPreference(menu, ShowDestroyedObjectsKey, "Destroyed Objects", 
+			    "Toggle to show/hide unreferenced or destroyed objects.");
 	    }
 
 	    private void AddMenuItemForPreference(GenericMenu menu, string preference, string text, string tooltip)
