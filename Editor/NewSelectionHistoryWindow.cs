@@ -1,6 +1,8 @@
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace Gemserk
@@ -25,11 +27,12 @@ namespace Gemserk
         
         private void OnDisable()
         {
-
+            EditorSceneManager.sceneClosed -= OnSceneClosed;
         }
 
         public void OnEnable()
         {
+            EditorSceneManager.sceneClosed += OnSceneClosed;
             var root = rootVisualElement;
             root.styleSheets.Add(styleSheet);
             
@@ -74,6 +77,11 @@ namespace Gemserk
             ReloadRoot();
         }
 
+        private void OnSceneClosed(Scene scene)
+        {
+            ReloadRoot();
+        }
+
         private void ReloadRoot()
         {
             var root = rootVisualElement;
@@ -91,13 +99,28 @@ namespace Gemserk
 
             VisualElement lastObject = null;
 
+            var showHierarchyElements = SelectionHistoryWindow.ShowHierarchyViewObjects;
+            var showUnloadedObjects = SelectionHistoryWindow.ShowUnloadedObjects;
+
             for (var i = 0; i < entries.Count; i++)
             {
                 var entry = entries[i];
+
+                if (entry.isSceneInstance && !showHierarchyElements)
+                {
+                    continue;
+                }
+
+                var referenced = entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced;
+                
+                if (!showUnloadedObjects && !referenced)
+                {
+                    continue;
+                }
                 
                 var elementTree = historyElementViewTree.CloneTree();
-        
-                if (entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced)
+
+                if (referenced)
                 {
                     var dragArea = elementTree.Q<VisualElement>("DragArea");
                     if (dragArea != null)
@@ -189,8 +212,7 @@ namespace Gemserk
             menu.AddItem(new GUIContent(name, tooltip), false, delegate
             {
                 ToggleBoolEditorPref(preference, defaultValue);
-                // shouldReloadPreferences = true;
-                Repaint();
+                ReloadRoot();
             });
         }
 
