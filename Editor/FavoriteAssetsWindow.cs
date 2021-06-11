@@ -10,11 +10,11 @@ namespace Gemserk
         [MenuItem("Window/Gemserk/Favorites")]
         public static void OpenWindow()
         {
-            var wnd = GetWindow<FavoriteAssetsWindow>();
+            var window = GetWindow<FavoriteAssetsWindow>();
             var titleContent = EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName);
             titleContent.text = "Favorites";
             titleContent.tooltip = "Favorite assets window";
-            wnd.titleContent = titleContent;
+            window.titleContent = titleContent;
         }
 
         [MenuItem("Assets/Favorite Item")]
