@@ -1,10 +1,5 @@
-#if UNITY_EDITOR_OSX
-    #define SELECTION_DISABLE_DRAG
-#endif
-
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEditor.ShortcutManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -142,7 +137,7 @@ namespace Gemserk
                     var dragArea = elementTree.Q<VisualElement>("DragArea");
                     if (dragArea != null)
                     {
-#if !SELECTION_DISABLE_DRAG
+#if !UNITY_EDITOR_OSX
                         dragArea.RegisterCallback<MouseDownEvent>(evt =>
                         {
                             if (evt.button == 1)

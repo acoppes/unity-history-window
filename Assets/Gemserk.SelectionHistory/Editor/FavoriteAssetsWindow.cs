@@ -105,13 +105,32 @@ namespace Gemserk
                 
                 var elementTree = favoriteElementTreeAsset.CloneTree();
 
-                var ping = elementTree.Q<VisualElement>("Ping");
-                if (ping != null)
+                var dragArea = elementTree.Q<VisualElement>("DragArea");
+                if (dragArea != null)
                 {
-                    ping.RegisterCallback(delegate(MouseUpEvent e)
+#if !UNITY_EDITOR_OSX
+                    dragArea.RegisterCallback<MouseDownEvent>(evt =>
                     {
-                        EditorGUIUtility.PingObject(assetReference);
+                        if (evt.button == 1)
+                        {
+                            EditorGUIUtility.PingObject(assetReference);
+                            return;
+                        }
+                        
+                        DragAndDrop.PrepareStartDrag();
+                        DragAndDrop.StartDrag("Dragging");
+                        DragAndDrop.objectReferences = new Object[] {assetReference};
                     });
+                    dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
+                    {
+                        DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+                    });
+#else
+                        dragArea.RegisterCallback<MouseDownEvent>(evt =>
+                        {
+                            EditorGUIUtility.PingObject(assetReference);
+                        });
+#endif
                 }
                 
                 var icon = elementTree.Q<Image>("Icon");
@@ -141,9 +160,9 @@ namespace Gemserk
                 scroll.Add(elementTree);
             }
 
-            var dragArea = new VisualElement();
-            dragArea.style.flexGrow = 1;
-            root.Add(dragArea);
+            var receiveDragArea = new VisualElement();
+            receiveDragArea.style.flexGrow = 1;
+            root.Add(receiveDragArea);
         }
     }
 }
