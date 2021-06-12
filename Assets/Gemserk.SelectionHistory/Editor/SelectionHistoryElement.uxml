@@ -11,6 +11,7 @@
             <engine:Label text="default" name="Name"/>
             <engine:Image name="Icon" />    
         </engine:VisualElement>
+        <engine:Image name="Favorite" />
         <engine:Image name="PingIcon" />
     </engine:VisualElement>
     
