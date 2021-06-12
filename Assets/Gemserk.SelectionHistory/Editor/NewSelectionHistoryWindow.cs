@@ -8,7 +8,7 @@ namespace Gemserk
 {
     public class NewSelectionHistoryWindow : EditorWindow, IHasCustomMenu
     {
-        [MenuItem("Window/Gemserk/New Selection History")]
+        [MenuItem("Window/Gemserk/Selection History %#h")]
         public static void OpenWindow()
         {
             var window = GetWindow<NewSelectionHistoryWindow>();
@@ -39,6 +39,7 @@ namespace Gemserk
             root.styleSheets.Add(styleSheet);
             
             selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+            selectionHistory.HistorySize = EditorPrefs.GetInt (SelectionHistoryWindow.HistorySizePrefKey, 10);
             
             Selection.selectionChanged += delegate {
                 
@@ -143,26 +144,49 @@ namespace Gemserk
                     if (dragArea != null)
                     {
 #if !UNITY_EDITOR_OSX
-                        dragArea.RegisterCallback<MouseDownEvent>(evt =>
+                        dragArea.RegisterCallback<MouseUpEvent>(evt =>
                         {
-                            if (evt.button == 1)
+                            if (evt.button == 0)
+                            {
+                                selectionHistory.SetSelection(entry.reference);
+                                Selection.activeObject = entry.reference;
+                            }
+                            else
                             {
                                 SelectionHistoryWindow.PingEntry(entry);
-                                return;
                             }
-                        
-                            DragAndDrop.PrepareStartDrag();
-                            DragAndDrop.StartDrag("Dragging");
-                            DragAndDrop.objectReferences = new Object[] {entry.reference};
                         });
-                        dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
-                        {
-                            DragAndDrop.visualMode = DragAndDropVisualMode.Move;
-                        });
-#else
                         dragArea.RegisterCallback<MouseDownEvent>(evt =>
                         {
-                            SelectionHistoryWindow.PingEntry(entry);
+                            DragAndDrop.PrepareStartDrag();
+                            DragAndDrop.objectReferences = new Object[] { null };
+                        });
+                        dragArea.RegisterCallback<MouseLeaveEvent>(evt =>
+                        {
+                            if (evt.pressedButtons != 0)
+                            {
+                                DragAndDrop.PrepareStartDrag();
+                                DragAndDrop.StartDrag("Dragging");
+                                DragAndDrop.objectReferences = new Object[] {entry.reference};
+                            }
+                        });
+                        
+                        dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
+                        {
+                            DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+                        });
+#else
+                        dragArea.RegisterCallback<MouseUpEvent>(evt =>
+                        {
+                            if (evt.button == 0)
+                            {
+                                selectionHistory.SetSelection(entry.reference);
+                                Selection.activeObject = entry.reference;
+                            }
+                            else
+                            {
+                                SelectionHistoryWindow.PingEntry(entry);
+                            }
                         });
 #endif
                     }
