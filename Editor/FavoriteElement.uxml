@@ -7,7 +7,7 @@
 >
     
     <engine:VisualElement class="favorite">
-        <engine:VisualElement name="Ping">
+        <engine:VisualElement name="DragArea">
             <engine:Label text="default" name="Favorite"/>
             <engine:Image name="Icon" />    
         </engine:VisualElement>

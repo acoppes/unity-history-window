@@ -9,7 +9,7 @@
     border-radius: 3px;
 }
 
-.favorite #Ping{
+.favorite #DragArea{
     margin-right: 16px;
 }
 
