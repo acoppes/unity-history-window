@@ -1,3 +1,7 @@
+#if UNITY_EDITOR_OSX
+    #define SELECTION_DISABLE_DRAG
+#endif
+
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.ShortcutManagement;
@@ -138,6 +142,7 @@ namespace Gemserk
                     var dragArea = elementTree.Q<VisualElement>("DragArea");
                     if (dragArea != null)
                     {
+#if !SELECTION_DISABLE_DRAG
                         dragArea.RegisterCallback<MouseDownEvent>(evt =>
                         {
                             if (evt.button == 1)
@@ -154,6 +159,12 @@ namespace Gemserk
                         {
                             DragAndDrop.visualMode = DragAndDropVisualMode.Move;
                         });
+#else
+                        dragArea.RegisterCallback<MouseDownEvent>(evt =>
+                        {
+                            SelectionHistoryWindow.PingEntry(entry);
+                        });
+#endif
                     }
                     
                     var icon = elementTree.Q<Image>("Icon");
