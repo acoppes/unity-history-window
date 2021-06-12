@@ -24,11 +24,11 @@ namespace Gemserk {
                 label = "Selection History",
                 guiHandler = (searchContext) => {
                     if (!prefsLoaded) {
-                        historySize = EditorPrefs.GetInt(SelectionHistoryWindow.HistorySizePrefKey, defaultHistorySize);
-                        autoremoveDestroyed = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, true);
-                        autoRemoveDuplicated = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, false);
-                        showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, true);
-                        drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowPinButtonPrefKey, true);
+                        historySize = EditorPrefs.GetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, defaultHistorySize);
+                        autoremoveDestroyed = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDeletedPrefKey, true);
+                        autoRemoveDuplicated = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAllowDuplicatedEntriesPrefKey, false);
+                        showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowProjectViewObjectsPrefKey, true);
+                        drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, true);
 
                         prefsLoaded = true;
                     }
@@ -40,14 +40,12 @@ namespace Gemserk {
                     drawFavorites = EditorGUILayout.Toggle("Show Pin to favorites button", drawFavorites);
 
                     if (GUI.changed) {
-                        EditorPrefs.SetInt(SelectionHistoryWindow.HistorySizePrefKey, historySize);
-                        EditorPrefs.SetBool(SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, autoremoveDestroyed);
-                        EditorPrefs.SetBool(SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, autoRemoveDuplicated);
+                        EditorPrefs.SetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, historySize);
+                        EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDeletedPrefKey, autoremoveDestroyed);
+                        EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryAllowDuplicatedEntriesPrefKey, autoRemoveDuplicated);
 
-                        EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, showProjectViewObjects);
-                        EditorPrefs.SetBool(SelectionHistoryWindow.HistoryShowPinButtonPrefKey, drawFavorites);
-
-                        SelectionHistoryWindow.shouldReloadPreferences = true;
+                        EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryShowProjectViewObjectsPrefKey, showProjectViewObjects);
+                        EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, drawFavorites);
                     }
                 },
 
