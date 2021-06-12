@@ -109,26 +109,47 @@ namespace Gemserk
                 if (dragArea != null)
                 {
 #if !UNITY_EDITOR_OSX
-                    dragArea.RegisterCallback<MouseDownEvent>(evt =>
-                    {
-                        if (evt.button == 1)
+                        dragArea.RegisterCallback<MouseUpEvent>(evt =>
                         {
-                            EditorGUIUtility.PingObject(assetReference);
-                            return;
-                        }
-                        
-                        DragAndDrop.PrepareStartDrag();
-                        DragAndDrop.StartDrag("Dragging");
-                        DragAndDrop.objectReferences = new Object[] {assetReference};
-                    });
-                    dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
-                    {
-                        DragAndDrop.visualMode = DragAndDropVisualMode.Move;
-                    });
-#else
+                            if (evt.button == 0)
+                            {
+                                Selection.activeObject = assetReference;
+                            }
+                            else
+                            {
+                                EditorGUIUtility.PingObject(assetReference);
+                            }
+                        });
                         dragArea.RegisterCallback<MouseDownEvent>(evt =>
                         {
-                            EditorGUIUtility.PingObject(assetReference);
+                            DragAndDrop.PrepareStartDrag();
+                            DragAndDrop.objectReferences = new Object[] { null };
+                        });
+                        dragArea.RegisterCallback<MouseLeaveEvent>(evt =>
+                        {
+                            if (evt.pressedButtons != 0)
+                            {
+                                DragAndDrop.PrepareStartDrag();
+                                DragAndDrop.StartDrag("Dragging");
+                                DragAndDrop.objectReferences = new Object[] {assetReference};
+                            }
+                        });
+                        
+                        dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
+                        {
+                            DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+                        });
+#else
+                        dragArea.RegisterCallback<MouseUpEvent>(evt =>
+                        {
+                            if (evt.button == 0)
+                            {
+                                Selection.activeObject = assetReference;
+                            }
+                            else
+                            {
+                                EditorGUIUtility.PingObject(assetReference);
+                            }
                         });
 #endif
                 }

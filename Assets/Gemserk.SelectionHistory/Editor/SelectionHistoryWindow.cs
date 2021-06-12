@@ -185,7 +185,7 @@ namespace Gemserk
                             }
                             else
                             {
-                                SelectionHistoryWindow.PingEntry(entry);
+                                SelectionHistoryWindowUtils.PingEntry(entry);
                             }
                         });
 #endif
