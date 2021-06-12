@@ -119,15 +119,26 @@ namespace Gemserk
                             {
                                 EditorGUIUtility.PingObject(assetReference);
                             }
+                            
+                            dragArea.userData = null;
                         });
                         dragArea.RegisterCallback<MouseDownEvent>(evt =>
                         {
                             DragAndDrop.PrepareStartDrag();
                             DragAndDrop.objectReferences = new Object[] { null };
+                            
+                            dragArea.userData = true;
                         });
                         dragArea.RegisterCallback<MouseLeaveEvent>(evt =>
                         {
-                            if (evt.pressedButtons != 0)
+                            var dragging = false;
+                            
+                            if (dragArea.userData != null)
+                            {
+                                dragging = (bool) dragArea.userData;
+                            }
+                            
+                            if (dragging)
                             {
                                 DragAndDrop.PrepareStartDrag();
                                 DragAndDrop.StartDrag("Dragging");
