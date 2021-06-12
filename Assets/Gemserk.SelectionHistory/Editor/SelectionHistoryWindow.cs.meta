@@ -1,11 +1,14 @@
 fileFormatVersion: 2
-guid: 36b064cf1d8ffd74d875ee42f2cbb67e
-timeCreated: 1487030350
-licenseType: Pro
+guid: 4f3397e781f34e149881b0dc129a1449
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - windowSkin: {fileID: 11400000, guid: f96d5d3e03269c548832137c56255276, type: 2}
+  - m_ViewDataDictionary: {instanceID: 0}
+  - styleSheet: {fileID: 7433441132597879392, guid: 51608abdc59297e44b306ea90947f75b,
+      type: 3}
+  - historyElementViewTree: {fileID: 9197481963319205126, guid: 42cb11caecd83a547b6239626f30ff34,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
