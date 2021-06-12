@@ -55,6 +55,11 @@ namespace Gemserk
                     }
                 }
             };
+            
+            FavoritesController.Favorites.OnFavoritesUpdated += delegate(Favorites favorites)
+            {
+                ReloadRoot();
+            };
 
             ReloadRoot();
         }
@@ -179,6 +184,30 @@ namespace Gemserk
                     });
                 }
                 
+                if (SelectionHistoryWindow.ShowFavoriteButton) {
+                    if (entry.isAsset &&
+                        entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced)
+                    {
+                        var favoriteAsset = elementTree.Q<Image>("Favorite");
+                        if (favoriteAsset != null)
+                        {
+                            var isFavorite = FavoritesController.Favorites.IsFavorite(entry.reference);
+                            // favoriteEmptyIconName
+                            favoriteAsset.image = isFavorite
+                                ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
+                                : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
+                            favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
+                            {
+                                FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
+                                {
+                                    reference = entry.reference
+                                });
+                                ReloadRoot();
+                            });
+                        }
+                    }
+                }
+                
                 var label = elementTree.Q<Label>("Name");
                 if (label != null)
                 {
@@ -240,6 +269,9 @@ namespace Gemserk
 		    
             AddMenuItemForPreference(menu, SelectionHistoryWindow.ShowDestroyedObjectsKey, "Destroyed Objects", 
                 "Toggle to show/hide unreferenced or destroyed objects.");
+            
+            AddMenuItemForPreference(menu, SelectionHistoryWindow.HistoryShowPinButtonPrefKey, "Favorite Button", 
+                "Toggle to show/hide favorite reference button.");
             
             menu.AddItem(new GUIContent("Open preferences"), false, delegate
             {

@@ -85,6 +85,9 @@ namespace Gemserk
 		public static bool ShowDestroyedObjects =>
 			EditorPrefs.GetBool(ShowDestroyedObjectsKey, false);
 		
+		public static bool ShowFavoriteButton =>
+			EditorPrefs.GetBool(HistoryShowPinButtonPrefKey, false);
+		
 		private void OnGUI () {
 
 			if (shouldReloadPreferences) {
