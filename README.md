@@ -39,3 +39,5 @@ Or add it manually to the `manifest.json`, like this:
 ![Alt text](screenshots/demo.gif?raw=true "Demo")
 
 ![Alt text](screenshots/demodrag.gif?raw=true "Demo Drag")
+
+![Alt text](screenshots/demodrag2.gif?raw=true "Demo Drag 2")
