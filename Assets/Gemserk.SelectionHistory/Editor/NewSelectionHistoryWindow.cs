@@ -13,8 +13,8 @@ namespace Gemserk
         {
             var window = GetWindow<NewSelectionHistoryWindow>();
             var titleContent = EditorGUIUtility.IconContent(UnityBuiltInIcons.refreshIconName);
-            titleContent.text = "New History";
-            titleContent.tooltip = "New objects selection history";
+            titleContent.text = "History";
+            titleContent.tooltip = "Objects selection history";
             window.titleContent = titleContent;
         }
         
