@@ -8,7 +8,7 @@ It is really useful when editing stuff and following a link to an object referen
 
 **How it works**
 
-<img src="screenshots/demo.gif" width="400" />
+<img src="screenshots/demo.gif" width="500" />
 <br/>
 
 ### Features
@@ -32,24 +32,24 @@ You can also install it by opening Unity Package Manager and selecting add packa
 
 **Dragging from window to inspector**
 
-<img src="screenshots/demodrag.gif" width="400" />
+<img src="screenshots/demodrag.gif" width="500" />
 <br/>
 
 **Dragging from window to scene**
 
-<img src="screenshots/demodrag2.gif" width="400" />
+<img src="screenshots/demodrag2.gif" width="500" />
 <br/>
 
 **Quick options to override behavior**
 
-<img src="screenshots/history04.gif" width="400" />
+<img src="screenshots/history04.gif" width="500" />
 <br/>
 
 ## Favorites Window
 
 This window keeps a list of favorite items, similar to searches but specific objects instead. It works in synergy with selection history window.
 
-<img src="screenshots/favorites01.gif" width="400" />
+<img src="screenshots/favorites01.gif" width="500" />
 <br/>
 
 ### Features
