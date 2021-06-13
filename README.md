@@ -18,6 +18,7 @@ It is really useful when editing stuff and following a link to an object referen
 * Keeps tracks for selection from unloaded scenes (optional)
 * Select (left click) or ping/focus objects without losing selection (right click).
 * Favorite items to [Favorites window](#favorites-window) (optional)
+* Options to customize default behavior.
 
 ### Install it from Open UPM
 
@@ -37,6 +38,11 @@ You can also install it by opening Unity Package Manager and selecting add packa
 **Dragging from window to scene**
 
 <img src="screenshots/demodrag2.gif" width="400" />
+<br/>
+
+**Quick options to override behavior**
+
+<img src="screenshots/history04.gif" width="400" />
 <br/>
 
 ## Favorites Window
