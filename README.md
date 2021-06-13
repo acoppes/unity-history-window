@@ -4,7 +4,8 @@
 
 This plugin keeps a history of selected objects in Unity. It comes with a [window](#selection-history-window) to see the list of objects and interact with them with other behaviors like, for example, focus an previously selected object or even drag them to scene, project view, etc. 
 
-As extra, it comes with a [another window](#favorites-window) to keep track of a list of favorite assets and easily access them.
+<img src="screenshots/demo.gif" width="500" />
+<br/>
 
 ### Install it from OpenUPM
 
@@ -13,11 +14,6 @@ This package can be installed using OpenUPM, just click here [![openupm](https:/
 ### Install from Git URL
 
 You can also install it by opening Unity Package Manager and selecting add package from git URL and add this `https://github.com/acoppes/unity-history-window.git#1.1.2`, Or add it manually to the `manifest.json`.
-
-## Selection history window
-
-<img src="screenshots/demo.gif" width="500" />
-<br/>
 
 ### Features
 
@@ -28,7 +24,7 @@ You can also install it by opening Unity Package Manager and selecting add packa
 * Quick menu options to customize behavior.
 * Favorite items to [Favorites window](#favorites-window) (optional)
 
-### Other examples
+As extra, it comes with a [another window](#favorites-window) to keep track of a list of favorite assets and easily access them.
 
 **Dragging from window to inspector**
 
