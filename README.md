@@ -6,9 +6,9 @@ This plugin keeps a history of selected objects in Unity. It comes with a [windo
 
 As extra, it comes with a [another window](#favorites-window) to keep track of a list of favorite assets and easily access them.
 
-### Install it from Open UPM
+### Install it from OpenUPM
 
-This package can be installed using [![openupm](https://img.shields.io/npm/v/com.gemserk.selectionhistory?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.gemserk.selectionhistory/) (<-- click here for more info ;)).
+This package can be installed using OpenUPM, just click here [![openupm](https://img.shields.io/npm/v/com.gemserk.selectionhistory?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.gemserk.selectionhistory/) for more details.
 
 ### Install from Git URL
 
