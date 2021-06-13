@@ -14,9 +14,10 @@ It is really useful when editing stuff and following a link to an object referen
 ### Features
 
 * Stores history of selected objects (custom count), both assets and scene objects (optional)
-* Drag objects from history window to Scene, Hierarchy, Project or Inspector ([doesn't work on mac](https://fogbugz.unity3d.com/default.asp?894059_1u4pe70tnj823875))
+* Drag objects from the window to Scene, Hierarchy, Project or Inspector ([doesn't work on mac](https://fogbugz.unity3d.com/default.asp?894059_1u4pe70tnj823875))
 * Keeps tracks for selection from unloaded scenes (optional)
 * Select (left click) or ping/focus objects without losing selection (right click).
+* Favorite items to [Favorites window](#favorites-window) (optional)
 
 ### Install it from Open UPM
 
@@ -37,3 +38,23 @@ You can also install it by opening Unity Package Manager and selecting add packa
 
 <img src="screenshots/demodrag2.gif" width="400" />
 <br/>
+
+## Favorites Window
+
+This window keeps a list of favorite items, similar to searches but specific objects instead. It works in synergy with selection history window.
+
+<img src="screenshots/favorites01.gif" width="400" />
+<br/>
+
+### Features
+
+* Keep your list of most used or important assets at hand.
+* Drag assets directly to window to favorite them.
+* Stores favorites for project in custom asset (can be ignored in SCM or shared with other devs).
+* Drag objects from the window to Scene, Hierarchy, Project or Inspector ([doesn't work on mac](https://fogbugz.unity3d.com/default.asp?894059_1u4pe70tnj823875))
+
+### Roadmap
+
+* Filters by type of asset (textures, text, etc).
+* Adding/Remove tags to favorite assets.
+* Filters by tags.
