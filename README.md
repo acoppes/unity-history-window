@@ -1,4 +1,4 @@
-# Unity Selection History Window
+## Unity selected objects History Window
 
 [![openupm](https://img.shields.io/npm/v/com.gemserk.selectionhistory?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.gemserk.selectionhistory/)
 
@@ -6,38 +6,34 @@ This is a small plugin that keeps a history of the Unity's Editor object selecti
 
 It is really useful when editing stuff and following a link to an object reference to see some details and then go back to previous selection.
 
-# Features
+**How it works**
 
-* Stores history of selected objects (custom count).
-* Store selection from unloaded scenes.
-* Selects objects from the history (with left click).
-* Pings (focus) objects from the history (with right click or Ping button).
-* Drag objects from history to other object fields to link them.
-* Drag assets (folders, scripts, etc) from history to the project browser to move them.
+<img src="screenshots/demo.gif" width="400" />
+<br/>
 
-# Install using UPM
+### Features
 
-This package can be installed using [OpenUPM](https://openupm.com/packages/com.gemserk.selectionhistory/).
+* Stores history of selected objects (custom count), both assets and scene objects (optional)
+* Drag objects from history window to Scene, Hierarchy, Project or Inspector ([doesn't work on mac](https://fogbugz.unity3d.com/default.asp?894059_1u4pe70tnj823875))
+* Keeps tracks for selection from unloaded scenes (optional)
+* Select (left click) or ping/focus objects without losing selection (right click).
 
-You can also install it by opening Unity Package Manager and selecting add package from git URL and add this `https://github.com/acoppes/unity-history-window.git#1.0.8`.
+### Install it from Open UPM
 
-Or add it manually to the `manifest.json`, like this:
+This package can be installed using [![openupm](https://img.shields.io/npm/v/com.gemserk.selectionhistory?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.gemserk.selectionhistory/) (<-- click here for more info ;)).
 
-```
-  "dependencies": {
-    "com.gemserk.selectionhistory": "https://github.com/acoppes/unity-history-window.git#1.0.8"
-    ...
-  }
-```
+### Install from Git URL
 
-# Download 
+You can also install it by opening Unity Package Manager and selecting add package from git URL and add this `https://github.com/acoppes/unity-history-window.git#1.1.2`, Or add it manually to the `manifest.json`.
 
-[Unity Package](release/unity-selection-history.unitypackage?raw=true)
+### Other examples
 
-# Demo
+**Dragging from window to inspector**
 
-![Alt text](screenshots/demo.gif?raw=true "Demo")
+<img src="screenshots/demodrag.gif" width="400" />
+<br/>
 
-![Alt text](screenshots/demodrag.gif?raw=true "Demo Drag")
+**Dragging from window to scene**
 
-![Alt text](screenshots/demodrag2.gif?raw=true "Demo Drag 2")
+<img src="screenshots/demodrag2.gif" width="400" />
+<br/>
