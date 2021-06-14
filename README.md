@@ -69,4 +69,6 @@ Feel free to fork the project and make modifications for yourself or to share by
 ### Contact
 
 <a href="https://twitter.com/intent/tweet?screen_name=arielsan&ref_src=twsrc%5Etfw" class="twitter-mention-button" data-show-count="false"><img src="screenshots/twitter_logo.png" width="48"/>
-</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>@arielsan
+</a>@arielsan
+
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
