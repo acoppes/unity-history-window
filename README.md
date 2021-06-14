@@ -68,5 +68,4 @@ Feel free to fork the project and make modifications for yourself or to share by
 
 ### Contact
 
-<a href="https://twitter.com/intent/tweet?screen_name=arielsan&ref_src=twsrc%5Etfw"><img src="screenshots/twitter_logo.png" width="48"/></a><br/> 
-@arielsan
+<a href="https://twitter.com/intent/tweet?screen_name=arielsan&ref_src=twsrc%5Etfw"><img src="screenshots/twitter_logo.png" width="48"/><br/>@arielsan</a>
