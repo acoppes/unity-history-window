@@ -1,3 +1,7 @@
+# 1.1.3
+
+* Fixed bugs on scroll when selecting with new window version using UIElements.
+
 # 1.1.0
 
 * Separated Favorite assets in a new window and removed from history window.

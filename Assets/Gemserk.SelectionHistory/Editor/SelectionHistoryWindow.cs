@@ -67,14 +67,21 @@ namespace Gemserk
             var scroll = rootVisualElement.Q<ScrollView>("MainScroll");
             if (scroll == null) 
                 return;
-
-            // schedule scroll position to after the scroll elements were processed
-            scroll.schedule.Execute(delegate()
+            
+            scroll.RegisterCallback(delegate(GeometryChangedEvent evt)
             {
                 var scrollOffset = scroll.scrollOffset;
                 scrollOffset.y = float.MaxValue;
                 scroll.scrollOffset = scrollOffset;    
-            }).StartingIn(50);
+            });
+
+            // schedule scroll position to after the scroll elements were processed
+            // scroll.schedule.Execute(delegate()
+            // {
+            //     var scrollOffset = scroll.scrollOffset;
+            //     scrollOffset.y = float.MaxValue;
+            //     scroll.scrollOffset = scrollOffset;    
+            // }).StartingIn(50);
         }
 
         private void OnSceneOpened(Scene scene, OpenSceneMode mode)
