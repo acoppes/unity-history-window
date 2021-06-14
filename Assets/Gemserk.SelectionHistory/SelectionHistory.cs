@@ -111,6 +111,8 @@ namespace Gemserk
         private int historySize = 10;
 
         public List<Entry> History => _history;
+        
+        public event Action<SelectionHistory> OnNewEntryAdded;
 
         public int HistorySize
         {
@@ -161,9 +163,9 @@ namespace Gemserk
             {
                 _history.Add(new Entry(selection));
                 currentSelectionIndex = _history.Count - 1;
+                
+                OnNewEntryAdded?.Invoke(this);
             }
-
-            // currentSelection = selection;
 
             if (_history.Count > historySize)
             {

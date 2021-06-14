@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -28,6 +29,11 @@ namespace Gemserk
         {
             EditorSceneManager.sceneClosed -= OnSceneClosed;
             EditorSceneManager.sceneOpened -= OnSceneOpened;
+            
+            if (selectionHistory != null)
+            {
+                selectionHistory.OnNewEntryAdded -= OnHistoryEntryAdded;
+            }
         }
 
         public void OnEnable()
@@ -39,30 +45,36 @@ namespace Gemserk
             root.styleSheets.Add(styleSheet);
             
             selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
-            selectionHistory.HistorySize = EditorPrefs.GetInt (SelectionHistoryWindowUtils.HistorySizePrefKey, 10);
             
-            Selection.selectionChanged += delegate {
-                
-                ReloadRoot();
+            if (selectionHistory != null)
+            {
+                selectionHistory.HistorySize = EditorPrefs.GetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, 10);
+                selectionHistory.OnNewEntryAdded += OnHistoryEntryAdded;
+            }
 
-                var mainScroll = rootVisualElement.Q<ScrollView>("MainScroll");
-                if (mainScroll != null)
-                {
-                    if (selectionHistory.IsSelected(selectionHistory.GetHistoryCount() - 1))
-                    {
-                        var scrollOffset = mainScroll.scrollOffset;
-                        scrollOffset.y = float.MaxValue;
-                        mainScroll.scrollOffset = scrollOffset;
-                    }
-                }
-            };
-            
-            FavoritesController.Favorites.OnFavoritesUpdated += delegate(Favorites favorites)
+            FavoritesController.Favorites.OnFavoritesUpdated += delegate
             {
                 ReloadRoot();
             };
 
             ReloadRoot();
+        }
+
+        private void OnHistoryEntryAdded(SelectionHistory history)
+        {
+            ReloadRoot();
+            
+            var scroll = rootVisualElement.Q<ScrollView>("MainScroll");
+            if (scroll == null) 
+                return;
+
+            // schedule scroll position to after the scroll elements were processed
+            scroll.schedule.Execute(delegate()
+            {
+                var scrollOffset = scroll.scrollOffset;
+                scrollOffset.y = float.MaxValue;
+                scroll.scrollOffset = scrollOffset;    
+            }).StartingIn(50);
         }
 
         private void OnSceneOpened(Scene scene, OpenSceneMode mode)
@@ -97,8 +109,7 @@ namespace Gemserk
             var entries = selectionHistory.History;
 
             VisualElement lastObject = null;
-
-            var showHierarchyElements = SelectionHistoryWindowUtils.ShowHierarchyViewObjects;
+            
             var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
             var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
 
@@ -106,152 +117,11 @@ namespace Gemserk
             {
                 var entry = entries[i];
 
-                if (entry.isSceneInstance && !showHierarchyElements)
+                var elementTree = CreateElementForEntry(entry);
+                if (elementTree != null)
                 {
-                    continue;
+                    scroll.Add(elementTree);
                 }
-
-                var referenced = entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced;
-                
-                if (!showUnloadedObjects && entry.GetReferenceState() == SelectionHistory.Entry.State.ReferenceUnloaded)
-                {
-                    continue;
-                }
-                
-                if (!showDestroyedObjects && entry.GetReferenceState() == SelectionHistory.Entry.State.ReferenceDestroyed)
-                {
-                    continue;
-                }
-                
-                var elementTree = historyElementViewTree.CloneTree();
-
-                if (!referenced)
-                {
-                    elementTree.AddToClassList("unreferencedObject");
-                }
-                else if (entry.isSceneInstance)
-                {
-                    elementTree.AddToClassList("sceneObject");
-                }
-                else
-                {
-                    elementTree.AddToClassList("assetObject");
-                }
-
-                if (referenced)
-                {
-                    var dragArea = elementTree.Q<VisualElement>("DragArea");
-                    if (dragArea != null)
-                    {
-#if !UNITY_EDITOR_OSX
-                        dragArea.RegisterCallback<MouseUpEvent>(evt =>
-                        {
-                            if (evt.button == 0)
-                            {
-                                selectionHistory.SetSelection(entry.reference);
-                                Selection.activeObject = entry.reference;
-                            }
-                            else
-                            {
-                                SelectionHistoryWindowUtils.PingEntry(entry);
-                            }
-                            
-                            dragArea.userData = null;
-                        });
-                        dragArea.RegisterCallback<MouseDownEvent>(evt =>
-                        {
-                            DragAndDrop.PrepareStartDrag();
-                            DragAndDrop.objectReferences = new Object[] { null };
-
-                            dragArea.userData = true;
-                        });
-                        dragArea.RegisterCallback<MouseLeaveEvent>(evt =>
-                        {
-                            var dragging = false;
-                            
-                            if (dragArea.userData != null)
-                            {
-                                dragging = (bool) dragArea.userData;
-                            }
-                            
-                            if (dragging)
-                            {
-                                DragAndDrop.PrepareStartDrag();
-                                DragAndDrop.StartDrag("Dragging");
-                                DragAndDrop.objectReferences = new Object[] {entry.reference};
-
-                                dragArea.userData = null;
-                            }
-                        });
-                        
-                        dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
-                        {
-                            DragAndDrop.visualMode = DragAndDropVisualMode.Link;
-                        });
-#else
-                        dragArea.RegisterCallback<MouseUpEvent>(evt =>
-                        {
-                            if (evt.button == 0)
-                            {
-                                selectionHistory.SetSelection(entry.reference);
-                                Selection.activeObject = entry.reference;
-                            }
-                            else
-                            {
-                                SelectionHistoryWindowUtils.PingEntry(entry);
-                            }
-                        });
-#endif
-                    }
-                    
-                    var icon = elementTree.Q<Image>("Icon");
-                    if (icon != null)
-                    {
-                        icon.image = AssetPreview.GetMiniThumbnail(entry.reference);
-                    }
-                }
-                
-                var pingIcon = elementTree.Q<Image>("PingIcon");
-                if (pingIcon != null)
-                {
-                    pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
-                    pingIcon.RegisterCallback(delegate(MouseUpEvent e)
-                    {
-                        SelectionHistoryWindowUtils.PingEntry(entry);
-                    });
-                }
-                
-                if (SelectionHistoryWindowUtils.ShowFavoriteButton) {
-                    if (entry.isAsset &&
-                        entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced)
-                    {
-                        var favoriteAsset = elementTree.Q<Image>("Favorite");
-                        if (favoriteAsset != null)
-                        {
-                            var isFavorite = FavoritesController.Favorites.IsFavorite(entry.reference);
-                            // favoriteEmptyIconName
-                            favoriteAsset.image = isFavorite
-                                ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
-                                : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
-                            favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
-                            {
-                                FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
-                                {
-                                    reference = entry.reference
-                                });
-                                ReloadRoot();
-                            });
-                        }
-                    }
-                }
-                
-                var label = elementTree.Q<Label>("Name");
-                if (label != null)
-                {
-                    label.text = entry.GetName(true);
-                }
-
-                scroll.Add(elementTree);
             }
 
             var clearButton = new Button(delegate
@@ -281,6 +151,26 @@ namespace Gemserk
                 root.Add(removeDestroyedButton);
             }
             
+            // if debug enabled 
+
+            // var button = new Button(delegate
+            // {
+            //     var scrollOffset = scroll.scrollOffset;
+            //     scrollOffset.y = float.MaxValue;
+            //     scroll.scrollOffset = scrollOffset;
+            // });
+            // button.text = "Scroll To Last";
+            // root.Add(button);
+            //
+            // var button2 = new Button(delegate
+            // {
+            //     var scrollOffset = scroll.scrollOffset;
+            //     scrollOffset.y = 0;
+            //     scroll.scrollOffset = scrollOffset;
+            // });
+            // button2.text = "Scroll To First";
+            // root.Add(button2);
+
             //
             // if (allowDuplicatedEntries) {
             //     if (GUILayout.Button ("Remove Duplicated")) {
@@ -288,6 +178,158 @@ namespace Gemserk
             //         Repaint();
             //     }
             // }
+        }
+
+        private VisualElement CreateElementForEntry(SelectionHistory.Entry entry)
+        {
+            var showHierarchyElements = SelectionHistoryWindowUtils.ShowHierarchyViewObjects;
+            var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
+            var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
+            
+            if (entry.isSceneInstance && !showHierarchyElements)
+            {
+                return null;
+            }
+
+            var referenced = entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced;
+
+            if (!showUnloadedObjects && entry.GetReferenceState() == SelectionHistory.Entry.State.ReferenceUnloaded)
+            {
+                return null;
+            }
+
+            if (!showDestroyedObjects && entry.GetReferenceState() == SelectionHistory.Entry.State.ReferenceDestroyed)
+            {
+                return null;
+            }
+
+            var elementTree = historyElementViewTree.CloneTree();
+
+            if (!referenced)
+            {
+                elementTree.AddToClassList("unreferencedObject");
+            }
+            else if (entry.isSceneInstance)
+            {
+                elementTree.AddToClassList("sceneObject");
+            }
+            else
+            {
+                elementTree.AddToClassList("assetObject");
+            }
+
+            if (referenced)
+            {
+                var dragArea = elementTree.Q<VisualElement>("DragArea");
+                if (dragArea != null)
+                {
+#if !UNITY_EDITOR_OSX
+                    dragArea.RegisterCallback<MouseUpEvent>(evt =>
+                    {
+                        if (evt.button == 0)
+                        {
+                            selectionHistory.SetSelection(entry.reference);
+                            Selection.activeObject = entry.reference;
+                        }
+                        else
+                        {
+                            SelectionHistoryWindowUtils.PingEntry(entry);
+                        }
+
+                        dragArea.userData = null;
+                    });
+                    dragArea.RegisterCallback<MouseDownEvent>(evt =>
+                    {
+                        DragAndDrop.PrepareStartDrag();
+                        DragAndDrop.objectReferences = new Object[] {null};
+
+                        dragArea.userData = true;
+                    });
+                    dragArea.RegisterCallback<MouseLeaveEvent>(evt =>
+                    {
+                        var dragging = false;
+
+                        if (dragArea.userData != null)
+                        {
+                            dragging = (bool) dragArea.userData;
+                        }
+
+                        if (dragging)
+                        {
+                            DragAndDrop.PrepareStartDrag();
+                            DragAndDrop.StartDrag("Dragging");
+                            DragAndDrop.objectReferences = new Object[] {entry.reference};
+
+                            dragArea.userData = null;
+                        }
+                    });
+
+                    dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
+                    {
+                        DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+                    });
+#else
+                        dragArea.RegisterCallback<MouseUpEvent>(evt =>
+                        {
+                            if (evt.button == 0)
+                            {
+                                selectionHistory.SetSelection(entry.reference);
+                                Selection.activeObject = entry.reference;
+                            }
+                            else
+                            {
+                                SelectionHistoryWindowUtils.PingEntry(entry);
+                            }
+                        });
+#endif
+                }
+
+                var icon = elementTree.Q<Image>("Icon");
+                if (icon != null)
+                {
+                    icon.image = AssetPreview.GetMiniThumbnail(entry.reference);
+                }
+            }
+
+            var pingIcon = elementTree.Q<Image>("PingIcon");
+            if (pingIcon != null)
+            {
+                pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
+                pingIcon.RegisterCallback(delegate(MouseUpEvent e) { SelectionHistoryWindowUtils.PingEntry(entry); });
+            }
+
+            if (SelectionHistoryWindowUtils.ShowFavoriteButton)
+            {
+                if (entry.isAsset &&
+                    entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced)
+                {
+                    var favoriteAsset = elementTree.Q<Image>("Favorite");
+                    if (favoriteAsset != null)
+                    {
+                        var isFavorite = FavoritesController.Favorites.IsFavorite(entry.reference);
+                        // favoriteEmptyIconName
+                        favoriteAsset.image = isFavorite
+                            ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
+                            : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
+                        favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
+                        {
+                            FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
+                            {
+                                reference = entry.reference
+                            });
+                            ReloadRoot();
+                        });
+                    }
+                }
+            }
+
+            var label = elementTree.Q<Label>("Name");
+            if (label != null)
+            {
+                label.text = entry.GetName(true);
+            }
+
+            return elementTree;
         }
 
         public void AddItemsToMenu(GenericMenu menu)
