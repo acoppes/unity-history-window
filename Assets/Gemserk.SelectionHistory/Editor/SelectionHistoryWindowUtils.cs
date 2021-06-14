@@ -1,8 +1,11 @@
 ﻿using UnityEditor;
+using UnityEditor.ShortcutManagement;
+using UnityEngine;
 
 namespace Gemserk
 {
-	public class SelectionHistoryWindowUtils {
+	[InitializeOnLoad]
+	public static class SelectionHistoryWindowUtils {
 
 		public static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
 		public static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
@@ -17,7 +20,40 @@ namespace Gemserk
 
 	    private static readonly bool debugEnabled = false;
 
-	    private bool showProjectViewObjects;
+	    static SelectionHistoryWindowUtils()
+	    {
+		    Selection.selectionChanged += SelectionRecorder;
+	    }
+		
+	    private static void SelectionRecorder ()
+	    {
+		    if (Selection.activeObject != null) {
+			    if (debugEnabled) {
+				    Debug.Log ("Recording new selection: " + Selection.activeObject.name);
+			    }
+
+			    var selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+			    selectionHistory.UpdateSelection (Selection.activeObject);
+		    } 
+	    }
+		
+	    [MenuItem("Window/Gemserk/Previous selection %#,")]
+	    [Shortcut("Selection History/Previous Selection")]
+	    public static void PreviousSelection()
+	    {
+		    var selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+		    selectionHistory.Previous ();
+		    Selection.activeObject = selectionHistory.GetSelection ();
+	    }
+
+	    [MenuItem("Window/Gemserk/Next selection %#.")]
+	    [Shortcut("Selection History/Next Selection")]
+	    public static void NextSelection()
+	    {
+		    var selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+		    selectionHistory.Next();
+		    Selection.activeObject = selectionHistory.GetSelection ();
+	    }
 		
 		public static bool AutomaticRemoveDeleted =>
 			EditorPrefs.GetBool(HistoryAutomaticRemoveDeletedPrefKey, true);
