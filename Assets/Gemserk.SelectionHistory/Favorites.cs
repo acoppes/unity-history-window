@@ -41,22 +41,6 @@ namespace Gemserk
             OnFavoritesUpdated?.Invoke(this);
         }
 
-        public void ToggleFavorite(Object reference)
-        {
-            var isFavorite = IsFavorite(reference);
-            if (isFavorite)
-            {
-                RemoveFavorite(reference);
-            }
-            else
-            {
-                AddFavorite(new Favorite
-                {
-                    reference = reference
-                });
-            }
-        }
-
         public bool CanBeFavorite(Object reference)
         {
             if (reference is GameObject go)
