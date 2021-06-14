@@ -61,3 +61,12 @@ This window keeps a list of favorite items, similar to searches but specific obj
 * Adding/Remove tags to favorite assets.
 * Filters by tags.
 * Menu options to customize behavior.
+
+### Collaborate
+
+Feel free to fork the project and make modifications for yourself or to share by creating pull requests. Also, create issues for feature requests or bug reports if you want to help improving this plugin, thanks!
+
+### Contact
+
+<a href="https://twitter.com/intent/tweet?screen_name=arielsan&ref_src=twsrc%5Etfw" class="twitter-mention-button" data-show-count="false"><img src="screenshots/twitter_logo.png" width="48"/>
+</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>@arielsan
