@@ -9,32 +9,115 @@ namespace Gemserk
     [Serializable]
     public class SelectionHistory
     {
-        [SerializeField]
-        List<Object> _history = new List<Object>(100);
-
-        [SerializeField]
-        List<Object> _favorites = new List<Object>(100);
-
-        int currentSelectionIndex;
-
-        Object currentSelection;
-
-        int historySize = 10;
-
-        public List<Object> History
+        [Serializable]
+        public class Entry : IEquatable<Entry>
         {
-            get { return _history; }
+            public enum State
+            {
+                Referenced = 0,
+                ReferenceDestroyed = 1,
+                ReferenceUnloaded = 2
+            }
+
+            // public State state = State.Referenced;
+            
+            public Object reference;
+
+            public string sceneName;
+            public string scenePath;
+            
+            public string globalObjectId;
+
+            private string unreferencedObjectName;
+
+            public bool isSceneInstance => !string.IsNullOrEmpty(sceneName);
+
+            public bool isAsset => !isSceneInstance;
+
+            public string name
+            {
+                get
+                {
+                    if (reference != null)
+                    {
+                        return reference.name;
+                    }
+                    return unreferencedObjectName;
+                }   
+            }
+
+            public Entry(Object reference)
+            {
+                this.reference = reference;
+                unreferencedObjectName = reference.name;
+
+                if (reference is GameObject go)
+                {
+                    if (go.scene != null)
+                    {
+                        sceneName = go.scene.name;
+                        scenePath = go.scene.path;
+                    }
+                }
+            }
+
+            public bool Equals(Entry other)
+            {
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return Equals(reference, other.reference);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((Entry) obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return (reference != null ? reference.GetHashCode() : 0);
+            }
+
+            public State GetReferenceState()
+            {
+                if (reference != null)
+                    return State.Referenced;
+                if (!string.IsNullOrEmpty(globalObjectId))
+                    return State.ReferenceUnloaded;
+                return State.ReferenceDestroyed;
+            }
         }
 
-        public List<Object> Favorites
+        [SerializeField] 
+        private List<Entry> _history = new List<Entry>(100);
+
+        private int currentSelectionIndex;
+
+        private Entry currentSelection
         {
-            get { return _favorites; }
+            get
+            {
+                if (currentSelectionIndex >= 0 && currentSelectionIndex < _history.Count)
+                {
+                    return _history[currentSelectionIndex];
+                }
+                return null;
+            }
         }
+
+        private int historySize = 10;
+
+        public List<Entry> History => _history;
+        
+        public event Action<SelectionHistory> OnNewEntryAdded;
 
         public int HistorySize
         {
-            get { return historySize; }
-            set { historySize = value; }
+            get => historySize;
+            set => historySize = value;
         }
 
         public bool IsSelected(int index)
@@ -44,7 +127,11 @@ namespace Gemserk
 
         public bool IsSelected(Object obj)
         {
-            return currentSelection == obj;
+            if (currentSelection == null)
+                return false;
+            if (currentSelection.GetReferenceState() == Entry.State.Referenced)
+                return currentSelection.reference.Equals(obj);
+            return false;
         }
 
         public void Clear()
@@ -59,7 +146,7 @@ namespace Gemserk
 
         public Object GetSelection()
         {
-            return currentSelection;
+            return currentSelection.reference;
         }
 
         public void UpdateSelection(Object selection)
@@ -69,13 +156,16 @@ namespace Gemserk
 
             var lastSelectedObject = _history.Count > 0 ? _history.Last() : null;
 
-            if (lastSelectedObject != selection && currentSelection != selection)
+            var isLastSelected = lastSelectedObject != null && lastSelectedObject.reference == selection;
+            var isCurrentSelection = currentSelection != null && currentSelection.reference == selection;
+            
+            if (!isLastSelected && !isCurrentSelection)
             {
-                _history.Add(selection);
+                _history.Add(new Entry(selection));
                 currentSelectionIndex = _history.Count - 1;
+                
+                OnNewEntryAdded?.Invoke(this);
             }
-
-            currentSelection = selection;
 
             if (_history.Count > historySize)
             {
@@ -92,7 +182,6 @@ namespace Gemserk
             currentSelectionIndex--;
             if (currentSelectionIndex < 0)
                 currentSelectionIndex = 0;
-            currentSelection = _history[currentSelectionIndex];
         }
 
         public void Next()
@@ -103,34 +192,33 @@ namespace Gemserk
             currentSelectionIndex++;
             if (currentSelectionIndex >= _history.Count)
                 currentSelectionIndex = _history.Count - 1;
-            currentSelection = _history[currentSelectionIndex];
         }
 
         public void SetSelection(Object obj)
         {
-            currentSelectionIndex = _history.IndexOf(obj);
-            currentSelection = obj;
+            currentSelectionIndex = _history.FindIndex(e => e.reference.Equals(obj));
         }
 
-        public void ClearDeleted()
+        public void RemoveEntries(Entry.State state)
         {
-            var deletedCount = _history.Count(e => e == null);
+            var deletedCount = _history.Count(e => e.GetReferenceState() == state);
 
-            _history.RemoveAll(e => e == null);
-            _favorites.RemoveAll(d => d == null);
+            var currentSelectionDestroyed = currentSelection == null || currentSelection.GetReferenceState() == state;
+            
+            _history.RemoveAll(e => e.GetReferenceState() == state);
 
             currentSelectionIndex -= deletedCount;
 
             if (currentSelectionIndex < 0)
                 currentSelectionIndex = 0;
 
-            if (currentSelection == null)
+            if (currentSelectionDestroyed)
                 currentSelectionIndex = -1;
         }
 
         public void RemoveDuplicated()
         {
-            var tempList = new List<Object>(_history);
+            var tempList = new List<Entry>(_history);
 
             foreach (var item in tempList)
             {
@@ -150,20 +238,5 @@ namespace Gemserk
                 currentSelectionIndex = _history.Count - 1;
         
         }
-
-        public bool IsFavorite(Object obj)
-        {
-            return _favorites.Contains(obj);
-        }
-
-        public void ToggleFavorite(Object obj)
-        {
-            if (_favorites.Contains(obj))
-                _favorites.Remove(obj);
-            else
-                _favorites.Add(obj);
-        }
-        
-
     }
 }

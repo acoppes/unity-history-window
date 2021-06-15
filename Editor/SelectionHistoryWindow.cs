@@ -1,373 +1,387 @@
-﻿using UnityEngine;
+using System.Linq;
 using UnityEditor;
-using System.Collections.Generic;
-using System.Reflection;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 namespace Gemserk
 {
-	[InitializeOnLoad]
-	public static class SelectionHistoryInitialized
-	{
-		static SelectionHistoryInitialized()
-		{
-			SelectionHistoryWindow.RegisterSelectionListener ();
-		}
-	}
-
-	public class SelectionHistoryWindow : EditorWindow {
-		const float buttonsWidth = 120f;
-
-		public static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
-		public static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
-		public static readonly string HistoryAllowDuplicatedEntriesPrefKey = "Gemserk.SelectionHistory.AllowDuplicatedEntries";
-	    public static readonly string HistoryShowHierarchyObjectsPrefKey = "Gemserk.SelectionHistory.ShowHierarchyObjects";
-	    public static readonly string HistoryShowProjectViewObjectsPrefKey = "Gemserk.SelectionHistory.ShowProjectViewObjects";
-	    public static readonly string HistoryFavoritesPrefKey = "Gemserk.SelectionHistory.Favorites";
-
-        static SelectionHistory selectionHistory = new SelectionHistory();
-
-		static readonly bool debugEnabled = false;
-
-		public static bool shouldReloadPreferences = true;
-
-	    private static Color hierarchyElementColor = new Color(0.7f, 1.0f, 0.7f);
-	    private static Color selectedElementColor = new Color(0.2f, 170.0f / 255.0f, 1.0f, 1.0f);
-
-        [MenuItem ("Window/Gemserk/Selection History %#h")]
-		static void Init () {
-			// Get existing open window or if none, make a new one:
-			var window = EditorWindow.GetWindow<SelectionHistoryWindow> ();
-
-			window.titleContent.text = "History";
-			window.Show();
-		}
-
-		static void SelectionRecorder ()
-		{
-			if (Selection.activeObject != null) {
-				if (debugEnabled) {
-					Debug.Log ("Recording new selection: " + Selection.activeObject.name);
-				}
-
-				selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
-				selectionHistory.UpdateSelection (Selection.activeObject);
-			} 
-		}
-
-		public static void RegisterSelectionListener()
-		{
-			Selection.selectionChanged += SelectionRecorder;
-		}
-
-		public GUISkin windowSkin;
-
-		MethodInfo openPreferencesWindow;
-
-		void OnEnable()
-		{
-			automaticRemoveDeleted = EditorPrefs.GetBool (HistoryAutomaticRemoveDeletedPrefKey, true);
-
-			selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
-			selectionHistory.HistorySize = EditorPrefs.GetInt (HistorySizePrefKey, 10);
-
-			Selection.selectionChanged += delegate {
-
-				if (selectionHistory.IsSelected(selectionHistory.GetHistoryCount() - 1)) {
-					_historyScrollPosition.y = float.MaxValue;
-				}
-
-				Repaint();
-			};
-
-			try {
-				var asm = Assembly.GetAssembly (typeof(EditorWindow));
-				var t = asm.GetType ("UnityEditor.PreferencesWindow");
-				openPreferencesWindow = t.GetMethod ("ShowPreferencesWindow", BindingFlags.NonPublic | BindingFlags.Static);
-			} catch {
-				// couldnt get preferences window...
-				openPreferencesWindow = null;
-			}
-		}
-
-		void UpdateSelection(Object obj)
-		{
-		    selectionHistory.SetSelection(obj);
-            Selection.activeObject = obj;
-            // Selection.activeObject = selectionHistory.UpdateSelection(currentIndex);
-		}
-
-	    private Vector2 _favoritesScrollPosition;
-		private Vector2 _historyScrollPosition;
-
-		bool automaticRemoveDeleted;
-		bool allowDuplicatedEntries;
-
-	    bool showHierarchyViewObjects;
-	    bool showProjectViewObjects;
-
-        void OnGUI () {
-
-			if (shouldReloadPreferences) {
-				selectionHistory.HistorySize = EditorPrefs.GetInt (SelectionHistoryWindow.HistorySizePrefKey, 10);
-				automaticRemoveDeleted = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAutomaticRemoveDeletedPrefKey, true);
-				allowDuplicatedEntries = EditorPrefs.GetBool (SelectionHistoryWindow.HistoryAllowDuplicatedEntriesPrefKey, false);
-
-			    showHierarchyViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowHierarchyObjectsPrefKey, true);
-			    showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindow.HistoryShowProjectViewObjectsPrefKey, true);
-
-                shouldReloadPreferences = false;
-			}
-
-			if (automaticRemoveDeleted)
-				selectionHistory.ClearDeleted ();
-
-			if (!allowDuplicatedEntries)
-				selectionHistory.RemoveDuplicated ();
-
-            var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
-            if (favoritesEnabled && selectionHistory.Favorites.Count > 0)
-            {
-                _favoritesScrollPosition = EditorGUILayout.BeginScrollView(_favoritesScrollPosition);
-                DrawFavorites();
-                EditorGUILayout.EndScrollView();
-                EditorGUILayout.Separator();
-            }
+    public class SelectionHistoryWindow : EditorWindow, IHasCustomMenu
+    {
+        [MenuItem("Window/Gemserk/Selection History %#h")]
+        public static void OpenWindow()
+        {
+            var window = GetWindow<SelectionHistoryWindow>();
+            var titleContent = EditorGUIUtility.IconContent(UnityBuiltInIcons.refreshIconName);
+            titleContent.text = "History";
+            titleContent.tooltip = "Objects selection history";
+            window.titleContent = titleContent;
+        }
         
-            bool changedBefore = GUI.changed;
+        public StyleSheet styleSheet;
 
-			_historyScrollPosition = EditorGUILayout.BeginScrollView(_historyScrollPosition);
+        public VisualTreeAsset historyElementViewTree;
 
-			bool changedAfter = GUI.changed;
-
-			if (!changedBefore && changedAfter) {
-				Debug.Log ("changed");
-			}
-
-			DrawHistory();
-
-			EditorGUILayout.EndScrollView();
-
-			if (GUILayout.Button("Clear")) {
-				selectionHistory.Clear();
-				Repaint();
-			}
-
-			if (!automaticRemoveDeleted) {
-				if (GUILayout.Button ("Remove Deleted")) {
-					selectionHistory.ClearDeleted ();
-					Repaint ();
-				}
-			} 
-
-			if (allowDuplicatedEntries) {
-				if (GUILayout.Button ("Remove Duplciated")) {
-					selectionHistory.RemoveDuplicated ();
-					Repaint ();
-				}
-			} 
-
-			DrawSettingsButton ();
-		}
-
-		void DrawSettingsButton()
-		{
-			if (openPreferencesWindow == null)
-				return;
-			
-			if (GUILayout.Button ("Preferences")) {
-				openPreferencesWindow.Invoke(null, null);
-			}
-		}
-			
-		[MenuItem("Window/Gemserk/Previous selection %#,")]
-		public static void PreviousSelection()
-		{
-			selectionHistory.Previous ();
-			Selection.activeObject = selectionHistory.GetSelection ();
-		}
-
-		[MenuItem("Window/Gemserk/Next selection %#.")]
-		public static void Nextelection()
-		{
-			selectionHistory.Next();
-			Selection.activeObject = selectionHistory.GetSelection ();
-		}
-
-	    void DrawElement(Object obj, int i, Color originalColor)
-	    {
-	        var buttonStyle = windowSkin.GetStyle("SelectionButton");
-			buttonStyle.fixedWidth = position.width - buttonsWidth;
-			var nonSelectedColor = originalColor;
-
-            if (!EditorUtility.IsPersistent(obj))
+        private SelectionHistory selectionHistory;
+        
+        private void OnDisable()
+        {
+            EditorSceneManager.sceneClosed -= OnSceneClosed;
+            EditorSceneManager.sceneOpened -= OnSceneOpened;
+            
+            if (selectionHistory != null)
             {
-                if (!showHierarchyViewObjects)
-                    return;
-                nonSelectedColor = hierarchyElementColor;
+                selectionHistory.OnNewEntryAdded -= OnHistoryEntryAdded;
             }
-            else
-            {
-                if (!showProjectViewObjects)
-                    return;
-            }
-
-            if (selectionHistory.IsSelected(obj))
-            {
-                GUI.contentColor = selectedElementColor;
-            }
-            else
-            {
-                GUI.contentColor = nonSelectedColor;
-            }
-
-            var rect = EditorGUILayout.BeginHorizontal();
-
-            if (obj == null)
-            {
-                GUILayout.Label("Deleted", buttonStyle);
-            }
-            else
-            {
-                var icon = AssetPreview.GetMiniThumbnail(obj);
-
-                GUIContent content = new GUIContent();
-
-                content.image = icon;
-                content.text = obj.name;
-
-                // chnanged to label to be able to handle events for drag
-                GUILayout.Label(content, buttonStyle);
-
-                GUI.contentColor = originalColor;
-
-                if (GUILayout.Button("Ping", windowSkin.button))
-                {
-                    EditorGUIUtility.PingObject(obj);
-                }
-
-                var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
-
-                if (favoritesEnabled)
-                {
-                    var pinString = "Pin";
-                    var isFavorite = selectionHistory.IsFavorite(obj);
-
-                    if (isFavorite)
-                    {
-                        pinString = "Unpin";
-                    }
-
-                    if (GUILayout.Button(pinString, windowSkin.button))
-                    {
-                        selectionHistory.ToggleFavorite(obj);
-                        Repaint();
-                    }
-                }
-
-            }
-
-            EditorGUILayout.EndHorizontal();
-
-            ButtonLogic(rect, obj);
         }
 
-	    void DrawFavorites()
-	    {
-	        var originalColor = GUI.contentColor;
-
-	        var favorites = selectionHistory.Favorites;
-
-	        var buttonStyle = windowSkin.GetStyle("SelectionButton");
-
-	        for (int i = 0; i < favorites.Count; i++)
-	        {
-	            var favorite = favorites[i];
-                DrawElement(favorite, i, originalColor);
-	        }
-
-	        GUI.contentColor = originalColor;
-        }
-
-		void DrawHistory()
-		{
-			var originalColor = GUI.contentColor;
-
-			var history = selectionHistory.History;
-
-			var buttonStyle = windowSkin.GetStyle("SelectionButton");
-
-		    var favoritesEnabled = EditorPrefs.GetBool(HistoryFavoritesPrefKey, true);
-
-            for (int i = 0; i < history.Count; i++) {
-				var historyElement = history [i];
-                if (selectionHistory.IsFavorite(historyElement) && favoritesEnabled)
-                    continue;
-			    DrawElement(historyElement, i, originalColor);
+        public void OnEnable()
+        {
+            EditorSceneManager.sceneClosed += OnSceneClosed;
+            EditorSceneManager.sceneOpened += OnSceneOpened;
+            
+            var root = rootVisualElement;
+            root.styleSheets.Add(styleSheet);
+            
+            selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+            
+            if (selectionHistory != null)
+            {
+                selectionHistory.HistorySize = EditorPrefs.GetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, 10);
+                selectionHistory.OnNewEntryAdded += OnHistoryEntryAdded;
             }
 
-			GUI.contentColor = originalColor;
-		}
+            FavoritesController.Favorites.OnFavoritesUpdated += delegate
+            {
+                ReloadRoot();
+            };
 
-		void ButtonLogic(Rect rect, Object currentObject)
-		{
-			var currentEvent = Event.current;
+            ReloadRoot();
+        }
 
-			if (currentEvent == null)
-				return;
+        private void OnHistoryEntryAdded(SelectionHistory history)
+        {
+            ReloadRoot();
+            
+            var scroll = rootVisualElement.Q<ScrollView>("MainScroll");
+            if (scroll == null) 
+                return;
+            
+            scroll.RegisterCallback(delegate(GeometryChangedEvent evt)
+            {
+                var scrollOffset = scroll.scrollOffset;
+                scrollOffset.y = float.MaxValue;
+                scroll.scrollOffset = scrollOffset;    
+            });
 
-			if (!rect.Contains (currentEvent.mousePosition))
-				return;
-			
-//			Debug.Log (string.Format("event:{0}", currentEvent.ToString()));
+            // schedule scroll position to after the scroll elements were processed
+            // scroll.schedule.Execute(delegate()
+            // {
+            //     var scrollOffset = scroll.scrollOffset;
+            //     scrollOffset.y = float.MaxValue;
+            //     scroll.scrollOffset = scrollOffset;    
+            // }).StartingIn(50);
+        }
 
-			var eventType = currentEvent.type;
+        private void OnSceneOpened(Scene scene, OpenSceneMode mode)
+        {
+            ReloadRoot();
+        }
 
-			if (eventType == EventType.MouseDrag && currentEvent.button == 0) {
-				
-				#if !UNITY_EDITOR_OSX
-				
-				if (currentObject != null) {
-					DragAndDrop.PrepareStartDrag ();
+        private void OnSceneClosed(Scene scene)
+        {
+            ReloadRoot();
+        }
 
-					DragAndDrop.StartDrag (currentObject.name);
+        private void ReloadRoot()
+        {
+            var root = rootVisualElement;
+            
+            root.Clear();
+            
+            if (SelectionHistoryWindowUtils.AutomaticRemoveDeleted)
+                selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
 
-					DragAndDrop.objectReferences = new Object[] { currentObject };
+            if (!SelectionHistoryWindowUtils.AllowDuplicatedEntries)
+                selectionHistory.RemoveDuplicated();
 
-//					if (ProjectWindowUtil.IsFolder(currentObject.GetInstanceID())) {
+            var scroll = new ScrollView(ScrollViewMode.Vertical)
+            {
+                name = "MainScroll"
+            };
+            
+            root.Add(scroll);
 
-					// fixed to use IsPersistent to work with all assets with paths.
-					if (EditorUtility.IsPersistent(currentObject)) {
+            var entries = selectionHistory.History;
 
-						// added DragAndDrop.path in case we are dragging a folder.
+            VisualElement lastObject = null;
+            
+            var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
+            var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
 
-						DragAndDrop.paths = new string[] {
-							AssetDatabase.GetAssetPath(currentObject)
-						};
+            for (var i = 0; i < entries.Count; i++)
+            {
+                var entry = entries[i];
 
-						// previous test with setting generic data by looking at
-						// decompiled Unity code.
+                var elementTree = CreateElementForEntry(entry);
+                if (elementTree != null)
+                {
+                    scroll.Add(elementTree);
+                }
+            }
 
-						// DragAndDrop.SetGenericData ("IsFolder", "isFolder");
-					}
-				}
+            var clearButton = new Button(delegate
+            {
+                selectionHistory.Clear();
+                ReloadRoot();
+            }) {text = "Clear"};
+            root.Add(clearButton);
 
-				Event.current.Use ();
-				#endif
+            if (showUnloadedObjects)
+            {
+                var removeUnloadedButton = new Button(delegate
+                {
+                    selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceUnloaded);
+                    ReloadRoot();
+                }) {text = "Remove Unloaded"};
+                root.Add(removeUnloadedButton);
+            }
+            
+            if (showDestroyedObjects)
+            {
+                var removeDestroyedButton = new Button(delegate
+                {
+                    selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
+                    ReloadRoot();
+                }) {text = "Remove destroyed"};
+                root.Add(removeDestroyedButton);
+            }
+            
+            // if debug enabled 
 
-			} else if (eventType == EventType.MouseUp) {
+            // var button = new Button(delegate
+            // {
+            //     var scrollOffset = scroll.scrollOffset;
+            //     scrollOffset.y = float.MaxValue;
+            //     scroll.scrollOffset = scrollOffset;
+            // });
+            // button.text = "Scroll To Last";
+            // root.Add(button);
+            //
+            // var button2 = new Button(delegate
+            // {
+            //     var scrollOffset = scroll.scrollOffset;
+            //     scrollOffset.y = 0;
+            //     scroll.scrollOffset = scrollOffset;
+            // });
+            // button2.text = "Scroll To First";
+            // root.Add(button2);
 
-				if (currentObject != null) {
-					if (Event.current.button == 0) {
-						UpdateSelection (currentObject);
-					} else {
-						EditorGUIUtility.PingObject (currentObject);
-					}
-				}
+            //
+            // if (allowDuplicatedEntries) {
+            //     if (GUILayout.Button ("Remove Duplicated")) {
+            //         selectionHistory.RemoveDuplicated ();
+            //         Repaint();
+            //     }
+            // }
+        }
 
-				Event.current.Use ();
-			}
+        private VisualElement CreateElementForEntry(SelectionHistory.Entry entry)
+        {
+            var showHierarchyElements = SelectionHistoryWindowUtils.ShowHierarchyViewObjects;
+            var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
+            var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
+            
+            if (entry.isSceneInstance && !showHierarchyElements)
+            {
+                return null;
+            }
 
-		}
+            var referenced = entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced;
 
-	}
+            if (!showUnloadedObjects && entry.GetReferenceState() == SelectionHistory.Entry.State.ReferenceUnloaded)
+            {
+                return null;
+            }
+
+            if (!showDestroyedObjects && entry.GetReferenceState() == SelectionHistory.Entry.State.ReferenceDestroyed)
+            {
+                return null;
+            }
+
+            var elementTree = historyElementViewTree.CloneTree();
+
+            if (!referenced)
+            {
+                elementTree.AddToClassList("unreferencedObject");
+            }
+            else if (entry.isSceneInstance)
+            {
+                elementTree.AddToClassList("sceneObject");
+            }
+            else
+            {
+                elementTree.AddToClassList("assetObject");
+            }
+
+            if (referenced)
+            {
+                var dragArea = elementTree.Q<VisualElement>("DragArea");
+                if (dragArea != null)
+                {
+#if !UNITY_EDITOR_OSX
+                    dragArea.RegisterCallback<MouseUpEvent>(evt =>
+                    {
+                        if (evt.button == 0)
+                        {
+                            selectionHistory.SetSelection(entry.reference);
+                            Selection.activeObject = entry.reference;
+                        }
+                        else
+                        {
+                            SelectionHistoryWindowUtils.PingEntry(entry);
+                        }
+
+                        dragArea.userData = null;
+                    });
+                    dragArea.RegisterCallback<MouseDownEvent>(evt =>
+                    {
+                        DragAndDrop.PrepareStartDrag();
+                        DragAndDrop.objectReferences = new Object[] {null};
+
+                        dragArea.userData = true;
+                    });
+                    dragArea.RegisterCallback<MouseLeaveEvent>(evt =>
+                    {
+                        var dragging = false;
+
+                        if (dragArea.userData != null)
+                        {
+                            dragging = (bool) dragArea.userData;
+                        }
+
+                        if (dragging)
+                        {
+                            DragAndDrop.PrepareStartDrag();
+                            DragAndDrop.StartDrag("Dragging");
+                            DragAndDrop.objectReferences = new Object[] {entry.reference};
+
+                            dragArea.userData = null;
+                        }
+                    });
+
+                    dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
+                    {
+                        DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+                    });
+#else
+                        dragArea.RegisterCallback<MouseUpEvent>(evt =>
+                        {
+                            if (evt.button == 0)
+                            {
+                                selectionHistory.SetSelection(entry.reference);
+                                Selection.activeObject = entry.reference;
+                            }
+                            else
+                            {
+                                SelectionHistoryWindowUtils.PingEntry(entry);
+                            }
+                        });
+#endif
+                }
+
+                var icon = elementTree.Q<Image>("Icon");
+                if (icon != null)
+                {
+                    icon.image = AssetPreview.GetMiniThumbnail(entry.reference);
+                }
+            }
+
+            var pingIcon = elementTree.Q<Image>("PingIcon");
+            if (pingIcon != null)
+            {
+                pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
+                pingIcon.RegisterCallback(delegate(MouseUpEvent e) { SelectionHistoryWindowUtils.PingEntry(entry); });
+            }
+
+            if (SelectionHistoryWindowUtils.ShowFavoriteButton)
+            {
+                if (entry.isAsset &&
+                    entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced)
+                {
+                    var favoriteAsset = elementTree.Q<Image>("Favorite");
+                    if (favoriteAsset != null)
+                    {
+                        var isFavorite = FavoritesController.Favorites.IsFavorite(entry.reference);
+                        // favoriteEmptyIconName
+                        favoriteAsset.image = isFavorite
+                            ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
+                            : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
+                        favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
+                        {
+                            FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
+                            {
+                                reference = entry.reference
+                            });
+                            ReloadRoot();
+                        });
+                    }
+                }
+            }
+
+            var label = elementTree.Q<Label>("Name");
+            if (label != null)
+            {
+                label.text = entry.GetName(true);
+            }
+
+            return elementTree;
+        }
+
+        public void AddItemsToMenu(GenericMenu menu)
+        {
+            var showHierarchyViewObjects =
+                EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowHierarchyObjectsPrefKey, true);
+            
+            AddMenuItemForPreference(menu, SelectionHistoryWindowUtils.HistoryShowHierarchyObjectsPrefKey, "HierarchyView Objects", 
+                "Toggle to show/hide objects from scene hierarchy view.");
+		 
+            if (showHierarchyViewObjects)
+            {
+                AddMenuItemForPreference(menu, SelectionHistoryWindowUtils.ShowUnloadedObjectsKey, "Unloaded Objects", 
+                    "Toggle to show/hide unloaded objects from scenes hierarchy view.");
+            } 
+		    
+            AddMenuItemForPreference(menu, SelectionHistoryWindowUtils.ShowDestroyedObjectsKey, "Destroyed Objects", 
+                "Toggle to show/hide unreferenced or destroyed objects.");
+            
+            AddMenuItemForPreference(menu, SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, "Favorite Button", 
+                "Toggle to show/hide favorite reference button.");
+            
+            menu.AddItem(new GUIContent("Open preferences"), false, delegate
+            {
+                SettingsService.OpenUserPreferences("Selection History");
+            });
+        }
+
+        private void AddMenuItemForPreference(GenericMenu menu, string preference, string text, string tooltip)
+        {
+            const bool defaultValue = true;
+            var value = EditorPrefs.GetBool(preference, defaultValue);
+            var name = value ? $"Hide {text}" : $"Show {text}";
+            menu.AddItem(new GUIContent(name, tooltip), false, delegate
+            {
+                ToggleBoolEditorPref(preference, defaultValue);
+                ReloadRoot();
+            });
+        }
+
+        private static void ToggleBoolEditorPref(string preferenceName, bool defaultValue)
+        {
+            var newValue = !EditorPrefs.GetBool(preferenceName, defaultValue);
+            EditorPrefs.SetBool(preferenceName, newValue);
+            // return newValue;
+        }
+    }
 }

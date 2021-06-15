@@ -1,0 +1,92 @@
+.favorite {
+    font-size: 12px;
+    -unity-text-align: middle-left;
+    margin: 2px;
+    padding: 3px;
+    background-color: #282828;
+    border-color: black;
+    border-width: 1px;
+    border-radius: 3px;
+}
+
+.favorite #DragArea{
+    margin-right: 16px;
+}
+
+.favorite Label {
+    margin-left: 17px;
+}
+
+.favorite #Icon {
+    max-width: 16px;
+    max-height: 14px;
+    visibility: initial;
+    position: absolute;
+    align-self: flex-start;
+}
+
+.favorite #RemoveIcon {
+    max-width: 16px;
+    max-height: 14px;
+    margin: 4px;
+    padding-right: 0px;
+    right: 0px;
+    position: absolute;
+    /* align-self: flex-end; */
+}
+
+.history {
+    font-size: 12px;
+    -unity-text-align: middle-left;
+    margin: 2px;
+    padding: 3px;
+    background-color: #282828;
+    border-color: black;
+    border-width: 1px;
+    border-radius: 3px;
+}
+
+.unreferencedObject Label {
+    color: #5D5D5D;
+}
+
+.sceneObject Label { 
+    color: darkseagreen;
+}
+
+.assetObject Label {
+    
+}
+
+.history Label {
+    margin-left: 17px;
+}
+
+.history #Icon {
+    max-width: 16px;
+    max-height: 14px;
+    visibility: initial;
+    position: absolute;
+    align-self: flex-start;
+}
+
+.history #PingIcon {
+    max-width: 16px;
+    max-height: 14px;
+    margin: 4px;
+    padding-right: 0px;
+    right: 0px;
+    position: absolute;
+    /* align-self: flex-end; */
+}
+
+.history #Favorite {
+    max-width: 16px;
+    max-height: 14px;
+    margin: 4px;
+    margin-right: 20px;
+    padding-right: 0px;
+    right: 0px;
+    position: absolute;
+    /* align-self: flex-end; */
+}
