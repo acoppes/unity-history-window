@@ -18,9 +18,9 @@ You can also install it by opening Unity Package Manager and selecting add packa
 ### Features
 
 * Stores history of selected objects (custom count), both assets and scene objects (optional)
-* Drag objects from the window to Scene, Hierarchy, Project or Inspector (alt/option key pressed)
+* Drag objects from the window to Scene, Hierarchy, Project or Inspector **(alt/option key pressed)**
 * Keeps tracks for selection from unloaded scenes (optional)
-* Select (left click) or ping/focus objects without losing selection (right click).
+* Select **(left click)** or ping/focus objects without losing selection **(right click)**.
 * Quick menu options to customize behavior.
 * Favorite items to [Favorites window](#favorites-window) (optional)
 
