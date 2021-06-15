@@ -1,3 +1,7 @@
+# 1.1.5
+
+* Fixed bug when favorites controller asset wasn't created yet.
+
 # 1.1.4
 
 * Now drag objects work on mac too.
