@@ -1,3 +1,8 @@
+# 1.1.4
+
+* Now drag objects work on mac too.
+* Moved drag to mouse down event, alt key has to be pressed to perform drag.
+
 # 1.1.3
 
 * Fixed bugs on scroll when selecting with new window version using UIElements.
