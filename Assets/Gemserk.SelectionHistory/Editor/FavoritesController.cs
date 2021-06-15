@@ -16,8 +16,7 @@ namespace Gemserk
                     var assetPath = "Assets/Gemserk.Favorites.asset";
                     
                     _favoritesInstance = AssetDatabase.LoadAssetAtPath<Favorites>(assetPath);
-                    _favoritesInstance.ClearUnreferenced();
-
+                    
                     if (_favoritesInstance == null)
                     {
                         _favoritesInstance = ScriptableObject.CreateInstance<Favorites>();
@@ -25,6 +24,7 @@ namespace Gemserk
                         AssetDatabase.SaveAssets();
                     }
                     
+                    _favoritesInstance.ClearUnreferenced();
                     _favoritesInstance.OnFavoritesUpdated += OnFavoritesUpdated;
                 }
                 return _favoritesInstance;
