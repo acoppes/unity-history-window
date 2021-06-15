@@ -108,61 +108,40 @@ namespace Gemserk
                 var dragArea = elementTree.Q<VisualElement>("DragArea");
                 if (dragArea != null)
                 {
-#if !UNITY_EDITOR_OSX
-                        dragArea.RegisterCallback<MouseUpEvent>(evt =>
+                    dragArea.RegisterCallback<MouseUpEvent>(evt =>
+                    {
+                        if (evt.button == 0)
                         {
-                            if (evt.button == 0)
-                            {
-                                Selection.activeObject = assetReference;
-                            }
-                            else
-                            {
-                                EditorGUIUtility.PingObject(assetReference);
-                            }
+                            Selection.activeObject = assetReference;
+                        }
+                        else
+                        {
+                            EditorGUIUtility.PingObject(assetReference);
+                        }
                             
-                            dragArea.userData = null;
-                        });
-                        dragArea.RegisterCallback<MouseDownEvent>(evt =>
+                        dragArea.userData = null;
+                    });
+                    dragArea.RegisterCallback<MouseDownEvent>(evt =>
+                    {
+                        if (evt.button == 0)
                         {
                             DragAndDrop.PrepareStartDrag();
-                            DragAndDrop.objectReferences = new Object[] { null };
-                            
-                            dragArea.userData = true;
-                        });
-                        dragArea.RegisterCallback<MouseLeaveEvent>(evt =>
-                        {
-                            var dragging = false;
-                            
-                            if (dragArea.userData != null)
+
+                            var objectReferences = new[] {assetReference};
+                            DragAndDrop.paths = new[]
                             {
-                                dragging = (bool) dragArea.userData;
-                            }
-                            
-                            if (dragging)
-                            {
-                                DragAndDrop.PrepareStartDrag();
-                                DragAndDrop.StartDrag("Dragging");
-                                DragAndDrop.objectReferences = new Object[] {assetReference};
-                            }
-                        });
-                        
-                        dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
-                        {
-                            DragAndDrop.visualMode = DragAndDropVisualMode.Link;
-                        });
-#else
-                        dragArea.RegisterCallback<MouseUpEvent>(evt =>
-                        {
-                            if (evt.button == 0)
-                            {
-                                Selection.activeObject = assetReference;
-                            }
-                            else
-                            {
-                                EditorGUIUtility.PingObject(assetReference);
-                            }
-                        });
-#endif
+                                AssetDatabase.GetAssetPath(assetReference)
+                            };
+
+                            DragAndDrop.objectReferences = objectReferences;
+                            DragAndDrop.StartDrag(ObjectNames.GetDragAndDropTitle(assetReference));
+                        }
+                    });
+
+                    dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
+                    {
+                        DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+                    });
                 }
                 
                 var icon = elementTree.Q<Image>("Icon");

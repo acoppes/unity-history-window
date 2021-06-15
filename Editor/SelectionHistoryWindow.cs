@@ -233,7 +233,6 @@ namespace Gemserk
                 var dragArea = elementTree.Q<VisualElement>("DragArea");
                 if (dragArea != null)
                 {
-#if !UNITY_EDITOR_OSX
                     dragArea.RegisterCallback<MouseUpEvent>(evt =>
                     {
                         if (evt.button == 0)
@@ -245,32 +244,21 @@ namespace Gemserk
                         {
                             SelectionHistoryWindowUtils.PingEntry(entry);
                         }
-
-                        dragArea.userData = null;
                     });
                     dragArea.RegisterCallback<MouseDownEvent>(evt =>
                     {
-                        DragAndDrop.PrepareStartDrag();
-                        DragAndDrop.objectReferences = new Object[] {null};
-
-                        dragArea.userData = true;
-                    });
-                    dragArea.RegisterCallback<MouseLeaveEvent>(evt =>
-                    {
-                        var dragging = false;
-
-                        if (dragArea.userData != null)
-                        {
-                            dragging = (bool) dragArea.userData;
-                        }
-
-                        if (dragging)
+                        if (evt.button == 0)
                         {
                             DragAndDrop.PrepareStartDrag();
-                            DragAndDrop.StartDrag("Dragging");
-                            DragAndDrop.objectReferences = new Object[] {entry.reference};
 
-                            dragArea.userData = null;
+                            var objectReferences = new[] {entry.reference};
+                            DragAndDrop.paths = new[]
+                            {
+                                AssetDatabase.GetAssetPath(entry.reference)
+                            };
+
+                            DragAndDrop.objectReferences = objectReferences;
+                            DragAndDrop.StartDrag(ObjectNames.GetDragAndDropTitle(entry.reference));
                         }
                     });
 
@@ -278,20 +266,6 @@ namespace Gemserk
                     {
                         DragAndDrop.visualMode = DragAndDropVisualMode.Link;
                     });
-#else
-                        dragArea.RegisterCallback<MouseUpEvent>(evt =>
-                        {
-                            if (evt.button == 0)
-                            {
-                                selectionHistory.SetSelection(entry.reference);
-                                Selection.activeObject = entry.reference;
-                            }
-                            else
-                            {
-                                SelectionHistoryWindowUtils.PingEntry(entry);
-                            }
-                        });
-#endif
                 }
 
                 var icon = elementTree.Q<Image>("Icon");
