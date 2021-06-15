@@ -70,9 +70,12 @@ namespace Gemserk
             
             scroll.RegisterCallback(delegate(GeometryChangedEvent evt)
             {
-                var scrollOffset = scroll.scrollOffset;
-                scrollOffset.y = float.MaxValue;
-                scroll.scrollOffset = scrollOffset;    
+                var last = scroll.Children().ToList()[scroll.childCount - 1];
+                scroll.ScrollTo(last);
+                
+                // var scrollOffset = scroll.scrollOffset;
+                // scrollOffset.y = float.MaxValue;
+                // scroll.scrollOffset = scrollOffset;    
             });
 
             // schedule scroll position to after the scroll elements were processed
