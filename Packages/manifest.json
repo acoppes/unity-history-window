@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.gemserk.upmgitpusher": "ssh://git@github.com/acoppes/upmgitpusher.git#com.gemserk.upmgitpusher-0.0.7",
+    "com.gemserk.upmgitpusher": "0.0.16",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.collab-proxy": "1.2.16",
@@ -42,5 +42,14 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "scopedRegistries": [
+    {
+      "name": "Open UPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.gemserk.upmgitpusher"
+      ]
+    }
+  ]
 }

@@ -112,7 +112,7 @@ namespace Gemserk
 		}
 
 		[Test]
-		public void ClearDeletedEntriesShouldKeepSelectedIndex()
+		public void ClearDeletedEntries_ShouldKeepSelectedIndex_IfNotDeleted()
 		{
 			var selectionHistory = new SelectionHistory();
 
@@ -131,7 +131,7 @@ namespace Gemserk
 
 			GameObject.DestroyImmediate (selection2);
 
-			selectionHistory.ClearDeleted ();
+			selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
 
 			Assert.IsTrue(selectionHistory.IsSelected(2));
 			Assert.AreEqual(selectionHistory.GetHistoryCount(), 3);
@@ -141,14 +141,14 @@ namespace Gemserk
 			GameObject.DestroyImmediate (selection1);
 			GameObject.DestroyImmediate (selection4);
 
-			selectionHistory.ClearDeleted ();
+			selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
 
 			Assert.IsTrue(selectionHistory.IsSelected(0));
 			Assert.AreEqual(selectionHistory.GetHistoryCount(), 1);
 		}
 
 		[Test]
-		public void ClearDeletedItemsShouldntSelectIfSelectionDeleted()
+		public void ClearDeletedEntries_ShouldNotKeepSelectedIndex_IfDeleted()
 		{
 			var selectionHistory = new SelectionHistory();
 
@@ -163,13 +163,13 @@ namespace Gemserk
 			Assert.IsTrue(selectionHistory.IsSelected(2));
 			Assert.That(selectionHistory.GetHistoryCount(), Is.EqualTo(3));
 
-			GameObject.DestroyImmediate (selection3);
+			GameObject.DestroyImmediate(selection3);
 
-			selectionHistory.ClearDeleted ();
+			selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
 
 			Assert.IsFalse(selectionHistory.IsSelected(0));
 			Assert.IsFalse(selectionHistory.IsSelected(1));
-			Assert.AreEqual(selectionHistory.GetHistoryCount(), 2);
+			Assert.That(selectionHistory.GetHistoryCount(), Is.EqualTo(2));
 		}
 
 		[Test]
