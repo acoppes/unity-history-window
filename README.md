@@ -13,16 +13,20 @@ This package can be installed using OpenUPM, just click here [![openupm](https:/
 
 ### Install from Git URL
 
-You can also install it by opening Unity Package Manager and selecting add package from git URL and add this `https://github.com/acoppes/unity-history-window.git#1.1.2`, Or add it manually to the `manifest.json`.
+You can also install it by opening Unity Package Manager and selecting add package from git URL and add this `https://github.com/acoppes/unity-history-window.git#1.1.2`, Or add it manually to the `manifest.json`. Check the latest released version.
 
 ### Features
 
 * Stores history of selected objects (custom count), both assets and scene objects (optional)
-* Drag objects from the window to Scene, Hierarchy, Project or Inspector ([doesn't work on mac](https://fogbugz.unity3d.com/default.asp?894059_1u4pe70tnj823875))
+* Drag objects from the window to Scene, Hierarchy, Project or Inspector (alt/option key pressed)
 * Keeps tracks for selection from unloaded scenes (optional)
 * Select (left click) or ping/focus objects without losing selection (right click).
 * Quick menu options to customize behavior.
 * Favorite items to [Favorites window](#favorites-window) (optional)
+
+### Roadmap
+
+* Add more icons to show visually actions like ping, select and drag.
 
 As extra, it comes with a [another window](#favorites-window) to keep track of a list of favorite assets and easily access them.
 
@@ -53,7 +57,7 @@ This window keeps a list of favorite items, similar to searches but specific obj
 * Keep your list of most used or important assets at hand.
 * Drag assets directly to window to favorite them.
 * Stores favorites for project in custom asset (can be ignored in SCM or shared with other devs).
-* Drag objects from the window to Scene, Hierarchy, Project or Inspector ([doesn't work on mac](https://fogbugz.unity3d.com/default.asp?894059_1u4pe70tnj823875))
+* Drag objects from the window to Scene, Hierarchy, Project or Inspector (alt/option key pressed)
 
 ### Roadmap
 
