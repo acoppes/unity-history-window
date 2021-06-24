@@ -70,21 +70,12 @@ namespace Gemserk
             
             scroll.RegisterCallback(delegate(GeometryChangedEvent evt)
             {
-                var last = scroll.Children().ToList()[scroll.childCount - 1];
-                scroll.ScrollTo(last);
-                
-                // var scrollOffset = scroll.scrollOffset;
-                // scrollOffset.y = float.MaxValue;
-                // scroll.scrollOffset = scrollOffset;    
+                if (scroll.childCount > 0)
+                {
+                    var last = scroll.Children().ToList()[scroll.childCount - 1];
+                    scroll.ScrollTo(last);
+                }
             });
-
-            // schedule scroll position to after the scroll elements were processed
-            // scroll.schedule.Execute(delegate()
-            // {
-            //     var scrollOffset = scroll.scrollOffset;
-            //     scrollOffset.y = float.MaxValue;
-            //     scroll.scrollOffset = scrollOffset;    
-            // }).StartingIn(50);
         }
 
         private void OnSceneOpened(Scene scene, OpenSceneMode mode)
