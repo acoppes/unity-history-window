@@ -1,3 +1,7 @@
+# 1.1.6
+
+* Fixed bug when hierarchy object selected while hierarchy objects hidden.
+
 # 1.1.5
 
 * Fixed bug when favorites controller asset wasn't created yet.
