@@ -13,7 +13,7 @@ namespace Gemserk
         public static void OpenWindow()
         {
             var window = GetWindow<SelectionHistoryWindow>();
-            var titleContent = EditorGUIUtility.IconContent(UnityBuiltInIcons.refreshIconName);
+            var titleContent = EditorGUIUtility.IconContent("Refresh");
             titleContent.text = "History";
             titleContent.tooltip = "Objects selection history";
             window.titleContent = titleContent;
