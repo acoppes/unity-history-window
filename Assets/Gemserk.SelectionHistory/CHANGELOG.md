@@ -1,3 +1,7 @@
+# 1.1.7
+
+* Removed unused variable to fix issue #35 for strict build pipelines
+
 # 1.1.6
 
 * Fixed bug when hierarchy object selected while hierarchy objects hidden.
