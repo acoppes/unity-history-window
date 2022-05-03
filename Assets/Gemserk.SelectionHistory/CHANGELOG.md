@@ -1,6 +1,7 @@
 # 1.1.7
 
 * Removed unused variable to fix issue #35 for strict build pipelines
+* Removed background style for .history element for issue #34
 
 # 1.1.6
 
