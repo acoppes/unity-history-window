@@ -118,8 +118,6 @@ namespace Gemserk
 
             var entries = selectionHistory.History;
 
-            VisualElement lastObject = null;
-            
             var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
             var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
 
