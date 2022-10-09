@@ -1,3 +1,7 @@
+# 1.1.8
+
+* Fixed favorite prefab issue #36.
+
 # 1.1.7
 
 * Removed unused variable to fix issue #35 for strict build pipelines
