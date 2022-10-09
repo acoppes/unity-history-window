@@ -40,14 +40,5 @@ namespace Gemserk
             favoritesList.RemoveAll(f => f.reference == reference);
             OnFavoritesUpdated?.Invoke(this);
         }
-
-        public bool CanBeFavorite(Object reference)
-        {
-            if (reference is GameObject go)
-            {
-                return go.scene == null;
-            }
-            return true;
-        }
     }
 }

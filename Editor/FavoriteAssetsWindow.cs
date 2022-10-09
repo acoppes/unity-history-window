@@ -24,6 +24,15 @@ namespace Gemserk
             FavoriteElements(Selection.objects);
         }
 
+        private static bool CanBeFavorite(Object reference)
+        {
+            if (!string.IsNullOrEmpty(AssetDatabase.GetAssetPath(reference)))
+            {
+                return true;
+            }
+            return false;
+        }
+
         private static void FavoriteElements(Object[] references)
         {
             var favorites = FavoritesController.Favorites;
@@ -33,7 +42,7 @@ namespace Gemserk
                 if (favorites.IsFavorite(reference))
                     continue;
             
-                if (favorites.CanBeFavorite(Selection.activeObject))
+                if (CanBeFavorite(reference))
                 {
                     favorites.AddFavorite(new Favorites.Favorite
                     {
