@@ -199,6 +199,35 @@ namespace Gemserk
 			selectionHistory.UpdateSelection (selection2);
 			Assert.That(selectionHistory.GetSelection(), Is.SameAs(selection2)); 
 		}
+		
+		[Test]
+		public void Test_EntriesAreDifferent_WhenNoGameObject()
+		{
+			var gameObject1 = new GameObject();
+
+			var entry1 = new SelectionHistory.Entry(gameObject1)
+			{
+				globalObjectId = "TEST_G1",
+				reference = null,
+				sceneName = "Scene1",
+				scenePath = "Assets/Scene1"
+			};
+
+			var entry2 = new SelectionHistory.Entry(gameObject1)
+			{
+				globalObjectId = "TEST_G2",
+				reference = null,
+				sceneName = "Scene1",
+				scenePath = "Assets/Scene1"
+			};
+			
+			Assert.IsFalse(entry1.Equals(entry2));
+
+			// - reference: {fileID: 0}
+			// sceneName: GlobalIdTestScene
+			// scenePath: Assets/Scenes/GlobalIdTest/GlobalIdTestScene.unity
+			// globalObjectId: GlobalObjectId_V1-2-8d557def68244fd46a45dd08bd34aae2-1767799830-0
+		}
 
 	}
 }

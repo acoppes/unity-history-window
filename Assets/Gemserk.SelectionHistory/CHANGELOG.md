@@ -1,6 +1,7 @@
 # 1.1.9
 
 * Now selection history is stored in file in order to recover session if Unity was closed.
+* Fix for stored scene objects were detected as the same and removed on unity reload.
 
 # 1.1.8
 

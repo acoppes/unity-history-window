@@ -63,8 +63,22 @@ namespace Gemserk
 
             public bool Equals(Entry other)
             {
-                if (ReferenceEquals(null, other)) return false;
-                if (ReferenceEquals(this, other)) return true;
+                if (ReferenceEquals(null, other))
+                {
+                    return false;
+                }
+                
+                if (ReferenceEquals(this, other))
+                {
+                    return true;
+                }
+
+                if (reference == null && other.reference == null)
+                {
+                    return string.Equals(scenePath, other.scenePath) &&
+                           string.Equals(globalObjectId, other.globalObjectId);
+                }
+                
                 return Equals(reference, other.reference);
             }
 
