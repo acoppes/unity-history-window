@@ -1,3 +1,7 @@
+# 1.1.9
+
+* Now selection history is stored in file in order to recover session if Unity was closed.
+
 # 1.1.8
 
 * Fixed favorite prefab issue #36.
