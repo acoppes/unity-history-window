@@ -44,7 +44,7 @@ namespace Gemserk
             var root = rootVisualElement;
             root.styleSheets.Add(styleSheet);
             
-            selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+            selectionHistory = SelectionHistoryReference.SelectionHistory;
             
             if (selectionHistory != null)
             {

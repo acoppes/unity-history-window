@@ -32,7 +32,7 @@ namespace Gemserk
 				    Debug.Log ("Recording new selection: " + Selection.activeObject.name);
 			    }
 
-			    var selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+			    var selectionHistory = SelectionHistoryReference.SelectionHistory;
 			    selectionHistory.UpdateSelection (Selection.activeObject);
 		    } 
 	    }
@@ -41,7 +41,7 @@ namespace Gemserk
 	    [Shortcut("Selection History/Previous Selection")]
 	    public static void PreviousSelection()
 	    {
-		    var selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+		    var selectionHistory = SelectionHistoryReference.SelectionHistory;
 		    selectionHistory.Previous ();
 		    Selection.activeObject = selectionHistory.GetSelection ();
 	    }
@@ -50,7 +50,7 @@ namespace Gemserk
 	    [Shortcut("Selection History/Next Selection")]
 	    public static void NextSelection()
 	    {
-		    var selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+		    var selectionHistory = SelectionHistoryReference.SelectionHistory;
 		    selectionHistory.Next();
 		    Selection.activeObject = selectionHistory.GetSelection ();
 	    }

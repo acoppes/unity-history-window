@@ -16,7 +16,7 @@ namespace Gemserk
 
         private static void StoreSceneSelectionOnSceneOpened(Scene scene, OpenSceneMode mode)
         {
-            var selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+            var selectionHistory = SelectionHistoryReference.SelectionHistory;
 
             if (selectionHistory == null)
                 return;
@@ -47,7 +47,7 @@ namespace Gemserk
             if (!removingScene)
                 return;
 			
-            var selectionHistory = EditorTemporaryMemory.Instance.selectionHistory;
+            var selectionHistory = SelectionHistoryReference.SelectionHistory;
 
             if (selectionHistory == null)
                 return;
