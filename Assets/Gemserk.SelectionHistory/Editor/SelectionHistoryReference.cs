@@ -5,7 +5,9 @@ namespace Gemserk
     [UnityEditor.InitializeOnLoad]
     public static class SelectionHistoryReference
     {
-        private const string AssetsGemserkSelectionhistoryAsset = "Assets/Gemserk.SelectionHistory.asset";
+        // TODO: make it configurable?
+        
+        private const string AssetsGemserkSelectionHistoryAsset = "Assets/Gemserk.SelectionHistory.asset";
         
         static SelectionHistoryAsset instance;
 
@@ -13,12 +15,12 @@ namespace Gemserk
 		
         static SelectionHistoryReference()
         {
-            instance = UnityEditor.AssetDatabase.LoadAssetAtPath<SelectionHistoryAsset>(AssetsGemserkSelectionhistoryAsset);
+            instance = UnityEditor.AssetDatabase.LoadAssetAtPath<SelectionHistoryAsset>(AssetsGemserkSelectionHistoryAsset);
             
             if (instance == null)
             {
                 instance = ScriptableObject.CreateInstance<SelectionHistoryAsset>();
-                UnityEditor.AssetDatabase.CreateAsset(instance, AssetsGemserkSelectionhistoryAsset);
+                UnityEditor.AssetDatabase.CreateAsset(instance, AssetsGemserkSelectionHistoryAsset);
                 UnityEditor.AssetDatabase.Refresh();
             }
         }

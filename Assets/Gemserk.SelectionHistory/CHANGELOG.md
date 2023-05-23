@@ -1,3 +1,7 @@
+# 1.1.10
+
+* Fixed issue with scene references when moving to another scene and then back
+
 # 1.1.9
 
 * Now selection history is stored in file in order to recover session if Unity was closed.

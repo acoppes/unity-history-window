@@ -149,34 +149,6 @@ namespace Gemserk
                 }) {text = "Remove destroyed"};
                 root.Add(removeDestroyedButton);
             }
-            
-            // if debug enabled 
-
-            // var button = new Button(delegate
-            // {
-            //     var scrollOffset = scroll.scrollOffset;
-            //     scrollOffset.y = float.MaxValue;
-            //     scroll.scrollOffset = scrollOffset;
-            // });
-            // button.text = "Scroll To Last";
-            // root.Add(button);
-            //
-            // var button2 = new Button(delegate
-            // {
-            //     var scrollOffset = scroll.scrollOffset;
-            //     scrollOffset.y = 0;
-            //     scroll.scrollOffset = scrollOffset;
-            // });
-            // button2.text = "Scroll To First";
-            // root.Add(button2);
-
-            //
-            // if (allowDuplicatedEntries) {
-            //     if (GUILayout.Button ("Remove Duplicated")) {
-            //         selectionHistory.RemoveDuplicated ();
-            //         Repaint();
-            //     }
-            // }
         }
 
         private VisualElement CreateElementForEntry(SelectionHistory.Entry entry)

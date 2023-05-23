@@ -10,11 +10,10 @@ namespace Gemserk
     {
         static StoreSceneSelection()
         {
-            EditorSceneManager.sceneClosing += StoreSceneSelectionOnSceneClosing;
             EditorSceneManager.sceneOpened += StoreSceneSelectionOnSceneOpened;
         }
 
-        private static void StoreSceneSelectionOnSceneOpened(Scene scene, OpenSceneMode mode)
+        public static void RestoreSceneReferences()
         {
             var selectionHistory = SelectionHistoryReference.SelectionHistory;
 
@@ -35,39 +34,15 @@ namespace Gemserk
                         {
                             // Debug.Log($"Restoring scene object reference {entry.name} from GlobalId");
                             entry.reference = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
-                            entry.globalObjectId = null;
                         }
                     }
                 }
             }
         }
 
-        private static void StoreSceneSelectionOnSceneClosing(Scene scene, bool removingScene)
+        private static void StoreSceneSelectionOnSceneOpened(Scene scene, OpenSceneMode mode)
         {
-            if (!removingScene)
-                return;
-			
-            var selectionHistory = SelectionHistoryReference.SelectionHistory;
-
-            if (selectionHistory == null)
-                return;
-			
-            var entries = selectionHistory.History;
-            foreach (var entry in entries)
-            {
-                if (entry.reference != null && entry.reference is GameObject go)
-                {
-                    // GameObject's scene is being unloaded here...
-                    if (go.scene == scene)
-                    {
-                        entry.globalObjectId = GlobalObjectId.GetGlobalObjectIdSlow(go).ToString();
-                        // var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(scene.path);
-                        // AssetDatabase.GetAssetPath(scene);
-                        // Debug.Log($"Storing scene object reference {entry.name} as GlobalId");
-                        // entry.state = SelectionHistory.Entry.State.ReferenceUnloaded;
-                    }
-                }
-            }
+            RestoreSceneReferences();
         }
     }
 }
