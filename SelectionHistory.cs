@@ -57,6 +57,10 @@ namespace Gemserk
                     {
                         sceneName = go.scene.name;
                         scenePath = go.scene.path;
+                        
+                        #if UNITY_EDITOR
+                        globalObjectId = UnityEditor.GlobalObjectId.GetGlobalObjectIdSlow(reference).ToString();
+                        #endif
                     }
                 }
             }
