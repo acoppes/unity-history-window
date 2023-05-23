@@ -74,3 +74,15 @@ The following packages were updated:
   com.unity.test-framework from version 1.1.18 to 1.1.24
   com.unity.timeline from version 1.2.6 to 1.2.18
   com.unity.xr.legacyinputhelpers from version 2.1.4 to 2.1.7
+
+=== Mon May 22 22:35:43 2023
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.collab-proxy from version 1.2.16 to 1.14.18
+  com.unity.ide.visualstudio from version 2.0.8 to 2.0.15
+  com.unity.ide.vscode from version 1.2.3 to 1.2.5
+  com.unity.test-framework from version 1.1.24 to 1.1.31
+  com.unity.xr.legacyinputhelpers from version 2.1.7 to 2.1.9
