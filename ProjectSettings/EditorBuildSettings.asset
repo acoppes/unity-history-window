@@ -4,4 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/DragExample.unity
+    guid: d810130141b46ae4fab80fba50de06b2
+  m_configObjects: {}

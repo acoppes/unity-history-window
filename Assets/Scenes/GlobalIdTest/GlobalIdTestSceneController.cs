@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Object = UnityEngine.Object;
 
 [ExecuteInEditMode]
@@ -15,6 +12,7 @@ public class GlobalIdTestSceneController : MonoBehaviour
     [ContextMenu("ToGlobalId")]
     public void SaveReferenceToGlobalId()
     {
+        #if UNITY_EDITOR
         if (reference != null)
         {
             var globalId = UnityEditor.GlobalObjectId.GetGlobalObjectIdSlow(reference);
@@ -24,6 +22,7 @@ public class GlobalIdTestSceneController : MonoBehaviour
         {
             referenceGlobalId = string.Empty;
         }
+        #endif
     }
     
     [ContextMenu("ResetGlobalId")]
@@ -35,6 +34,7 @@ public class GlobalIdTestSceneController : MonoBehaviour
     [ContextMenu("Load")]
     public void LoadReferenceFromGlobalId()
     {
+        #if UNITY_EDITOR
         if (UnityEditor.GlobalObjectId.TryParse(referenceGlobalId, out var globalId))
         {
             loadedReference = UnityEditor.GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalId);
@@ -43,6 +43,7 @@ public class GlobalIdTestSceneController : MonoBehaviour
         {
             loadedReference = null;
         }
+        #endif
     }
     
     [ContextMenu("Reset")]
