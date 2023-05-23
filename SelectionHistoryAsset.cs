@@ -2,8 +2,7 @@ using UnityEngine;
 
 namespace Gemserk
 {
-    // [CreateAssetMenu(menuName = "Gemserk/Temp Create SelectionHistory Asset")]
-    public class SelectionHistoryPersistent : ScriptableObject
+    public class SelectionHistoryAsset : ScriptableObject
     {
         public SelectionHistory selectionHistory = new SelectionHistory();
 
@@ -29,7 +28,5 @@ namespace Gemserk
             UnityEditor.EditorUtility.SetDirty(this);
         }
 #endif
-
-
     }
 }

@@ -7,17 +7,17 @@ namespace Gemserk
     {
         private const string AssetsGemserkSelectionhistoryAsset = "Assets/Gemserk.SelectionHistory.asset";
         
-        static SelectionHistoryPersistent instance;
+        static SelectionHistoryAsset instance;
 
         public static SelectionHistory SelectionHistory => instance.selectionHistory; 
 		
         static SelectionHistoryReference()
         {
-            instance = UnityEditor.AssetDatabase.LoadAssetAtPath<SelectionHistoryPersistent>(AssetsGemserkSelectionhistoryAsset);
+            instance = UnityEditor.AssetDatabase.LoadAssetAtPath<SelectionHistoryAsset>(AssetsGemserkSelectionhistoryAsset);
             
             if (instance == null)
             {
-                instance = ScriptableObject.CreateInstance<SelectionHistoryPersistent>();
+                instance = ScriptableObject.CreateInstance<SelectionHistoryAsset>();
                 UnityEditor.AssetDatabase.CreateAsset(instance, AssetsGemserkSelectionhistoryAsset);
                 UnityEditor.AssetDatabase.Refresh();
             }
