@@ -2,6 +2,7 @@
 
 * Now selection history is stored in file in order to recover session if Unity was closed.
 * Fix for stored scene objects were detected as the same and removed on unity reload.
+* Always store global id for scene objects even if scene didn't change.
 
 # 1.1.8
 
