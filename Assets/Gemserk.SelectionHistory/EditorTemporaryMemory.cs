@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 namespace Gemserk
 {
@@ -26,6 +25,21 @@ namespace Gemserk
 			}
 
 			editorMemory.hideFlags = instanceHideFlags;
+
+			#if UNITY_EDITOR
+
+			var selectionHistoryPersistent = UnityEditor.AssetDatabase.LoadAssetAtPath<SelectionHistoryPersistent>("Assets/Gemserk.SelectionHistory.asset");
+			if (selectionHistoryPersistent == null)
+			{
+				
+				selectionHistoryPersistent = ScriptableObject.CreateInstance<SelectionHistoryPersistent>();
+				UnityEditor.AssetDatabase.CreateAsset(selectionHistoryPersistent, "Assets/Gemserk.SelectionHistory.asset");
+				UnityEditor.AssetDatabase.Refresh();
+			}
+
+			instance.selectionHistoryPersistent = selectionHistoryPersistent;
+			
+			#endif
 		}
 
 		public static EditorTemporaryMemory Instance {
@@ -35,8 +49,10 @@ namespace Gemserk
 			}
 		}
 
-	    [SerializeField]
-	    public SelectionHistory selectionHistory = new SelectionHistory();
+		private SelectionHistoryPersistent selectionHistoryPersistent;
+		
+	    // [SerializeField]
+	    public SelectionHistory selectionHistory => selectionHistoryPersistent.selectionHistory;
 	}
 	
 }
