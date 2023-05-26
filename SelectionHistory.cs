@@ -12,7 +12,7 @@ namespace Gemserk
         {
             if (reference is GameObject go)
             {
-                return go.scene != null;
+                return go.scene.isLoaded;
             }
             return false;
         }
