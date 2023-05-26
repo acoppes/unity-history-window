@@ -32,6 +32,14 @@ namespace Gemserk
 				    Debug.Log ("Recording new selection: " + Selection.activeObject.name);
 			    }
 
+			    if (!SelectionHistoryWindowUtils.ShowHierarchyViewObjects)
+			    {
+				    if (SelectionHistoryUtils.IsSceneObject(Selection.activeObject))
+				    {
+					    return;
+				    }
+			    }
+
 			    var selectionHistory = SelectionHistoryReference.SelectionHistory;
 			    selectionHistory.UpdateSelection (Selection.activeObject);
 		    } 

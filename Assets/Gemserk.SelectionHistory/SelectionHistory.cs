@@ -6,6 +6,18 @@ using Object = UnityEngine.Object;
 
 namespace Gemserk
 {
+    public static class SelectionHistoryUtils
+    {
+        public static bool IsSceneObject(Object reference)
+        {
+            if (reference is GameObject go)
+            {
+                return go.scene != null;
+            }
+            return false;
+        }
+    }
+    
     [Serializable]
     public class SelectionHistory
     {
@@ -141,6 +153,11 @@ namespace Gemserk
         public bool IsSelected(int index)
         {
             return index == currentSelectionIndex;
+        }
+
+        public int GetSelectedIndex()
+        {
+            return currentSelectionIndex;
         }
 
         public bool IsSelected(Object obj)

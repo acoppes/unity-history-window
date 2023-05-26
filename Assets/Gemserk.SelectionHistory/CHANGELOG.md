@@ -1,3 +1,7 @@
+# 1.1.11
+
+* Dont store global id if scene selection is disabled to improve performance. 
+
 # 1.1.10
 
 * Fixed issue with scene references when moving to another scene and then back

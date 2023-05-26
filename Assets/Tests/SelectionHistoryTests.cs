@@ -3,6 +3,11 @@ using NUnit.Framework;
 
 namespace Gemserk
 {
+	public class AssetForTests : ScriptableObject
+	{
+		
+	}
+	
 	public class SelectionHistoryTests {
 
 		[Test]
@@ -116,30 +121,30 @@ namespace Gemserk
 		{
 			var selectionHistory = new SelectionHistory();
 
-			var selection1 = new GameObject();
-			var selection2 = new GameObject();
-			var selection3 = new GameObject();
-			var selection4 = new GameObject();
+			var selection1 = ScriptableObject.CreateInstance<AssetForTests>();
+			var selection2 = ScriptableObject.CreateInstance<AssetForTests>();
+			var selection3 = ScriptableObject.CreateInstance<AssetForTests>();
+			var selection4 = ScriptableObject.CreateInstance<AssetForTests>();
 
 			selectionHistory.UpdateSelection(selection1);
 			selectionHistory.UpdateSelection(selection2);
 			selectionHistory.UpdateSelection(selection3);
 			selectionHistory.UpdateSelection(selection4);
 
-			Assert.IsTrue(selectionHistory.IsSelected(3));
+			Assert.AreEqual(3, selectionHistory.GetSelectedIndex());
 			Assert.AreEqual(selectionHistory.GetHistoryCount(), 4);
 
-			GameObject.DestroyImmediate (selection2);
+			Object.DestroyImmediate (selection2);
 
 			selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
 
-			Assert.IsTrue(selectionHistory.IsSelected(2));
+			Assert.AreEqual(2, selectionHistory.GetSelectedIndex());
 			Assert.AreEqual(selectionHistory.GetHistoryCount(), 3);
 
 			selectionHistory.SetSelection (selection3);
 
-			GameObject.DestroyImmediate (selection1);
-			GameObject.DestroyImmediate (selection4);
+			Object.DestroyImmediate (selection1);
+			Object.DestroyImmediate (selection4);
 
 			selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
 
@@ -152,18 +157,18 @@ namespace Gemserk
 		{
 			var selectionHistory = new SelectionHistory();
 
-			var selection1 = new GameObject();
-			var selection2 = new GameObject();
-			var selection3 = new GameObject();
+			var selection1 = ScriptableObject.CreateInstance<AssetForTests>();
+			var selection2 = ScriptableObject.CreateInstance<AssetForTests>();
+			var selection3 = ScriptableObject.CreateInstance<AssetForTests>();
 
 			selectionHistory.UpdateSelection(selection1);
 			selectionHistory.UpdateSelection(selection2);
 			selectionHistory.UpdateSelection(selection3);
 
-			Assert.IsTrue(selectionHistory.IsSelected(2));
+			Assert.AreEqual(2, selectionHistory.GetSelectedIndex());
 			Assert.That(selectionHistory.GetHistoryCount(), Is.EqualTo(3));
 
-			GameObject.DestroyImmediate(selection3);
+			Object.DestroyImmediate(selection3);
 
 			selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
 
