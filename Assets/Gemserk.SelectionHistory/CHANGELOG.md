@@ -1,3 +1,7 @@
+# 1.1.12
+
+* Fixed bug from last version objects in project view were not detected if hierarchy objects disabled. 
+
 # 1.1.11
 
 * Dont store global id if scene selection is disabled to improve performance. 
