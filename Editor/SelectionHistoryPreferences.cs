@@ -17,19 +17,22 @@ namespace Gemserk {
         private static bool drawFavorites = true;
 
         private const int defaultHistorySize = 500;
+        
+        private static bool orderLastSelectedFirst = true;
 
         [SettingsProvider]
         public static SettingsProvider CreateSelectionHistorySettingsProvider() {
             var provider = new SettingsProvider("Selection History", SettingsScope.User) {
                 label = "Selection History",
-                guiHandler = (searchContext) => {
+                guiHandler = (searchContext) =>
+                {
                     if (!prefsLoaded) {
                         historySize = EditorPrefs.GetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, defaultHistorySize);
                         autoremoveDestroyed = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDeletedPrefKey, true);
                         autoRemoveDuplicated = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAllowDuplicatedEntriesPrefKey, false);
                         showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowProjectViewObjectsPrefKey, true);
                         drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, true);
-
+                        orderLastSelectedFirst = EditorPrefs.GetBool(SelectionHistoryWindowUtils.OrderLastSelectedFirstKey, false);
                         prefsLoaded = true;
                     }
 
@@ -38,6 +41,7 @@ namespace Gemserk {
                     autoRemoveDuplicated = EditorGUILayout.Toggle("Allow duplicated entries", autoRemoveDuplicated);
                     showProjectViewObjects = EditorGUILayout.Toggle("Show ProjectView objects", showProjectViewObjects);
                     drawFavorites = EditorGUILayout.Toggle("Show Pin to favorites button", drawFavorites);
+                    orderLastSelectedFirst = EditorGUILayout.Toggle("Order last selected first", orderLastSelectedFirst);
 
                     if (GUI.changed) {
                         EditorPrefs.SetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, historySize);
@@ -46,6 +50,13 @@ namespace Gemserk {
 
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryShowProjectViewObjectsPrefKey, showProjectViewObjects);
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, drawFavorites);
+                        EditorPrefs.SetBool(SelectionHistoryWindowUtils.OrderLastSelectedFirstKey, orderLastSelectedFirst);
+
+                        var window = EditorWindow.GetWindow<SelectionHistoryWindow>();
+                        if (window != null)
+                        {
+                            window.ReloadRoot();
+                        }
                     }
                 },
 

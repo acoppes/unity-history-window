@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -72,8 +73,15 @@ namespace Gemserk
             {
                 if (scroll.childCount > 0)
                 {
-                    var last = scroll.Children().ToList()[scroll.childCount - 1];
-                    scroll.ScrollTo(last);
+                    if (SelectionHistoryWindowUtils.OrderLastSelectedFirst)
+                    {
+                        var first = scroll.Children().ToList().First();
+                        scroll.ScrollTo(first);
+                    }  else
+                    {
+                        var last = scroll.Children().ToList()[scroll.childCount - 1];
+                        scroll.ScrollTo(last);
+                    }
                 }
             });
         }
@@ -88,7 +96,7 @@ namespace Gemserk
             ReloadRoot();
         }
 
-        private void ReloadRoot()
+        public void ReloadRoot()
         {
             var root = rootVisualElement;
             
@@ -107,11 +115,16 @@ namespace Gemserk
             
             root.Add(scroll);
 
-            var entries = selectionHistory.History;
+            var entries = new List<SelectionHistory.Entry>(selectionHistory.History);
 
             var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
             var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
 
+            if (SelectionHistoryWindowUtils.OrderLastSelectedFirst)
+            {
+                entries.Reverse();
+            }
+            
             for (var i = 0; i < entries.Count; i++)
             {
                 var entry = entries[i];
@@ -122,7 +135,7 @@ namespace Gemserk
                     scroll.Add(elementTree);
                 }
             }
-
+            
             var clearButton = new Button(delegate
             {
                 selectionHistory.Clear();

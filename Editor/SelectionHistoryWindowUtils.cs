@@ -17,6 +17,8 @@ namespace Gemserk
 
 	    public static readonly string ShowUnloadedObjectsKey = "Gemserk.SelectionHistory.ShowUnloadedObjects";
 	    public static readonly string ShowDestroyedObjectsKey = "Gemserk.SelectionHistory.ShowDestroyedObjects";
+	    
+	    public static readonly string OrderLastSelectedFirstKey = "Gemserk.SelectionHistory.OrderLastSelectedFirst";
 
 	    private static readonly bool debugEnabled = false;
 
@@ -80,6 +82,9 @@ namespace Gemserk
 		
 		public static bool ShowFavoriteButton =>
 			EditorPrefs.GetBool(HistoryShowPinButtonPrefKey, false);
+		
+		public static bool OrderLastSelectedFirst =>
+			EditorPrefs.GetBool(OrderLastSelectedFirstKey, false);
 	
 
 	    public static void PingEntry(SelectionHistory.Entry e)

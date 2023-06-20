@@ -1,3 +1,7 @@
+# 1.1.13
+
+* Added option in preferences to render first last selected object (could be a button in local menu too).
+
 # 1.1.12
 
 * Fixed bug from last version objects in project view were not detected if hierarchy objects disabled. 
