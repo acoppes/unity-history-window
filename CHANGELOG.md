@@ -1,3 +1,8 @@
+# 1.1.14
+
+* Fixed bug with pressing favorite icon from the history window will add same item multiple times instead of removing it.
+* Changed favorite icons to support newer versions of unity. 
+
 # 1.1.13
 
 * Added option in preferences to render first last selected object (could be a button in local menu too).
