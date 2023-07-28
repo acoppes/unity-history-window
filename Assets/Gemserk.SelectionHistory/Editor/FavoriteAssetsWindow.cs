@@ -11,7 +11,7 @@ namespace Gemserk
         public static void OpenWindow()
         {
             var window = GetWindow<FavoriteAssetsWindow>();
-            var titleContent = EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName);
+            var titleContent = EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteWindowIconName);
             titleContent.text = "Favorites";
             titleContent.tooltip = "Favorite assets window";
             window.titleContent = titleContent;
