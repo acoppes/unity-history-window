@@ -271,10 +271,17 @@ namespace Gemserk
                             : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
                         favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
                         {
-                            FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
+                            if (FavoritesController.Favorites.IsFavorite(entry.reference))
                             {
-                                reference = entry.reference
-                            });
+                                FavoritesController.Favorites.RemoveFavorite(entry.reference);
+                            } else
+                            {
+                                FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
+                                {
+                                    reference = entry.reference
+                                });
+                            }
+                            
                             ReloadRoot();
                         });
                     }
