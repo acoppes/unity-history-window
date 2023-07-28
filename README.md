@@ -13,7 +13,7 @@ This package can be installed using OpenUPM, just click here [![openupm](https:/
 
 ### Install from Git URL
 
-You can also install it by opening Unity Package Manager and selecting add package from git URL and add this `https://github.com/acoppes/unity-history-window.git#1.1.2`, Or add it manually to the `manifest.json`. Check the latest released version.
+You can also install it by opening Unity Package Manager and selecting add package from git URL and add this `https://github.com/acoppes/unity-history-window.git#1.1.13` (check [tags](https://github.com/acoppes/unity-history-window/tags) for the latest version), Or add it manually to the `manifest.json`. Check the latest released version.
 
 After installing it, open it from the menu Window > Gemserk > Selection History, or with shortcut Ctrl + Shift + H. 
 
