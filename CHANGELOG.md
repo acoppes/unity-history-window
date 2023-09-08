@@ -1,6 +1,7 @@
 # 1.1.15
 
-* Possible fix for scene corruption bug by disabling reloading root object on scene unloaded when having multiscenes and hierarchy objects turned on 
+* Possible fix for scene corruption bug by disabling reloading root object on scene unloaded when having multiscenes and hierarchy objects turned on.
+* Fixed to not serialize references to hierarchy objects.
 
 # 1.1.14
 
