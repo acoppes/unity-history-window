@@ -28,7 +28,7 @@ namespace Gemserk
         
         private void OnDisable()
         {
-            EditorSceneManager.sceneClosed -= OnSceneClosed;
+            //EditorSceneManager.sceneClosed -= OnSceneClosed;
             EditorSceneManager.sceneOpened -= OnSceneOpened;
             
             if (selectionHistory != null)
@@ -39,7 +39,7 @@ namespace Gemserk
 
         public void OnEnable()
         {
-            EditorSceneManager.sceneClosed += OnSceneClosed;
+            //EditorSceneManager.sceneClosed += OnSceneClosed;
             EditorSceneManager.sceneOpened += OnSceneOpened;
             
             var root = rootVisualElement;
@@ -55,15 +55,15 @@ namespace Gemserk
 
             FavoritesController.Favorites.OnFavoritesUpdated += delegate
             {
-                ReloadRoot();
+                ReloadRootAndRemoveUnloadedAndDuplicated();
             };
 
-            ReloadRoot();
+            ReloadRootAndRemoveUnloadedAndDuplicated();
         }
 
         private void OnHistoryEntryAdded(SelectionHistory history)
         {
-            ReloadRoot();
+            ReloadRootAndRemoveUnloadedAndDuplicated();
             
             var scroll = rootVisualElement.Q<ScrollView>("MainScroll");
             if (scroll == null) 
@@ -88,25 +88,28 @@ namespace Gemserk
 
         private void OnSceneOpened(Scene scene, OpenSceneMode mode)
         {
-            ReloadRoot();
+            ReloadRootAndRemoveUnloadedAndDuplicated();
+            //ReloadRoot();
         }
 
-        private void OnSceneClosed(Scene scene)
+        public void ReloadRootAndRemoveUnloadedAndDuplicated()
         {
-            ReloadRoot();
-        }
-
-        public void ReloadRoot()
-        {
-            var root = rootVisualElement;
-            
-            root.Clear();
-            
             if (SelectionHistoryWindowUtils.AutomaticRemoveDeleted)
                 selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
 
             if (!SelectionHistoryWindowUtils.AllowDuplicatedEntries)
                 selectionHistory.RemoveDuplicated();
+            
+            ReloadRoot();
+        }
+
+        private void ReloadRoot()
+        {
+            var root = rootVisualElement;
+            
+            root.Clear();
+            
+          
 
             var scroll = new ScrollView(ScrollViewMode.Vertical)
             {
@@ -141,6 +144,7 @@ namespace Gemserk
                 selectionHistory.Clear();
                 ReloadRoot();
             }) {text = "Clear"};
+            
             root.Add(clearButton);
 
             if (showUnloadedObjects)
@@ -148,6 +152,7 @@ namespace Gemserk
                 var removeUnloadedButton = new Button(delegate
                 {
                     selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceUnloaded);
+                    // ReloadRootAndRemoveUnloadedAndDuplicated();
                     ReloadRoot();
                 }) {text = "Remove Unloaded"};
                 root.Add(removeUnloadedButton);
@@ -158,6 +163,7 @@ namespace Gemserk
                 var removeDestroyedButton = new Button(delegate
                 {
                     selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
+                    // ReloadRootAndRemoveUnloadedAndDuplicated();
                     ReloadRoot();
                 }) {text = "Remove destroyed"};
                 root.Add(removeDestroyedButton);
@@ -188,7 +194,7 @@ namespace Gemserk
             }
 
             var elementTree = historyElementViewTree.CloneTree();
-
+            
             if (!referenced)
             {
                 elementTree.AddToClassList("unreferencedObject");
@@ -282,7 +288,7 @@ namespace Gemserk
                                 });
                             }
                             
-                            ReloadRoot();
+                            ReloadRootAndRemoveUnloadedAndDuplicated();
                         });
                     }
                 }
@@ -331,7 +337,7 @@ namespace Gemserk
             menu.AddItem(new GUIContent(name, tooltip), false, delegate
             {
                 ToggleBoolEditorPref(preference, defaultValue);
-                ReloadRoot();
+                ReloadRootAndRemoveUnloadedAndDuplicated();
             });
         }
 

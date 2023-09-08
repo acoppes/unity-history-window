@@ -55,7 +55,7 @@ namespace Gemserk {
                         var window = EditorWindow.GetWindow<SelectionHistoryWindow>();
                         if (window != null)
                         {
-                            window.ReloadRoot();
+                            window.ReloadRootAndRemoveUnloadedAndDuplicated();
                         }
                     }
                 },
