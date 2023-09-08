@@ -1,3 +1,7 @@
+# 1.1.15
+
+* Possible fix for scene corruption bug by disabling reloading root object on scene unloaded when having multiscenes and hierarchy objects turned on 
+
 # 1.1.14
 
 * Fixed bug with pressing favorite icon from the history window will add same item multiple times instead of removing it.
