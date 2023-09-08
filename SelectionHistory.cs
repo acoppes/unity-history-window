@@ -36,9 +36,9 @@ namespace Gemserk
 
             [SerializeField]
             public Object reference;
-            
+
             [NonSerialized]
-            public Object hierarchyObjectReference;
+            private Object hierarchyObjectReference;
 
             public Object Reference
             {
@@ -46,6 +46,14 @@ namespace Gemserk
                 {
                     if (isAsset)
                         return reference;
+
+#if UNITY_EDITOR
+                    if (hierarchyObjectReference == null && UnityEditor.GlobalObjectId.TryParse(globalObjectId, out var id))
+                    {
+                        hierarchyObjectReference = UnityEditor.GlobalObjectId.GlobalObjectIdentifierToObjectSlow(id);
+                    }
+#endif
+
                     return hierarchyObjectReference;
                 }
             }
