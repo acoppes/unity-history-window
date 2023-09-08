@@ -6,7 +6,7 @@ namespace Gemserk {
 
         static bool prefsLoaded = false;
 
-        static int historySize;
+       // static int historySize;
 
         static bool autoremoveDestroyed;
 
@@ -26,8 +26,10 @@ namespace Gemserk {
                 label = "Selection History",
                 guiHandler = (searchContext) =>
                 {
+                    var selectionHistory = SelectionHistoryReference.SelectionHistory;
+                    
                     if (!prefsLoaded) {
-                        historySize = EditorPrefs.GetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, defaultHistorySize);
+                       // historySize = EditorPrefs.GetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, defaultHistorySize);
                         autoremoveDestroyed = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDeletedPrefKey, true);
                         autoRemoveDuplicated = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAllowDuplicatedEntriesPrefKey, false);
                         showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowProjectViewObjectsPrefKey, true);
@@ -35,8 +37,13 @@ namespace Gemserk {
                         orderLastSelectedFirst = EditorPrefs.GetBool(SelectionHistoryWindowUtils.OrderLastSelectedFirstKey, false);
                         prefsLoaded = true;
                     }
-
-                    historySize = EditorGUILayout.IntField("History Size", historySize);
+                    
+                    if (selectionHistory != null)
+                    {
+                        selectionHistory.historySize =
+                            EditorGUILayout.IntField("History Size", selectionHistory.historySize);
+                    }
+                    
                     autoremoveDestroyed = EditorGUILayout.Toggle("Auto Remove Destroyed", autoremoveDestroyed);
                     autoRemoveDuplicated = EditorGUILayout.Toggle("Allow duplicated entries", autoRemoveDuplicated);
                     showProjectViewObjects = EditorGUILayout.Toggle("Show ProjectView objects", showProjectViewObjects);
@@ -44,7 +51,6 @@ namespace Gemserk {
                     orderLastSelectedFirst = EditorGUILayout.Toggle("Order last selected first", orderLastSelectedFirst);
 
                     if (GUI.changed) {
-                        EditorPrefs.SetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, historySize);
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDeletedPrefKey, autoremoveDestroyed);
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryAllowDuplicatedEntriesPrefKey, autoRemoveDuplicated);
 
@@ -52,10 +58,15 @@ namespace Gemserk {
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, drawFavorites);
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.OrderLastSelectedFirstKey, orderLastSelectedFirst);
 
-                        var window = EditorWindow.GetWindow<SelectionHistoryWindow>();
-                        if (window != null)
+                        // var window = EditorWindow.GetWindow<SelectionHistoryWindow>();
+                        // if (window != null)
+                        // {
+                        //     window.ReloadRootAndRemoveUnloadedAndDuplicated();
+                        // }
+
+                        if (SelectionHistoryReference.asset != null)
                         {
-                            window.ReloadRootAndRemoveUnloadedAndDuplicated();
+                            EditorUtility.SetDirty(SelectionHistoryReference.asset);
                         }
                     }
                 },

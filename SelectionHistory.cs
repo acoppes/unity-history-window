@@ -146,6 +146,8 @@ namespace Gemserk
                 return State.ReferenceDestroyed;
             }
         }
+        
+        public int historySize = 10;
 
         [SerializeField] 
         private List<Entry> _history = new List<Entry>(100);
@@ -163,18 +165,10 @@ namespace Gemserk
                 return null;
             }
         }
-
-        private int historySize = 10;
-
+        
         public List<Entry> History => _history;
         
         public event Action<SelectionHistory> OnNewEntryAdded;
-
-        public int HistorySize
-        {
-            get => historySize;
-            set => historySize = value;
-        }
 
         public bool IsSelected(int index)
         {
@@ -228,9 +222,9 @@ namespace Gemserk
                 OnNewEntryAdded?.Invoke(this);
             }
 
-            if (_history.Count > historySize)
+            if (_history.Count >= historySize)
             {
-                _history.RemoveRange(0, _history.Count - historySize);
+                _history.RemoveRange(0, _history.Count - historySize + 1);
                 //			_history.RemoveAt(0);
             }
         }

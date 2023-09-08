@@ -7,7 +7,6 @@ namespace Gemserk
 	[InitializeOnLoad]
 	public static class SelectionHistoryWindowUtils {
 
-		public static readonly string HistorySizePrefKey = "Gemserk.SelectionHistory.HistorySize";
 		public static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
 		public static readonly string HistoryAllowDuplicatedEntriesPrefKey = "Gemserk.SelectionHistory.AllowDuplicatedEntries";
 	    public static readonly string HistoryShowHierarchyObjectsPrefKey = "Gemserk.SelectionHistory.ShowHierarchyObjects";
