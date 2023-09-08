@@ -211,8 +211,8 @@ namespace Gemserk
                     {
                         if (evt.button == 0)
                         {
-                            selectionHistory.SetSelection(entry.reference);
-                            Selection.activeObject = entry.reference;
+                            selectionHistory.SetSelection(entry.Reference);
+                            Selection.activeObject = entry.Reference;
                         }
                         else
                         {
@@ -225,14 +225,14 @@ namespace Gemserk
                         {
                             DragAndDrop.PrepareStartDrag();
 
-                            var objectReferences = new[] {entry.reference};
+                            var objectReferences = new[] {entry.Reference};
                             DragAndDrop.paths = new[]
                             {
-                                AssetDatabase.GetAssetPath(entry.reference)
+                                AssetDatabase.GetAssetPath(entry.Reference)
                             };
 
                             DragAndDrop.objectReferences = objectReferences;
-                            DragAndDrop.StartDrag(ObjectNames.GetDragAndDropTitle(entry.reference));
+                            DragAndDrop.StartDrag(ObjectNames.GetDragAndDropTitle(entry.Reference));
                         }
                     });
 
@@ -245,7 +245,7 @@ namespace Gemserk
                 var icon = elementTree.Q<Image>("Icon");
                 if (icon != null)
                 {
-                    icon.image = AssetPreview.GetMiniThumbnail(entry.reference);
+                    icon.image = AssetPreview.GetMiniThumbnail(entry.Reference);
                 }
             }
 
@@ -264,21 +264,21 @@ namespace Gemserk
                     var favoriteAsset = elementTree.Q<Image>("Favorite");
                     if (favoriteAsset != null)
                     {
-                        var isFavorite = FavoritesController.Favorites.IsFavorite(entry.reference);
+                        var isFavorite = FavoritesController.Favorites.IsFavorite(entry.Reference);
                         // favoriteEmptyIconName
                         favoriteAsset.image = isFavorite
                             ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
                             : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
                         favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
                         {
-                            if (FavoritesController.Favorites.IsFavorite(entry.reference))
+                            if (FavoritesController.Favorites.IsFavorite(entry.Reference))
                             {
-                                FavoritesController.Favorites.RemoveFavorite(entry.reference);
+                                FavoritesController.Favorites.RemoveFavorite(entry.Reference);
                             } else
                             {
                                 FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
                                 {
-                                    reference = entry.reference
+                                    reference = entry.Reference
                                 });
                             }
                             
@@ -315,7 +315,7 @@ namespace Gemserk
                 "Toggle to show/hide unreferenced or destroyed objects.");
             
             AddMenuItemForPreference(menu, SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, "Favorite Button", 
-                "Toggle to show/hide favorite reference button.");
+                "Toggle to show/hide favorite Reference button.");
             
             menu.AddItem(new GUIContent("Open preferences"), false, delegate
             {

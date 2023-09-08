@@ -32,8 +32,8 @@ namespace Gemserk
                         var reference = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
                         if (reference != null)
                         {
-                            // Debug.Log($"Restoring scene object reference {entry.name} from GlobalId");
-                            entry.reference = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
+                            // Debug.Log($"Restoring scene object Reference {entry.name} from GlobalId");
+                            entry.hierarchyObjectReference = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
                         }
                     }
                 }

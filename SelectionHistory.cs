@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace Gemserk
@@ -32,8 +33,22 @@ namespace Gemserk
             }
 
             // public State state = State.Referenced;
-            
+
+            [SerializeField]
             public Object reference;
+            
+            [NonSerialized]
+            public Object hierarchyObjectReference;
+
+            public Object Reference
+            {
+                get
+                {
+                    if (isAsset)
+                        return reference;
+                    return hierarchyObjectReference;
+                }
+            }
 
             public string sceneName;
             public string scenePath;
@@ -50,9 +65,9 @@ namespace Gemserk
             {
                 get
                 {
-                    if (reference != null)
+                    if (Reference != null)
                     {
-                        return reference.name;
+                        return Reference.name;
                     }
                     return unreferencedObjectName;
                 }   
@@ -65,8 +80,11 @@ namespace Gemserk
 
                 if (reference is GameObject go)
                 {
-                    if (go.scene != null)
+                    if (!string.IsNullOrEmpty(go.scene.name))
                     {
+                        this.reference = null;
+                        hierarchyObjectReference = reference;
+                        
                         sceneName = go.scene.name;
                         scenePath = go.scene.path;
                         
@@ -89,13 +107,13 @@ namespace Gemserk
                     return true;
                 }
 
-                if (reference == null && other.reference == null)
+                if (Reference == null && other.Reference == null)
                 {
                     return string.Equals(scenePath, other.scenePath) &&
                            string.Equals(globalObjectId, other.globalObjectId);
                 }
                 
-                return Equals(reference, other.reference);
+                return Equals(Reference, other.Reference);
             }
 
             public override bool Equals(object obj)
@@ -108,12 +126,12 @@ namespace Gemserk
 
             public override int GetHashCode()
             {
-                return (reference != null ? reference.GetHashCode() : 0);
+                return (Reference != null ? Reference.GetHashCode() : 0);
             }
 
             public State GetReferenceState()
             {
-                if (reference != null)
+                if (Reference != null)
                     return State.Referenced;
                 if (!string.IsNullOrEmpty(globalObjectId))
                     return State.ReferenceUnloaded;
@@ -165,7 +183,7 @@ namespace Gemserk
             if (currentSelection == null)
                 return false;
             if (currentSelection.GetReferenceState() == Entry.State.Referenced)
-                return currentSelection.reference.Equals(obj);
+                return currentSelection.Reference.Equals(obj);
             return false;
         }
 
@@ -181,7 +199,7 @@ namespace Gemserk
 
         public Object GetSelection()
         {
-            return currentSelection.reference;
+            return currentSelection.Reference;
         }
 
         public void UpdateSelection(Object selection)
@@ -191,8 +209,8 @@ namespace Gemserk
 
             var lastSelectedObject = _history.Count > 0 ? _history.Last() : null;
 
-            var isLastSelected = lastSelectedObject != null && lastSelectedObject.reference == selection;
-            var isCurrentSelection = currentSelection != null && currentSelection.reference == selection;
+            var isLastSelected = lastSelectedObject != null && lastSelectedObject.Reference == selection;
+            var isCurrentSelection = currentSelection != null && currentSelection.Reference == selection;
             
             if (!isLastSelected && !isCurrentSelection)
             {
@@ -231,7 +249,7 @@ namespace Gemserk
 
         public void SetSelection(Object obj)
         {
-            currentSelectionIndex = _history.FindIndex(e => e.reference.Equals(obj));
+            currentSelectionIndex = _history.FindIndex(e => e.Reference.Equals(obj));
         }
 
         public void RemoveEntries(Entry.State state)

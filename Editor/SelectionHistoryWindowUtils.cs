@@ -95,7 +95,7 @@ namespace Gemserk
 			    EditorGUIUtility.PingObject(sceneAsset);
 		    } else
 		    {
-			    EditorGUIUtility.PingObject(e.reference);
+			    EditorGUIUtility.PingObject(e.Reference);
 		    }
 	    }
 	}
