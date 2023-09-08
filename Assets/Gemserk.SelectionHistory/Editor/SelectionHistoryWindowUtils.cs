@@ -41,6 +41,11 @@ namespace Gemserk
 				    }
 			    }
 
+			    if (Application.isPlaying && SelectionHistoryUtils.IsSceneObject(Selection.activeObject))
+			    {
+				    return;
+			    }
+
 			    var selectionHistory = SelectionHistoryReference.SelectionHistory;
 			    selectionHistory.UpdateSelection (Selection.activeObject);
 		    } 
