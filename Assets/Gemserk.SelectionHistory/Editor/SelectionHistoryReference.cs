@@ -11,7 +11,9 @@ namespace Gemserk
         
         static SelectionHistoryAsset instance;
 
-        public static SelectionHistory SelectionHistory => instance.selectionHistory; 
+        public static SelectionHistory SelectionHistory => instance.selectionHistory;
+
+        public static SelectionHistoryAsset asset;
 		
         static SelectionHistoryReference()
         {

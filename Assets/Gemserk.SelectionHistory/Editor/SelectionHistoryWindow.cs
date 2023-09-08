@@ -49,7 +49,6 @@ namespace Gemserk
             
             if (selectionHistory != null)
             {
-                selectionHistory.HistorySize = EditorPrefs.GetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, 10);
                 selectionHistory.OnNewEntryAdded += OnHistoryEntryAdded;
             }
 
