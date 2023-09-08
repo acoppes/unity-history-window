@@ -1,3 +1,7 @@
+# 1.1.16 
+
+* Dont record hierarchy objects while application is playing to avoid issues with references to dynamic objects.
+
 # 1.1.15
 
 * Possible fix for scene corruption bug by disabling reloading root object on scene unloaded when having multiscenes and hierarchy objects turned on.
