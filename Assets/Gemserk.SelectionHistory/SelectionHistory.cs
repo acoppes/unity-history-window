@@ -147,7 +147,7 @@ namespace Gemserk
             }
         }
         
-        public int historySize = 10;
+        public int historySize = 200;
 
         [SerializeField] 
         private List<Entry> _history = new List<Entry>(100);
