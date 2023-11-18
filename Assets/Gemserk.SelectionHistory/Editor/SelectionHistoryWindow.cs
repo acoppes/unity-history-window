@@ -260,6 +260,22 @@ namespace Gemserk
                 pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
                 pingIcon.RegisterCallback(delegate(MouseUpEvent e) { SelectionHistoryWindowUtils.PingEntry(entry); });
             }
+            
+            var openPrefabIcon = elementTree.Q<Image>("OpenPrefabIcon");
+            if (openPrefabIcon != null)
+            {
+                openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openPrefabIconName).image;
+
+                if (entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject)
+                {
+                    openPrefabIcon.RemoveFromClassList("hidden");
+                }
+                    
+                openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
+                {
+                    AssetDatabase.OpenAsset(entry.Reference);
+                });
+            }
 
             if (SelectionHistoryWindowUtils.ShowFavoriteButton)
             {

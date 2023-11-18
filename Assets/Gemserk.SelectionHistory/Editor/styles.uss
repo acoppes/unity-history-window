@@ -19,7 +19,7 @@
 
 .favorite #Icon {
     max-width: 16px;
-    max-height: 14px;
+    max-height: 16px;
     visibility: initial;
     position: absolute;
     align-self: flex-start;
@@ -27,7 +27,7 @@
 
 .favorite #RemoveIcon {
     max-width: 16px;
-    max-height: 14px;
+    max-height: 16px;
     right: 4px;
     position: absolute;
     /* align-self: flex-end; */
@@ -35,7 +35,7 @@
 
 .favorite #OpenPrefabIcon {
     max-width: 16px;
-    max-height: 14px;
+    max-height: 16px;
     right: 30px;
     position: absolute;
     /* align-self: flex-end; */
@@ -69,7 +69,7 @@
 
 .history #Icon {
     max-width: 16px;
-    max-height: 14px;
+    max-height: 16px;
     visibility: initial;
     position: absolute;
     align-self: flex-start;
@@ -77,9 +77,7 @@
 
 .history #PingIcon {
     max-width: 16px;
-    max-height: 14px;
-    margin: 4px;
-    padding-right: 0px;
+    max-height: 16px;
     right: 0px;
     position: absolute;
     /* align-self: flex-end; */
@@ -87,11 +85,16 @@
 
 .history #Favorite {
     max-width: 16px;
-    max-height: 14px;
-    margin: 4px;
-    margin-right: 20px;
-    padding-right: 0px;
-    right: 0px;
+    max-height: 16px;
+    right: 25px;
+    position: absolute;
+    /* align-self: flex-end; */
+}
+
+.history #OpenPrefabIcon {
+    max-width: 16px;
+    max-height: 16px;
+    right: 50px;
     position: absolute;
     /* align-self: flex-end; */
 }
