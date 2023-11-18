@@ -171,6 +171,25 @@ namespace Gemserk
                     });
                 }
                 
+                var openPrefabIcon = elementTree.Q<Image>("OpenPrefabIcon");
+                if (openPrefabIcon != null)
+                {
+                    // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
+                    openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openPrefabIconName).image;
+
+                    if (PrefabUtility.IsPartOfPrefabAsset(assetReference))
+                    {
+                        openPrefabIcon.RemoveFromClassList("hidden");
+                    }
+                    
+                    openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
+                    {
+                        // Debug.Log("OPENING PREFAB FOR EDIT");
+                        AssetDatabase.OpenAsset(assetReference);
+                        // PrefabUtility.LoadPrefabContents(AssetDatabase.GetAssetPath(assetReference));
+                    });
+                }
+                
                 var label = elementTree.Q<Label>("Favorite");
                 if (label != null)
                 {

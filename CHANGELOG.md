@@ -1,3 +1,7 @@
+# 1.1.17
+
+* Added button to open prefab in edit mode from favorites.
+
 # 1.1.16 
 
 * Dont record hierarchy objects while application is playing to avoid issues with references to dynamic objects.

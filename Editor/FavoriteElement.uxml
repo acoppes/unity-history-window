@@ -11,6 +11,7 @@
             <engine:Label text="default" name="Favorite"/>
             <engine:Image name="Icon" />    
         </engine:VisualElement>
+        <engine:Image class="hidden" name="OpenPrefabIcon" />
         <engine:Image name="RemoveIcon" />
     </engine:VisualElement>
     

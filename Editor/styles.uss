@@ -28,9 +28,15 @@
 .favorite #RemoveIcon {
     max-width: 16px;
     max-height: 14px;
-    margin: 4px;
-    padding-right: 0px;
-    right: 0px;
+    right: 4px;
+    position: absolute;
+    /* align-self: flex-end; */
+}
+
+.favorite #OpenPrefabIcon {
+    max-width: 16px;
+    max-height: 14px;
+    right: 30px;
     position: absolute;
     /* align-self: flex-end; */
 }
@@ -88,4 +94,8 @@
     right: 0px;
     position: absolute;
     /* align-self: flex-end; */
+}
+
+.hidden {
+    display:none;
 }
