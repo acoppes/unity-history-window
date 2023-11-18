@@ -11,5 +11,7 @@ namespace Gemserk
         public const string searchIconName = "d_Search Icon";
         public const string eyeViewToolIconName = "d_ViewToolOrbit";
         public const string refreshIconName = "TreeEditor.Refresh";
+
+        public const string openPrefabIconName = "d_ViewToolOrbit";
     }
 }
