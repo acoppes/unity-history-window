@@ -245,6 +245,17 @@ namespace Gemserk
                     {
                         DragAndDrop.visualMode = DragAndDropVisualMode.Link;
                     });
+                    
+                    dragArea.RegisterCallback<PointerDownEvent>(evt =>
+                    {
+                        if (evt.button == 0 && evt.clickCount == 2)
+                        {
+                            if (entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject)
+                            {
+                                AssetDatabase.OpenAsset(entry.Reference);
+                            }
+                        }
+                    });
                 }
 
                 var icon = elementTree.Q<Image>("Icon");

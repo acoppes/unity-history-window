@@ -127,7 +127,7 @@ namespace Gemserk
                         {
                             EditorGUIUtility.PingObject(assetReference);
                         }
-                            
+                        
                         dragArea.userData = null;
                     });
                     dragArea.RegisterCallback<MouseDownEvent>(evt =>
@@ -150,6 +150,18 @@ namespace Gemserk
                     dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
                     {
                         DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+                    });
+                    
+                    dragArea.RegisterCallback<PointerDownEvent>(evt =>
+                    {
+                        if (evt.button == 0 && evt.clickCount == 2)
+                        {
+                            // Debug.Log("DOUBLE CLICK");
+                            if (PrefabUtility.IsPartOfPrefabAsset(assetReference))
+                            {
+                                AssetDatabase.OpenAsset(assetReference);
+                            }
+                        }
                     });
                 }
                 

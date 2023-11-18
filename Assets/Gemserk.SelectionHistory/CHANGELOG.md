@@ -2,6 +2,7 @@
 
 * Added button to open prefab in edit mode from favorites.
 * Added button to open prefab in edit mode from history.
+* Also added double click on prefab opens prefab to edit in both history and favorites window.
 
 # 1.1.16 
 
