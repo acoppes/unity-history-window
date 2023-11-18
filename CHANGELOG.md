@@ -1,6 +1,7 @@
 # 1.1.17
 
 * Added button to open prefab in edit mode from favorites.
+* Added button to open prefab in edit mode from history.
 
 # 1.1.16 
 
