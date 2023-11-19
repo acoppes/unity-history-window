@@ -1,3 +1,7 @@
+# 1.1.18
+
+* Now eye open icon and and double click also opens scenes (previous modified dialog check). NOTE: you have to close and open both Favorites and History windows if you want the new icons to appear.
+
 # 1.1.17
 
 * Added button to open prefab in edit mode from favorites.
