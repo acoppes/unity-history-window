@@ -207,6 +207,9 @@ namespace Gemserk
                 elementTree.AddToClassList("assetObject");
             }
 
+            var isPrefabAsset = referenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
+            var isSceneAsset = referenced && entry.isAsset && entry.reference is SceneAsset;
+            
             if (referenced)
             {
                 var dragArea = elementTree.Q<VisualElement>("DragArea");
@@ -250,9 +253,17 @@ namespace Gemserk
                     {
                         if (evt.button == 0 && evt.clickCount == 2)
                         {
-                            if (entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject)
+                            if (isPrefabAsset)
                             {
                                 AssetDatabase.OpenAsset(entry.Reference);
+                            }
+                            
+                            if (isSceneAsset)
+                            {
+                                if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                                {
+                                    EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
+                                }
                             }
                         }
                     });
@@ -277,14 +288,23 @@ namespace Gemserk
             {
                 openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openPrefabIconName).image;
 
-                if (entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject)
+                if (isPrefabAsset || isSceneAsset)
                 {
                     openPrefabIcon.RemoveFromClassList("hidden");
                 }
                     
                 openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
                 {
-                    AssetDatabase.OpenAsset(entry.Reference);
+                    if (isPrefabAsset)
+                    {
+                        AssetDatabase.OpenAsset(entry.Reference);
+                    } else if (isSceneAsset)
+                    {
+                        if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                        {
+                            EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
+                        }
+                    }
                 });
             }
 

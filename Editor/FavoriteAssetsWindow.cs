@@ -1,6 +1,8 @@
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace Gemserk
@@ -115,6 +117,10 @@ namespace Gemserk
                 var elementTree = favoriteElementTreeAsset.CloneTree();
 
                 var dragArea = elementTree.Q<VisualElement>("DragArea");
+                
+                var isPrefabAsset = PrefabUtility.IsPartOfPrefabAsset(assetReference);
+                var isSceneAsset = assetReference is SceneAsset;
+
                 if (dragArea != null)
                 {
                     dragArea.RegisterCallback<MouseUpEvent>(evt =>
@@ -157,9 +163,17 @@ namespace Gemserk
                         if (evt.button == 0 && evt.clickCount == 2)
                         {
                             // Debug.Log("DOUBLE CLICK");
-                            if (PrefabUtility.IsPartOfPrefabAsset(assetReference))
+                            if (isPrefabAsset)
                             {
                                 AssetDatabase.OpenAsset(assetReference);
+                            }
+
+                            if (isSceneAsset)
+                            {
+                                if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                                {
+                                    EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(assetReference));
+                                }
                             }
                         }
                     });
@@ -189,16 +203,24 @@ namespace Gemserk
                     // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
                     openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openPrefabIconName).image;
 
-                    if (PrefabUtility.IsPartOfPrefabAsset(assetReference))
+                    if (isPrefabAsset || isSceneAsset)
                     {
                         openPrefabIcon.RemoveFromClassList("hidden");
                     }
                     
                     openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
                     {
-                        // Debug.Log("OPENING PREFAB FOR EDIT");
-                        AssetDatabase.OpenAsset(assetReference);
-                        // PrefabUtility.LoadPrefabContents(AssetDatabase.GetAssetPath(assetReference));
+                        if (isPrefabAsset)
+                        {
+                            AssetDatabase.OpenAsset(assetReference);
+                        } else if (isSceneAsset)
+                        {
+                            if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                            {
+                                EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(assetReference));
+                            }
+                            
+                        }
                     });
                 }
                 
