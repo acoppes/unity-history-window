@@ -21,9 +21,11 @@ namespace Gemserk
             
             if (instance == null)
             {
-                instance = ScriptableObject.CreateInstance<SelectionHistoryAsset>();
-                UnityEditor.AssetDatabase.CreateAsset(instance, AssetsGemserkSelectionHistoryAsset);
+                var newInstance = ScriptableObject.CreateInstance<SelectionHistoryAsset>();
+                UnityEditor.AssetDatabase.CreateAsset(newInstance, AssetsGemserkSelectionHistoryAsset);
                 UnityEditor.AssetDatabase.Refresh();
+                
+                instance = UnityEditor.AssetDatabase.LoadAssetAtPath<SelectionHistoryAsset>(AssetsGemserkSelectionHistoryAsset);
             }
         }
     }
