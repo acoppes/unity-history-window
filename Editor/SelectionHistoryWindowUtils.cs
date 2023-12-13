@@ -44,15 +44,17 @@ namespace Gemserk
 				    Debug.Log("Recording new selection: " + Selection.activeObject.name);
 			    }
 
+			    var isSceneObject = SelectionHistoryUtils.IsSceneObject(Selection.activeObject);
+			    
 			    if (!SelectionHistoryWindowUtils.ShowHierarchyViewObjects)
 			    {
-				    if (SelectionHistoryUtils.IsSceneObject(Selection.activeObject))
+				    if (isSceneObject)
 				    {
 					    return;
 				    }
 			    }
 
-			    if (Application.isPlaying && SelectionHistoryUtils.IsSceneObject(Selection.activeObject))
+			    if (Application.isPlaying && isSceneObject)
 			    {
 				    return;
 			    }
