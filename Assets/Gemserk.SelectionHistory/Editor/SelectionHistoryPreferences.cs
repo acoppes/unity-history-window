@@ -16,9 +16,9 @@ namespace Gemserk {
 
         private static bool drawFavorites = true;
 
-        private const int defaultHistorySize = 500;
-        
         private static bool orderLastSelectedFirst = true;
+
+        private static bool backgroundRecord;
 
         [SettingsProvider]
         public static SettingsProvider CreateSelectionHistorySettingsProvider() {
@@ -35,6 +35,7 @@ namespace Gemserk {
                         showProjectViewObjects = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowProjectViewObjectsPrefKey, true);
                         drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, true);
                         orderLastSelectedFirst = EditorPrefs.GetBool(SelectionHistoryWindowUtils.OrderLastSelectedFirstKey, false);
+                        backgroundRecord = EditorPrefs.GetBool(SelectionHistoryWindowUtils.BackgroundRecordKey, false);
                         prefsLoaded = true;
                     }
                     
@@ -49,6 +50,7 @@ namespace Gemserk {
                     showProjectViewObjects = EditorGUILayout.Toggle("Show ProjectView objects", showProjectViewObjects);
                     drawFavorites = EditorGUILayout.Toggle("Show Pin to favorites button", drawFavorites);
                     orderLastSelectedFirst = EditorGUILayout.Toggle("Order last selected first", orderLastSelectedFirst);
+                    backgroundRecord = EditorGUILayout.Toggle("Record selection while window closed", backgroundRecord);
 
                     if (GUI.changed) {
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDeletedPrefKey, autoremoveDestroyed);
@@ -57,6 +59,7 @@ namespace Gemserk {
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryShowProjectViewObjectsPrefKey, showProjectViewObjects);
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, drawFavorites);
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.OrderLastSelectedFirstKey, orderLastSelectedFirst);
+                        EditorPrefs.SetBool(SelectionHistoryWindowUtils.BackgroundRecordKey, backgroundRecord);
 
                         // var window = EditorWindow.GetWindow<SelectionHistoryWindow>();
                         // if (window != null)
