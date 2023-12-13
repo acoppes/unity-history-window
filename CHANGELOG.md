@@ -21,7 +21,7 @@
 * Possible fix for scene corruption bug by disabling reloading root object on scene unloaded when having multiscenes and hierarchy objects turned on.
 * Fixed to not serialize references to hierarchy objects.
 * Fixed bug modified history size was not being used unless editor or window was closed and open again. 
-* Fixed editing prefrences was losing focus on each change by reloading the window (disabled that for now, reload manually).
+* Fixed editing preferences was losing focus on each change by reloading the window (disabled that for now, reload manually).
 
 # 1.1.14
 
