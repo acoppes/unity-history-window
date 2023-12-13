@@ -1,3 +1,7 @@
+# 1.1.19
+
+* Don't record selection changes while selection history window is closed (no need for focus). Optional background selection changes recording too.
+
 # 1.1.18
 
 * Now eye open icon and and double click also opens scenes (previous modified dialog check). NOTE: you have to close and open both Favorites and History windows if you want the new icons to appear.

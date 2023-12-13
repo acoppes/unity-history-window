@@ -18,6 +18,7 @@ namespace Gemserk
 	    public static readonly string ShowDestroyedObjectsKey = "Gemserk.SelectionHistory.ShowDestroyedObjects";
 	    
 	    public static readonly string OrderLastSelectedFirstKey = "Gemserk.SelectionHistory.OrderLastSelectedFirst";
+	    public static readonly string BackgroundRecordKey = "Gemserk.SelectionHistory.BackgroundRecord";
 
 	    private static readonly bool debugEnabled = false;
 
@@ -28,9 +29,19 @@ namespace Gemserk
 		
 	    private static void SelectionRecorder ()
 	    {
-		    if (Selection.activeObject != null) {
-			    if (debugEnabled) {
-				    Debug.Log ("Recording new selection: " + Selection.activeObject.name);
+		    if (!RecordInTheBackground)
+			    return;
+
+		    RecordSelectionChange();
+	    }
+
+	    public static void RecordSelectionChange()
+	    {
+		    if (Selection.activeObject != null)
+		    {
+			    if (debugEnabled)
+			    {
+				    Debug.Log("Recording new selection: " + Selection.activeObject.name);
 			    }
 
 			    if (!SelectionHistoryWindowUtils.ShowHierarchyViewObjects)
@@ -47,10 +58,10 @@ namespace Gemserk
 			    }
 
 			    var selectionHistory = SelectionHistoryReference.SelectionHistory;
-			    selectionHistory.UpdateSelection (Selection.activeObject);
-		    } 
+			    selectionHistory.UpdateSelection(Selection.activeObject);
+		    }
 	    }
-		
+
 	    [MenuItem("Window/Gemserk/Previous selection %#,")]
 	    [Shortcut("Selection History/Previous Selection")]
 	    public static void PreviousSelection()
@@ -89,6 +100,9 @@ namespace Gemserk
 		
 		public static bool OrderLastSelectedFirst =>
 			EditorPrefs.GetBool(OrderLastSelectedFirstKey, false);
+		
+		public static bool RecordInTheBackground =>
+			EditorPrefs.GetBool(BackgroundRecordKey, false);
 	
 
 	    public static void PingEntry(SelectionHistory.Entry e)

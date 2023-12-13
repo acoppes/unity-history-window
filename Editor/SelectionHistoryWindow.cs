@@ -35,6 +35,8 @@ namespace Gemserk
             {
                 selectionHistory.OnNewEntryAdded -= OnHistoryEntryAdded;
             }
+            
+            Selection.selectionChanged -= OnSelectionChanged;
         }
 
         public void OnEnable()
@@ -58,6 +60,18 @@ namespace Gemserk
             };
 
             ReloadRootAndRemoveUnloadedAndDuplicated();
+            
+            Selection.selectionChanged += OnSelectionChanged;
+        }
+
+        private void OnSelectionChanged()
+        {
+            if (SelectionHistoryWindowUtils.RecordInTheBackground)
+            {
+                return;
+            }
+
+            SelectionHistoryWindowUtils.RecordSelectionChange();
         }
 
         private void OnHistoryEntryAdded(SelectionHistory history)
