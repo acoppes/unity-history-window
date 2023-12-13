@@ -122,8 +122,6 @@ namespace Gemserk
             
             root.Clear();
             
-          
-
             var scroll = new ScrollView(ScrollViewMode.Vertical)
             {
                 name = "MainScroll"
