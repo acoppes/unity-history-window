@@ -75,4 +75,4 @@ Feel free to fork the project and make modifications for yourself or to share by
 
 ### Contact
 
-<a href="https://arielcoppes.dev">@arielsan</a>
+<a href="https://arielcoppes.dev">My Personal Website & Dev Blog</a>
