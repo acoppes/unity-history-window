@@ -416,6 +416,12 @@ namespace Gemserk
                     if (!entry.isReferenced)
                     {
                         visualElement.AddToClassList("unreferencedObject");
+
+                        if (!showDestroyedObjects)
+                        {
+                            visualElement.style.display = DisplayStyle.None;
+                            continue;
+                        }
                     }
                     else if (entry.isSceneInstance)
                     {
