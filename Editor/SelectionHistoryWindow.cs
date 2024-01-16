@@ -62,9 +62,6 @@ namespace Gemserk
             //EditorSceneManager.sceneClosed += OnSceneClosed;
             EditorSceneManager.sceneOpened += OnSceneOpened;
             
-            var root = rootVisualElement;
-            root.styleSheets.Add(styleSheet);
-            
             selectionHistory = SelectionHistoryReference.SelectionHistory;
             
             if (selectionHistory != null)
@@ -77,36 +74,31 @@ namespace Gemserk
                 ReloadRootAndRemoveUnloadedAndDuplicated();
             };
             
+            var root = rootVisualElement;
+            root.styleSheets.Add(styleSheet);
+            
+            RegenerateUI();
+            
+            ReloadRootAndRemoveUnloadedAndDuplicated();
+            
+            Selection.selectionChanged += OnSelectionChanged;
+        }
+
+        private void RegenerateUI()
+        {
+            var root = rootVisualElement;
+            root.Clear();
+            
+            visualElements.Clear();
+            
             mainScrollElement = new ScrollView(ScrollViewMode.Vertical)
             {
                 name = "MainScroll"
             };
             
-            // mainScrollElement.RegisterCallback(delegate(GeometryChangedEvent evt)
-            // {
-            //     var selectedIndex = selectionHistory.GetSelectedIndex();
-            //     mainScrollElement.ScrollTo(visualElements[selectedIndex]);
-            //     
-            //     // if (scroll.childCount > 0)
-            //     // {
-            //     //     if (SelectionHistoryWindowUtils.OrderLastSelectedFirst)
-            //     //     {
-            //     //         var first = scroll.Children().ToList().First();
-            //     //         scroll.ScrollTo(first);
-            //     //     }  else
-            //     //     {
-            //     //         var last = scroll.Children().ToList()[scroll.childCount - 1];
-            //     //         scroll.ScrollTo(last);
-            //     //     }
-            //     // }
-            // });
-            
             root.Add(mainScrollElement);
             
             CreateMaxElements(selectionHistory, mainScrollElement);
-            
-            var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
-            var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
             
             var clearButton = new Button(delegate
             {
@@ -116,13 +108,13 @@ namespace Gemserk
             
             root.Add(clearButton);
             
-            // this is just for development
-            var refreshButton = new Button(delegate
-            {
-                ReloadRoot();
-            }) {text = "Refresh (dev)"};
-            
-            root.Add(refreshButton);
+            // // this is just for development
+            // var refreshButton = new Button(delegate
+            // {
+            //     ReloadRoot();
+            // }) {text = "Refresh (dev)"};
+            //
+            // root.Add(refreshButton);
             
             removeUnloadedButton = new Button(delegate
             {
@@ -139,10 +131,6 @@ namespace Gemserk
                 ReloadRoot();
             }) {text = "Remove destroyed"};
             root.Add(removeDestroyedButton);
-            
-            ReloadRootAndRemoveUnloadedAndDuplicated();
-            
-            Selection.selectionChanged += OnSelectionChanged;
         }
 
         private void CreateMaxElements(SelectionHistory selectionHistory, VisualElement parent)
@@ -260,14 +248,7 @@ namespace Gemserk
             if (openPrefabIcon != null)
             {
                 openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openPrefabIconName).image;
-
-                // This should be done in update
                 
-                // if (isPrefabAsset || isSceneAsset)
-                // {
-                //     openPrefabIcon.RemoveFromClassList("hidden");
-                // }
-                    
                 openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
                 {
                     var entry = selectionHistory.GetEntry(historyIndex);
@@ -334,41 +315,20 @@ namespace Gemserk
         private void OnHistoryEntryAdded(SelectionHistory selectionHistory)
         {
             ReloadRootAndRemoveUnloadedAndDuplicated();
-
-            // var scroll = mainScrollElement;
-            //
-            // var selectedIndex = selectionHistory.GetSelectedIndex();
-            // // scroll.ScrollTo(visualElements[selectedIndex]);
-            //
-            // scroll.RegisterCallback(delegate(GeometryChangedEvent evt)
-            // {
-            //     scroll.ScrollTo(visualElements[selectedIndex]);
-            //     
-            //     // if (scroll.childCount > 0)
-            //     // {
-            //     //     if (SelectionHistoryWindowUtils.OrderLastSelectedFirst)
-            //     //     {
-            //     //         var first = scroll.Children().ToList().First();
-            //     //         scroll.ScrollTo(first);
-            //     //     }  else
-            //     //     {
-            //     //         var last = scroll.Children().ToList()[scroll.childCount - 1];
-            //     //         scroll.ScrollTo(last);
-            //     //     }
-            //     // }
-            // });
         }
 
         private void OnSceneOpened(Scene scene, OpenSceneMode mode)
         {
             ReloadRootAndRemoveUnloadedAndDuplicated();
-            //ReloadRoot();
         }
 
         public void ReloadRootAndRemoveUnloadedAndDuplicated()
         {
-            if (SelectionHistoryWindowUtils.AutomaticRemoveDeleted)
+            if (SelectionHistoryWindowUtils.AutomaticRemoveDestroyed)
                 selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
+            
+            if (SelectionHistoryWindowUtils.AutomaticRemoveUnloaded)
+                selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceUnloaded);
 
             if (!SelectionHistoryWindowUtils.AllowDuplicatedEntries)
                 selectionHistory.RemoveDuplicated();
@@ -378,7 +338,15 @@ namespace Gemserk
 
         private void ReloadRoot()
         {
-            var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
+            if (visualElements.Count != selectionHistory.historySize)
+            {
+                RegenerateUI();
+            }
+            
+            var showHierarchyViewObjects =
+                EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowHierarchyObjectsPrefKey, true);
+            
+            var showUnloadedObjects = showHierarchyViewObjects && SelectionHistoryWindowUtils.ShowUnloadedObjects;
             var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
             
             var currentEntry = -1;
@@ -503,251 +471,187 @@ namespace Gemserk
                     mainScrollElement.ScrollTo(visualElements[currentEntry]);
                 }
             }
-            
-            return;
-            
-            // var root = rootVisualElement;
-            //
-            // root.Clear();
-            //
-            // var scroll = new ScrollView(ScrollViewMode.Vertical)
-            // {
-            //     name = "MainScroll"
-            // };
-            //
-            // root.Add(scroll);
-            //
-            // var entries = new List<SelectionHistory.Entry>(selectionHistory.History);
-            //
-            // var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
-            // var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
-            //
-            // if (SelectionHistoryWindowUtils.OrderLastSelectedFirst)
-            // {
-            //     entries.Reverse();
-            // }
-            //
-            // for (var i = 0; i < entries.Count; i++)
-            // {
-            //     var entry = entries[i];
-            //
-            //     var elementTree = CreateElementForEntry(entry);
-            //     if (elementTree != null)
-            //     {
-            //         scroll.Add(elementTree);
-            //     }
-            // }
-            //
-            // var clearButton = new Button(delegate
-            // {
-            //     selectionHistory.Clear();
-            //     ReloadRoot();
-            // }) {text = "Clear"};
-            //
-            // root.Add(clearButton);
-            //
-            // if (showUnloadedObjects)
-            // {
-            //     var removeUnloadedButton = new Button(delegate
-            //     {
-            //         selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceUnloaded);
-            //         // ReloadRootAndRemoveUnloadedAndDuplicated();
-            //         ReloadRoot();
-            //     }) {text = "Remove Unloaded"};
-            //     root.Add(removeUnloadedButton);
-            // }
-            //
-            // if (showDestroyedObjects)
-            // {
-            //     var removeDestroyedButton = new Button(delegate
-            //     {
-            //         selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
-            //         // ReloadRootAndRemoveUnloadedAndDuplicated();
-            //         ReloadRoot();
-            //     }) {text = "Remove destroyed"};
-            //     root.Add(removeDestroyedButton);
-            // }
         }
 
-        private VisualElement CreateElementForEntry(SelectionHistory.Entry entry)
-        {
-            var showHierarchyElements = SelectionHistoryWindowUtils.ShowHierarchyViewObjects;
-            var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
-            var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
-            
-            if (entry.isSceneInstance && !showHierarchyElements)
-            {
-                return null;
-            }
-
-            var referenced = entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced;
-
-            if (!showUnloadedObjects && entry.GetReferenceState() == SelectionHistory.Entry.State.ReferenceUnloaded)
-            {
-                return null;
-            }
-
-            if (!showDestroyedObjects && entry.GetReferenceState() == SelectionHistory.Entry.State.ReferenceDestroyed)
-            {
-                return null;
-            }
-
-            var elementTree = historyElementViewTree.CloneTree();
-            
-            if (!referenced)
-            {
-                elementTree.AddToClassList("unreferencedObject");
-            }
-            else if (entry.isSceneInstance)
-            {
-                elementTree.AddToClassList("sceneObject");
-            }
-            else
-            {
-                elementTree.AddToClassList("assetObject");
-            }
-
-            var isPrefabAsset = referenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
-            var isSceneAsset = referenced && entry.isAsset && entry.reference is SceneAsset;
-            
-            if (referenced)
-            {
-                var dragArea = elementTree.Q<VisualElement>("DragArea");
-                if (dragArea != null)
-                {
-                    dragArea.RegisterCallback<MouseUpEvent>(evt =>
-                    {
-                        if (evt.button == 0)
-                        {
-                            selectionHistory.SetSelection(entry.Reference);
-                            Selection.activeObject = entry.Reference;
-                        }
-                        else
-                        {
-                            SelectionHistoryWindowUtils.PingEntry(entry);
-                        }
-                    });
-                    dragArea.RegisterCallback<MouseDownEvent>(evt =>
-                    {
-                        if (evt.button == 0 && evt.modifiers.HasFlag(EventModifiers.Alt))
-                        {
-                            DragAndDrop.PrepareStartDrag();
-
-                            var objectReferences = new[] {entry.Reference};
-                            DragAndDrop.paths = new[]
-                            {
-                                AssetDatabase.GetAssetPath(entry.Reference)
-                            };
-
-                            DragAndDrop.objectReferences = objectReferences;
-                            DragAndDrop.StartDrag(ObjectNames.GetDragAndDropTitle(entry.Reference));
-                        }
-                    });
-
-                    dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
-                    {
-                        DragAndDrop.visualMode = DragAndDropVisualMode.Link;
-                    });
-                    
-                    dragArea.RegisterCallback<PointerDownEvent>(evt =>
-                    {
-                        if (evt.button == 0 && evt.clickCount == 2)
-                        {
-                            if (isPrefabAsset)
-                            {
-                                AssetDatabase.OpenAsset(entry.Reference);
-                            }
-                            
-                            if (isSceneAsset)
-                            {
-                                if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-                                {
-                                    EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
-                                }
-                            }
-                        }
-                    });
-                }
-
-                var icon = elementTree.Q<Image>("Icon");
-                if (icon != null)
-                {
-                    icon.image = AssetPreview.GetMiniThumbnail(entry.Reference);
-                }
-            }
-
-            var pingIcon = elementTree.Q<Image>("PingIcon");
-            if (pingIcon != null)
-            {
-                pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
-                pingIcon.RegisterCallback(delegate(MouseUpEvent e) { SelectionHistoryWindowUtils.PingEntry(entry); });
-            }
-            
-            var openPrefabIcon = elementTree.Q<Image>("OpenPrefabIcon");
-            if (openPrefabIcon != null)
-            {
-                openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openPrefabIconName).image;
-
-                if (isPrefabAsset || isSceneAsset)
-                {
-                    openPrefabIcon.RemoveFromClassList("hidden");
-                }
-                    
-                openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
-                {
-                    if (isPrefabAsset)
-                    {
-                        AssetDatabase.OpenAsset(entry.Reference);
-                    } else if (isSceneAsset)
-                    {
-                        if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-                        {
-                            EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
-                        }
-                    }
-                });
-            }
-
-            if (SelectionHistoryWindowUtils.ShowFavoriteButton)
-            {
-                if (entry.isAsset &&
-                    entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced)
-                {
-                    var favoriteAsset = elementTree.Q<Image>("Favorite");
-                    if (favoriteAsset != null)
-                    {
-                        var isFavorite = FavoritesController.Favorites.IsFavorite(entry.Reference);
-                        // favoriteEmptyIconName
-                        favoriteAsset.image = isFavorite
-                            ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
-                            : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
-                        favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
-                        {
-                            if (FavoritesController.Favorites.IsFavorite(entry.Reference))
-                            {
-                                FavoritesController.Favorites.RemoveFavorite(entry.Reference);
-                            } else
-                            {
-                                FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
-                                {
-                                    reference = entry.Reference
-                                });
-                            }
-                            
-                            ReloadRootAndRemoveUnloadedAndDuplicated();
-                        });
-                    }
-                }
-            }
-
-            var label = elementTree.Q<Label>("Name");
-            if (label != null)
-            {
-                label.text = entry.GetName(true);
-            }
-
-            return elementTree;
-        }
+        // private VisualElement CreateElementForEntry(SelectionHistory.Entry entry)
+        // {
+        //     var showHierarchyElements = SelectionHistoryWindowUtils.ShowHierarchyViewObjects;
+        //     var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
+        //     var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
+        //     
+        //     if (entry.isSceneInstance && !showHierarchyElements)
+        //     {
+        //         return null;
+        //     }
+        //
+        //     var referenced = entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced;
+        //
+        //     if (!showUnloadedObjects && entry.GetReferenceState() == SelectionHistory.Entry.State.ReferenceUnloaded)
+        //     {
+        //         return null;
+        //     }
+        //
+        //     if (!showDestroyedObjects && entry.GetReferenceState() == SelectionHistory.Entry.State.ReferenceDestroyed)
+        //     {
+        //         return null;
+        //     }
+        //
+        //     var elementTree = historyElementViewTree.CloneTree();
+        //     
+        //     if (!referenced)
+        //     {
+        //         elementTree.AddToClassList("unreferencedObject");
+        //     }
+        //     else if (entry.isSceneInstance)
+        //     {
+        //         elementTree.AddToClassList("sceneObject");
+        //     }
+        //     else
+        //     {
+        //         elementTree.AddToClassList("assetObject");
+        //     }
+        //
+        //     var isPrefabAsset = referenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
+        //     var isSceneAsset = referenced && entry.isAsset && entry.reference is SceneAsset;
+        //     
+        //     if (referenced)
+        //     {
+        //         var dragArea = elementTree.Q<VisualElement>("DragArea");
+        //         if (dragArea != null)
+        //         {
+        //             dragArea.RegisterCallback<MouseUpEvent>(evt =>
+        //             {
+        //                 if (evt.button == 0)
+        //                 {
+        //                     selectionHistory.SetSelection(entry.Reference);
+        //                     Selection.activeObject = entry.Reference;
+        //                 }
+        //                 else
+        //                 {
+        //                     SelectionHistoryWindowUtils.PingEntry(entry);
+        //                 }
+        //             });
+        //             dragArea.RegisterCallback<MouseDownEvent>(evt =>
+        //             {
+        //                 if (evt.button == 0 && evt.modifiers.HasFlag(EventModifiers.Alt))
+        //                 {
+        //                     DragAndDrop.PrepareStartDrag();
+        //
+        //                     var objectReferences = new[] {entry.Reference};
+        //                     DragAndDrop.paths = new[]
+        //                     {
+        //                         AssetDatabase.GetAssetPath(entry.Reference)
+        //                     };
+        //
+        //                     DragAndDrop.objectReferences = objectReferences;
+        //                     DragAndDrop.StartDrag(ObjectNames.GetDragAndDropTitle(entry.Reference));
+        //                 }
+        //             });
+        //
+        //             dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
+        //             {
+        //                 DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+        //             });
+        //             
+        //             dragArea.RegisterCallback<PointerDownEvent>(evt =>
+        //             {
+        //                 if (evt.button == 0 && evt.clickCount == 2)
+        //                 {
+        //                     if (isPrefabAsset)
+        //                     {
+        //                         AssetDatabase.OpenAsset(entry.Reference);
+        //                     }
+        //                     
+        //                     if (isSceneAsset)
+        //                     {
+        //                         if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+        //                         {
+        //                             EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
+        //                         }
+        //                     }
+        //                 }
+        //             });
+        //         }
+        //
+        //         var icon = elementTree.Q<Image>("Icon");
+        //         if (icon != null)
+        //         {
+        //             icon.image = AssetPreview.GetMiniThumbnail(entry.Reference);
+        //         }
+        //     }
+        //
+        //     var pingIcon = elementTree.Q<Image>("PingIcon");
+        //     if (pingIcon != null)
+        //     {
+        //         pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
+        //         pingIcon.RegisterCallback(delegate(MouseUpEvent e) { SelectionHistoryWindowUtils.PingEntry(entry); });
+        //     }
+        //     
+        //     var openPrefabIcon = elementTree.Q<Image>("OpenPrefabIcon");
+        //     if (openPrefabIcon != null)
+        //     {
+        //         openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openPrefabIconName).image;
+        //
+        //         if (isPrefabAsset || isSceneAsset)
+        //         {
+        //             openPrefabIcon.RemoveFromClassList("hidden");
+        //         }
+        //             
+        //         openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
+        //         {
+        //             if (isPrefabAsset)
+        //             {
+        //                 AssetDatabase.OpenAsset(entry.Reference);
+        //             } else if (isSceneAsset)
+        //             {
+        //                 if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+        //                 {
+        //                     EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
+        //                 }
+        //             }
+        //         });
+        //     }
+        //
+        //     if (SelectionHistoryWindowUtils.ShowFavoriteButton)
+        //     {
+        //         if (entry.isAsset &&
+        //             entry.GetReferenceState() == SelectionHistory.Entry.State.Referenced)
+        //         {
+        //             var favoriteAsset = elementTree.Q<Image>("Favorite");
+        //             if (favoriteAsset != null)
+        //             {
+        //                 var isFavorite = FavoritesController.Favorites.IsFavorite(entry.Reference);
+        //                 // favoriteEmptyIconName
+        //                 favoriteAsset.image = isFavorite
+        //                     ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
+        //                     : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
+        //                 favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
+        //                 {
+        //                     if (FavoritesController.Favorites.IsFavorite(entry.Reference))
+        //                     {
+        //                         FavoritesController.Favorites.RemoveFavorite(entry.Reference);
+        //                     } else
+        //                     {
+        //                         FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
+        //                         {
+        //                             reference = entry.Reference
+        //                         });
+        //                     }
+        //                     
+        //                     ReloadRootAndRemoveUnloadedAndDuplicated();
+        //                 });
+        //             }
+        //         }
+        //     }
+        //
+        //     var label = elementTree.Q<Label>("Name");
+        //     if (label != null)
+        //     {
+        //         label.text = entry.GetName(true);
+        //     }
+        //
+        //     return elementTree;
+        // }
 
         public void AddItemsToMenu(GenericMenu menu)
         {
@@ -757,14 +661,17 @@ namespace Gemserk
             AddMenuItemForPreference(menu, SelectionHistoryWindowUtils.HistoryShowHierarchyObjectsPrefKey, "HierarchyView Objects", 
                 "Toggle to show/hide objects from scene hierarchy view.");
 		 
-            if (showHierarchyViewObjects)
+            if (showHierarchyViewObjects && !SelectionHistoryWindowUtils.AutomaticRemoveUnloaded)
             {
                 AddMenuItemForPreference(menu, SelectionHistoryWindowUtils.ShowUnloadedObjectsKey, "Unloaded Objects", 
                     "Toggle to show/hide unloaded objects from scenes hierarchy view.");
             } 
 		    
-            AddMenuItemForPreference(menu, SelectionHistoryWindowUtils.ShowDestroyedObjectsKey, "Destroyed Objects", 
-                "Toggle to show/hide unreferenced or destroyed objects.");
+            if (!SelectionHistoryWindowUtils.AutomaticRemoveDestroyed)
+            {
+                AddMenuItemForPreference(menu, SelectionHistoryWindowUtils.ShowDestroyedObjectsKey, "Destroyed Objects",
+                    "Toggle to show/hide unreferenced or destroyed objects.");
+            }
             
             AddMenuItemForPreference(menu, SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, "Favorite Button", 
                 "Toggle to show/hide favorite Reference button.");

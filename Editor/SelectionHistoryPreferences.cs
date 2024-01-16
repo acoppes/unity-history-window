@@ -9,6 +9,7 @@ namespace Gemserk {
        // static int historySize;
 
         static bool autoremoveDestroyed;
+        static bool autoremoveUnloaded;
 
         static bool autoRemoveDuplicated;
 
@@ -28,7 +29,8 @@ namespace Gemserk {
                     
                     if (!prefsLoaded) {
                        // historySize = EditorPrefs.GetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, defaultHistorySize);
-                        autoremoveDestroyed = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDeletedPrefKey, true);
+                        autoremoveDestroyed = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDestroyedPrefKey, true);
+                        autoremoveUnloaded = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveUnloadedPrefKey, true);
                         autoRemoveDuplicated = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAllowDuplicatedEntriesPrefKey, false);
                         drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, true);
                         orderLastSelectedFirst = EditorPrefs.GetBool(SelectionHistoryWindowUtils.OrderLastSelectedFirstKey, false);
@@ -43,13 +45,15 @@ namespace Gemserk {
                     }
                     
                     autoremoveDestroyed = EditorGUILayout.Toggle("Auto Remove Destroyed", autoremoveDestroyed);
+                    autoremoveUnloaded = EditorGUILayout.Toggle("Auto Remove Unloaded", autoremoveUnloaded);
                     autoRemoveDuplicated = EditorGUILayout.Toggle("Allow duplicated entries", autoRemoveDuplicated);
                     drawFavorites = EditorGUILayout.Toggle("Show Pin to favorites button", drawFavorites);
                     orderLastSelectedFirst = EditorGUILayout.Toggle("Order last selected first", orderLastSelectedFirst);
                     backgroundRecord = EditorGUILayout.Toggle("Record selection while window closed", backgroundRecord);
 
                     if (GUI.changed) {
-                        EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDeletedPrefKey, autoremoveDestroyed);
+                        EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDestroyedPrefKey, autoremoveDestroyed);
+                        EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveUnloadedPrefKey, autoremoveUnloaded);
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryAllowDuplicatedEntriesPrefKey, autoRemoveDuplicated);
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, drawFavorites);
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.OrderLastSelectedFirstKey, orderLastSelectedFirst);
@@ -60,6 +64,7 @@ namespace Gemserk {
                         // {
                         //     window.ReloadRootAndRemoveUnloadedAndDuplicated();
                         // }
+                        
                         if (SelectionHistoryReference.asset != null)
                         {
                             EditorUtility.SetDirty(SelectionHistoryReference.asset);

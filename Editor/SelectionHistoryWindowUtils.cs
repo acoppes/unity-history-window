@@ -7,7 +7,9 @@ namespace Gemserk
 	[InitializeOnLoad]
 	public static class SelectionHistoryWindowUtils {
 
-		public static readonly string HistoryAutomaticRemoveDeletedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
+		public static readonly string HistoryAutomaticRemoveDestroyedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveDeleted";
+		public static readonly string HistoryAutomaticRemoveUnloadedPrefKey = "Gemserk.SelectionHistory.AutomaticRemoveUnloaded";
+		
 		public static readonly string HistoryAllowDuplicatedEntriesPrefKey = "Gemserk.SelectionHistory.AllowDuplicatedEntries";
 	    public static readonly string HistoryShowHierarchyObjectsPrefKey = "Gemserk.SelectionHistory.ShowHierarchyObjects";
 
@@ -81,8 +83,11 @@ namespace Gemserk
 		    Selection.activeObject = selectionHistory.GetSelection ();
 	    }
 		
-		public static bool AutomaticRemoveDeleted =>
-			EditorPrefs.GetBool(HistoryAutomaticRemoveDeletedPrefKey, true);
+		public static bool AutomaticRemoveDestroyed =>
+			EditorPrefs.GetBool(HistoryAutomaticRemoveDestroyedPrefKey, true);
+		
+		public static bool AutomaticRemoveUnloaded =>
+			EditorPrefs.GetBool(HistoryAutomaticRemoveUnloadedPrefKey, true);
 		
 		public static bool AllowDuplicatedEntries =>
 			EditorPrefs.GetBool(HistoryAllowDuplicatedEntriesPrefKey, false);
