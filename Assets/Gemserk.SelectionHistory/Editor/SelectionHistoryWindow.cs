@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -12,19 +11,12 @@ namespace Gemserk
     {
         public static SelectionHistory.Entry GetEntry(this SelectionHistory selectionHistory, int index)
         {
-            var orderedIndex = index;
-            
-            // if (SelectionHistoryWindowUtils.OrderLastSelectedFirst)
-            // {
-            //     orderedIndex = selectionHistory.historySize - index - 1;
-            // }
-            
-            if (orderedIndex < 0 || orderedIndex >= selectionHistory.History.Count)
+            if (index < 0 || index >= selectionHistory.History.Count)
             {
                 return null;
             }
 
-            return selectionHistory.History[orderedIndex];
+            return selectionHistory.History[index];
         }
     }
     
@@ -48,7 +40,10 @@ namespace Gemserk
 
         private ScrollView mainScrollElement;
         private List<VisualElement> visualElements = new List<VisualElement>();
-        
+
+        private Button removeUnloadedButton;
+        private Button removeDestroyedButton;
+
         private void OnDisable()
         {
             //EditorSceneManager.sceneClosed -= OnSceneClosed;
@@ -87,6 +82,25 @@ namespace Gemserk
                 name = "MainScroll"
             };
             
+            // mainScrollElement.RegisterCallback(delegate(GeometryChangedEvent evt)
+            // {
+            //     var selectedIndex = selectionHistory.GetSelectedIndex();
+            //     mainScrollElement.ScrollTo(visualElements[selectedIndex]);
+            //     
+            //     // if (scroll.childCount > 0)
+            //     // {
+            //     //     if (SelectionHistoryWindowUtils.OrderLastSelectedFirst)
+            //     //     {
+            //     //         var first = scroll.Children().ToList().First();
+            //     //         scroll.ScrollTo(first);
+            //     //     }  else
+            //     //     {
+            //     //         var last = scroll.Children().ToList()[scroll.childCount - 1];
+            //     //         scroll.ScrollTo(last);
+            //     //     }
+            //     // }
+            // });
+            
             root.Add(mainScrollElement);
             
             CreateMaxElements(selectionHistory, mainScrollElement);
@@ -110,27 +124,21 @@ namespace Gemserk
             
             root.Add(refreshButton);
             
-            if (showUnloadedObjects)
+            removeUnloadedButton = new Button(delegate
             {
-                var removeUnloadedButton = new Button(delegate
-                {
-                    selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceUnloaded);
-                    // ReloadRootAndRemoveUnloadedAndDuplicated();
-                    ReloadRoot();
-                }) {text = "Remove Unloaded"};
-                root.Add(removeUnloadedButton);
-            }
+                selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceUnloaded);
+                // ReloadRootAndRemoveUnloadedAndDuplicated();
+                ReloadRoot();
+            }) {text = "Remove Unloaded"};
+            root.Add(removeUnloadedButton);
             
-            if (showDestroyedObjects)
+            removeDestroyedButton = new Button(delegate
             {
-                var removeDestroyedButton = new Button(delegate
-                {
-                    selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
-                    // ReloadRootAndRemoveUnloadedAndDuplicated();
-                    ReloadRoot();
-                }) {text = "Remove destroyed"};
-                root.Add(removeDestroyedButton);
-            }
+                selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
+                // ReloadRootAndRemoveUnloadedAndDuplicated();
+                ReloadRoot();
+            }) {text = "Remove destroyed"};
+            root.Add(removeDestroyedButton);
             
             ReloadRootAndRemoveUnloadedAndDuplicated();
             
@@ -285,27 +293,9 @@ namespace Gemserk
                 });
             }
 
-            // if (SelectionHistoryWindowUtils.ShowFavoriteButton)
-            // {
-            //
-            // }
-
             var favoriteAsset = elementTree.Q<Image>("Favorite");
             if (favoriteAsset != null)
             {
-                // var entry = selectionHistory.GetEntry(historyIndex);
-                //
-                // if (entry.isAsset && entry.isReferenced)
-                // {
-                //
-                // }
-                //
-                // var isFavorite = FavoritesController.Favorites.IsFavorite(entry.Reference);
-                // // favoriteEmptyIconName
-                // favoriteAsset.image = isFavorite
-                //     ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
-                //     : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
-                    
                 favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
                 {
                     var entry = selectionHistory.GetEntry(historyIndex);
@@ -327,14 +317,6 @@ namespace Gemserk
                     ReloadRootAndRemoveUnloadedAndDuplicated();
                 });
             }
-            
-            // Do this in update?
-            
-            // var label = elementTree.Q<Label>("Name");
-            // if (label != null)
-            // {
-            //     label.text = entry.GetName(true);
-            // }
 
             return elementTree;
         }
@@ -349,29 +331,32 @@ namespace Gemserk
             SelectionHistoryWindowUtils.RecordSelectionChange();
         }
 
-        private void OnHistoryEntryAdded(SelectionHistory history)
+        private void OnHistoryEntryAdded(SelectionHistory selectionHistory)
         {
             ReloadRootAndRemoveUnloadedAndDuplicated();
-            
-            var scroll = rootVisualElement.Q<ScrollView>("MainScroll");
-            if (scroll == null) 
-                return;
-            
-            scroll.RegisterCallback(delegate(GeometryChangedEvent evt)
-            {
-                if (scroll.childCount > 0)
-                {
-                    if (SelectionHistoryWindowUtils.OrderLastSelectedFirst)
-                    {
-                        var first = scroll.Children().ToList().First();
-                        scroll.ScrollTo(first);
-                    }  else
-                    {
-                        var last = scroll.Children().ToList()[scroll.childCount - 1];
-                        scroll.ScrollTo(last);
-                    }
-                }
-            });
+
+            // var scroll = mainScrollElement;
+            //
+            // var selectedIndex = selectionHistory.GetSelectedIndex();
+            // // scroll.ScrollTo(visualElements[selectedIndex]);
+            //
+            // scroll.RegisterCallback(delegate(GeometryChangedEvent evt)
+            // {
+            //     scroll.ScrollTo(visualElements[selectedIndex]);
+            //     
+            //     // if (scroll.childCount > 0)
+            //     // {
+            //     //     if (SelectionHistoryWindowUtils.OrderLastSelectedFirst)
+            //     //     {
+            //     //         var first = scroll.Children().ToList().First();
+            //     //         scroll.ScrollTo(first);
+            //     //     }  else
+            //     //     {
+            //     //         var last = scroll.Children().ToList()[scroll.childCount - 1];
+            //     //         scroll.ScrollTo(last);
+            //     //     }
+            //     // }
+            // });
         }
 
         private void OnSceneOpened(Scene scene, OpenSceneMode mode)
@@ -393,15 +378,23 @@ namespace Gemserk
 
         private void ReloadRoot()
         {
-            if (mainScrollElement != null)
+            var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
+            var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
+            
+            var currentEntry = -1;
+
+            if (removeUnloadedButton != null)
             {
-                mainScrollElement.contentContainer.style.flexDirection = SelectionHistoryWindowUtils.OrderLastSelectedFirst ? FlexDirection.ColumnReverse : FlexDirection.Column;
+                removeUnloadedButton.style.display = showUnloadedObjects ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+            
+            if (removeDestroyedButton != null)
+            {
+                removeDestroyedButton.style.display = showDestroyedObjects ? DisplayStyle.Flex : DisplayStyle.None;
             }
             
             for (var i = 0; i < visualElements.Count; i++)
             {
-                // var visualElement = SelectionHistoryWindowUtils.OrderLastSelectedFirst ? visualElements[visualElements.Count - i - 1] : visualElements[i];
-                
                 var visualElement = visualElements[i];
                 var entry = selectionHistory.GetEntry(i);
                 
@@ -411,12 +404,14 @@ namespace Gemserk
                 }
                 else
                 {
+                    currentEntry = i;
+                    
                     var isPrefabAsset = entry.isReferenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
                     var isSceneAsset = entry.isReferenced && entry.isAsset && entry.reference is SceneAsset;
                     
                     visualElement.style.display = DisplayStyle.Flex;
                     
-                   // visualElement.ClearClassList();
+                    visualElement.ClearClassList();
                     
                     if (!entry.isReferenced)
                     {
@@ -459,7 +454,7 @@ namespace Gemserk
                     }
                     
                     var favoriteAsset = visualElement.Q<Image>("Favorite");
-                    if (!SelectionHistoryWindowUtils.ShowFavoriteButton)
+                    if (!SelectionHistoryWindowUtils.ShowFavoriteButton || !entry.isReferenced)
                     {
                         favoriteAsset.style.display = DisplayStyle.None;
                     }
@@ -473,76 +468,99 @@ namespace Gemserk
                             ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
                             : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
                     }
+                    
+                    var pingIcon = visualElement.Q<Image>("PingIcon");
+                    if (pingIcon != null)
+                    {
+                        if (!entry.isReferenced)
+                        {
+                            pingIcon.style.display = DisplayStyle.None;
+                        }
+                        else
+                        {
+                            pingIcon.style.display = DisplayStyle.Flex;
+                        }
+                    }
                 }
                 
                 // now update values
                 
                 // depending configuration, hide elements
             }
-
-            return;
             
-            var root = rootVisualElement;
-            
-            root.Clear();
-            
-            var scroll = new ScrollView(ScrollViewMode.Vertical)
+            if (mainScrollElement != null)
             {
-                name = "MainScroll"
-            };
-            
-            root.Add(scroll);
+                mainScrollElement.contentContainer.style.flexDirection = SelectionHistoryWindowUtils.OrderLastSelectedFirst ? FlexDirection.ColumnReverse : FlexDirection.Column;
 
-            var entries = new List<SelectionHistory.Entry>(selectionHistory.History);
-
-            var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
-            var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
-
-            if (SelectionHistoryWindowUtils.OrderLastSelectedFirst)
-            {
-                entries.Reverse();
-            }
-            
-            for (var i = 0; i < entries.Count; i++)
-            {
-                var entry = entries[i];
-
-                var elementTree = CreateElementForEntry(entry);
-                if (elementTree != null)
+                if (currentEntry >= 0)
                 {
-                    scroll.Add(elementTree);
+                    mainScrollElement.ScrollTo(visualElements[currentEntry]);
                 }
             }
             
-            var clearButton = new Button(delegate
-            {
-                selectionHistory.Clear();
-                ReloadRoot();
-            }) {text = "Clear"};
+            return;
             
-            root.Add(clearButton);
-
-            if (showUnloadedObjects)
-            {
-                var removeUnloadedButton = new Button(delegate
-                {
-                    selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceUnloaded);
-                    // ReloadRootAndRemoveUnloadedAndDuplicated();
-                    ReloadRoot();
-                }) {text = "Remove Unloaded"};
-                root.Add(removeUnloadedButton);
-            }
-            
-            if (showDestroyedObjects)
-            {
-                var removeDestroyedButton = new Button(delegate
-                {
-                    selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
-                    // ReloadRootAndRemoveUnloadedAndDuplicated();
-                    ReloadRoot();
-                }) {text = "Remove destroyed"};
-                root.Add(removeDestroyedButton);
-            }
+            // var root = rootVisualElement;
+            //
+            // root.Clear();
+            //
+            // var scroll = new ScrollView(ScrollViewMode.Vertical)
+            // {
+            //     name = "MainScroll"
+            // };
+            //
+            // root.Add(scroll);
+            //
+            // var entries = new List<SelectionHistory.Entry>(selectionHistory.History);
+            //
+            // var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
+            // var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
+            //
+            // if (SelectionHistoryWindowUtils.OrderLastSelectedFirst)
+            // {
+            //     entries.Reverse();
+            // }
+            //
+            // for (var i = 0; i < entries.Count; i++)
+            // {
+            //     var entry = entries[i];
+            //
+            //     var elementTree = CreateElementForEntry(entry);
+            //     if (elementTree != null)
+            //     {
+            //         scroll.Add(elementTree);
+            //     }
+            // }
+            //
+            // var clearButton = new Button(delegate
+            // {
+            //     selectionHistory.Clear();
+            //     ReloadRoot();
+            // }) {text = "Clear"};
+            //
+            // root.Add(clearButton);
+            //
+            // if (showUnloadedObjects)
+            // {
+            //     var removeUnloadedButton = new Button(delegate
+            //     {
+            //         selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceUnloaded);
+            //         // ReloadRootAndRemoveUnloadedAndDuplicated();
+            //         ReloadRoot();
+            //     }) {text = "Remove Unloaded"};
+            //     root.Add(removeUnloadedButton);
+            // }
+            //
+            // if (showDestroyedObjects)
+            // {
+            //     var removeDestroyedButton = new Button(delegate
+            //     {
+            //         selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
+            //         // ReloadRootAndRemoveUnloadedAndDuplicated();
+            //         ReloadRoot();
+            //     }) {text = "Remove destroyed"};
+            //     root.Add(removeDestroyedButton);
+            // }
         }
 
         private VisualElement CreateElementForEntry(SelectionHistory.Entry entry)
