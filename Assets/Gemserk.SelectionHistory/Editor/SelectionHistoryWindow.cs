@@ -364,8 +364,9 @@ namespace Gemserk
             var showHierarchyViewObjects =
                 EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowHierarchyObjectsPrefKey, true);
             
-            var showUnloadedObjects = showHierarchyViewObjects && SelectionHistoryWindowUtils.ShowUnloadedObjects;
-            var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
+            var showUnloadedObjects = showHierarchyViewObjects && SelectionHistoryWindowUtils.ShowUnloadedObjects 
+                                                               && !SelectionHistoryWindowUtils.AutomaticRemoveUnloaded;
+            var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects && !SelectionHistoryWindowUtils.AutomaticRemoveDestroyed;
             
             var currentEntry = -1;
 
