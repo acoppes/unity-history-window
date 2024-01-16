@@ -66,6 +66,8 @@ namespace Gemserk
 
             public bool isSceneInstance => !string.IsNullOrEmpty(sceneName);
 
+            public bool isUnloadedHierarchyObject => isSceneInstance && GetReferenceState() == State.ReferenceUnloaded;
+
             public bool isAsset => !isSceneInstance;
 
             public bool isReferenced => GetReferenceState() == State.Referenced;
@@ -252,7 +254,7 @@ namespace Gemserk
 
         public void SetSelection(Object obj)
         {
-            currentSelectionIndex = _history.FindIndex(e => e.Reference.Equals(obj));
+            currentSelectionIndex = _history.FindIndex(e => obj.Equals(e.Reference));
         }
 
         public void RemoveEntries(Entry.State state)
