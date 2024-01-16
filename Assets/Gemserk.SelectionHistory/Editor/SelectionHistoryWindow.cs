@@ -70,6 +70,39 @@ namespace Gemserk
             
             CreateMaxElements(selectionHistory, scroll);
             
+            var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
+            var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
+            
+            var clearButton = new Button(delegate
+            {
+                selectionHistory.Clear();
+                ReloadRoot();
+            }) {text = "Clear"};
+            
+            root.Add(clearButton);
+            
+            if (showUnloadedObjects)
+            {
+                var removeUnloadedButton = new Button(delegate
+                {
+                    selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceUnloaded);
+                    // ReloadRootAndRemoveUnloadedAndDuplicated();
+                    ReloadRoot();
+                }) {text = "Remove Unloaded"};
+                root.Add(removeUnloadedButton);
+            }
+            
+            if (showDestroyedObjects)
+            {
+                var removeDestroyedButton = new Button(delegate
+                {
+                    selectionHistory.RemoveEntries(SelectionHistory.Entry.State.ReferenceDestroyed);
+                    // ReloadRootAndRemoveUnloadedAndDuplicated();
+                    ReloadRoot();
+                }) {text = "Remove destroyed"};
+                root.Add(removeDestroyedButton);
+            }
+            
             ReloadRootAndRemoveUnloadedAndDuplicated();
             
             Selection.selectionChanged += OnSelectionChanged;
@@ -319,7 +352,8 @@ namespace Gemserk
             for (var i = 0; i < visualElements.Count; i++)
             {
                 var visualElement = visualElements[i];
-                var entry = selectionHistory.GetEntry(i);
+                
+                var entry = SelectionHistoryWindowUtils.OrderLastSelectedFirst ? selectionHistory.GetEntry(visualElements.Count - i) : selectionHistory.GetEntry(i);
                 
                 if (entry == null)
                 {
@@ -327,12 +361,51 @@ namespace Gemserk
                 }
                 else
                 {
+                    var isPrefabAsset = entry.isReferenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
+                    var isSceneAsset = entry.isReferenced && entry.isAsset && entry.reference is SceneAsset;
+                    
                     visualElement.style.display = DisplayStyle.Flex;
+                    
+                   // visualElement.ClearClassList();
+                    
+                    if (!entry.isReferenced)
+                    {
+                        visualElement.AddToClassList("unreferencedObject");
+                    }
+                    else if (entry.isSceneInstance)
+                    {
+                        visualElement.AddToClassList("sceneObject");
+                    }
+                    else
+                    {
+                        visualElement.AddToClassList("assetObject");
+                    }
                     
                     var label = visualElement.Q<Label>("Name");
                     if (label != null)
                     {
                         label.text = entry.GetName(true);
+                    }
+                    
+                    var icon = visualElement.Q<Image>("Icon");
+                    if (icon != null)
+                    {
+                        icon.image = AssetPreview.GetMiniThumbnail(entry.Reference);
+                    }
+                    
+                    var openPrefabIcon = visualElement.Q<Image>("OpenPrefabIcon");
+                    if (openPrefabIcon != null)
+                    {
+                        openPrefabIcon.ClearClassList();
+                        
+                        if (isPrefabAsset || isSceneAsset)
+                        {
+                            openPrefabIcon.RemoveFromClassList("hidden");
+                        }
+                        else
+                        {
+                            openPrefabIcon.AddToClassList("hidden");
+                        }
                     }
                 }
                 
