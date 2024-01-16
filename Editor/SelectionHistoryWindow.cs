@@ -18,6 +18,16 @@ namespace Gemserk
 
             return selectionHistory.History[index];
         }
+
+        public static bool IsSceneAsset(this SelectionHistory.Entry entry)
+        {
+            return entry.isReferenced && entry.isAsset && entry.reference is SceneAsset;
+        }
+
+        public static bool IsPrefabAsset(this SelectionHistory.Entry entry)
+        {
+            return entry.isReferenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
+        }
     }
     
     public class SelectionHistoryWindow : EditorWindow, IHasCustomMenu
@@ -157,7 +167,7 @@ namespace Gemserk
                 dragArea.RegisterCallback<MouseUpEvent>(evt =>
                 {
                     var entry = selectionHistory.GetEntry(historyIndex);
-                    if (entry == null)
+                    if (entry == null || !entry.isReferenced)
                     {
                         return;
                     }
@@ -208,21 +218,26 @@ namespace Gemserk
                         return;
                     }
                     
-                    var isPrefabAsset = entry.isReferenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
-                    var isSceneAsset = entry.isReferenced && entry.isAsset && entry.reference is SceneAsset;
-                    
                     if (evt.button == 0 && evt.clickCount == 2)
                     {
-                        if (isPrefabAsset)
+                        if (entry.IsPrefabAsset())
                         {
                             AssetDatabase.OpenAsset(entry.Reference);
                         }
-
-                        if (isSceneAsset)
+                        
+                        if (entry.IsSceneAsset())
                         {
                             if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                             {
                                 EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
+                            }
+                        }
+
+                        if (entry.isUnloadedHierarchyObject)
+                        {
+                            if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                            {
+                                EditorSceneManager.OpenScene(entry.scenePath);
                             }
                         }
                     }
@@ -258,17 +273,20 @@ namespace Gemserk
                         return;
                     }
                     
-                    var isPrefabAsset = entry.isReferenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
-                    var isSceneAsset = entry.isReferenced && entry.isAsset && entry.reference is SceneAsset;
-                    
-                    if (isPrefabAsset)
+                    if (entry.IsPrefabAsset())
                     {
                         AssetDatabase.OpenAsset(entry.Reference);
-                    } else if (isSceneAsset)
+                    } else if (entry.IsSceneAsset())
                     {
                         if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                         {
                             EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
+                        }
+                    } else if (entry.isUnloadedHierarchyObject)
+                    {
+                        if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                        {
+                            EditorSceneManager.OpenScene(entry.scenePath);
                         }
                     }
                 });
@@ -417,7 +435,7 @@ namespace Gemserk
                     {
                         openPrefabIcon.ClearClassList();
                         
-                        if (isPrefabAsset || isSceneAsset)
+                        if (isPrefabAsset || isSceneAsset || entry.isUnloadedHierarchyObject)
                         {
                             openPrefabIcon.RemoveFromClassList("hidden");
                         }
