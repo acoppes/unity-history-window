@@ -1,3 +1,7 @@
+# 1.2.0
+
+* Multiple internal changes to improve window performance (use with caution).
+
 # 1.1.19
 
 * Don't record selection changes while selection history window is closed (no need for focus). Optional background selection changes recording too.
