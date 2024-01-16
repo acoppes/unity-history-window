@@ -8,6 +8,26 @@ using UnityEngine.UIElements;
 
 namespace Gemserk
 {
+    public static class SelectionHistoryWindowExtensions
+    {
+        public static SelectionHistory.Entry GetEntry(this SelectionHistory selectionHistory, int index)
+        {
+            var orderedIndex = index;
+            
+            // if (SelectionHistoryWindowUtils.OrderLastSelectedFirst)
+            // {
+            //     orderedIndex = selectionHistory.historySize - index - 1;
+            // }
+            
+            if (orderedIndex < 0 || orderedIndex >= selectionHistory.History.Count)
+            {
+                return null;
+            }
+
+            return selectionHistory.History[orderedIndex];
+        }
+    }
+    
     public class SelectionHistoryWindow : EditorWindow, IHasCustomMenu
     {
         [MenuItem("Window/Gemserk/Selection History %#h")]
@@ -26,6 +46,7 @@ namespace Gemserk
 
         private SelectionHistory selectionHistory;
 
+        private ScrollView mainScrollElement;
         private List<VisualElement> visualElements = new List<VisualElement>();
         
         private void OnDisable()
@@ -61,14 +82,14 @@ namespace Gemserk
                 ReloadRootAndRemoveUnloadedAndDuplicated();
             };
             
-            var scroll = new ScrollView(ScrollViewMode.Vertical)
+            mainScrollElement = new ScrollView(ScrollViewMode.Vertical)
             {
                 name = "MainScroll"
             };
             
-            root.Add(scroll);
+            root.Add(mainScrollElement);
             
-            CreateMaxElements(selectionHistory, scroll);
+            CreateMaxElements(selectionHistory, mainScrollElement);
             
             var showUnloadedObjects = SelectionHistoryWindowUtils.ShowUnloadedObjects;
             var showDestroyedObjects = SelectionHistoryWindowUtils.ShowDestroyedObjects;
@@ -80,6 +101,14 @@ namespace Gemserk
             }) {text = "Clear"};
             
             root.Add(clearButton);
+            
+            // this is just for development
+            var refreshButton = new Button(delegate
+            {
+                ReloadRoot();
+            }) {text = "Refresh (dev)"};
+            
+            root.Add(refreshButton);
             
             if (showUnloadedObjects)
             {
@@ -234,6 +263,11 @@ namespace Gemserk
                 openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
                 {
                     var entry = selectionHistory.GetEntry(historyIndex);
+
+                    if (entry == null)
+                    {
+                        return;
+                    }
                     
                     var isPrefabAsset = entry.isReferenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
                     var isSceneAsset = entry.isReferenced && entry.isAsset && entry.reference is SceneAsset;
@@ -253,37 +287,47 @@ namespace Gemserk
 
             // if (SelectionHistoryWindowUtils.ShowFavoriteButton)
             // {
-            //     var entry = selectionHistory.GetEntry(historyIndex);
-            //     
-            //     if (entry.isAsset && entry.isReferenced)
-            //     {
-            //         var favoriteAsset = elementTree.Q<Image>("Favorite");
-            //         if (favoriteAsset != null)
-            //         {
-            //             var isFavorite = FavoritesController.Favorites.IsFavorite(entry.Reference);
-            //             // favoriteEmptyIconName
-            //             favoriteAsset.image = isFavorite
-            //                 ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
-            //                 : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
-            //             favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
-            //             {
-            //                 if (FavoritesController.Favorites.IsFavorite(entry.Reference))
-            //                 {
-            //                     FavoritesController.Favorites.RemoveFavorite(entry.Reference);
-            //                 } else
-            //                 {
-            //                     FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
-            //                     {
-            //                         reference = entry.Reference
-            //                     });
-            //                 }
-            //                 
-            //                 ReloadRootAndRemoveUnloadedAndDuplicated();
-            //             });
-            //         }
-            //     }
+            //
             // }
 
+            var favoriteAsset = elementTree.Q<Image>("Favorite");
+            if (favoriteAsset != null)
+            {
+                // var entry = selectionHistory.GetEntry(historyIndex);
+                //
+                // if (entry.isAsset && entry.isReferenced)
+                // {
+                //
+                // }
+                //
+                // var isFavorite = FavoritesController.Favorites.IsFavorite(entry.Reference);
+                // // favoriteEmptyIconName
+                // favoriteAsset.image = isFavorite
+                //     ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
+                //     : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
+                    
+                favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
+                {
+                    var entry = selectionHistory.GetEntry(historyIndex);
+
+                    if (entry == null)
+                        return;
+                        
+                    if (FavoritesController.Favorites.IsFavorite(entry.Reference))
+                    {
+                        FavoritesController.Favorites.RemoveFavorite(entry.Reference);
+                    } else
+                    {
+                        FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
+                        {
+                            reference = entry.Reference
+                        });
+                    }
+                            
+                    ReloadRootAndRemoveUnloadedAndDuplicated();
+                });
+            }
+            
             // Do this in update?
             
             // var label = elementTree.Q<Label>("Name");
@@ -349,11 +393,17 @@ namespace Gemserk
 
         private void ReloadRoot()
         {
+            if (mainScrollElement != null)
+            {
+                mainScrollElement.contentContainer.style.flexDirection = SelectionHistoryWindowUtils.OrderLastSelectedFirst ? FlexDirection.ColumnReverse : FlexDirection.Column;
+            }
+            
             for (var i = 0; i < visualElements.Count; i++)
             {
-                var visualElement = visualElements[i];
+                // var visualElement = SelectionHistoryWindowUtils.OrderLastSelectedFirst ? visualElements[visualElements.Count - i - 1] : visualElements[i];
                 
-                var entry = SelectionHistoryWindowUtils.OrderLastSelectedFirst ? selectionHistory.GetEntry(visualElements.Count - i) : selectionHistory.GetEntry(i);
+                var visualElement = visualElements[i];
+                var entry = selectionHistory.GetEntry(i);
                 
                 if (entry == null)
                 {
@@ -406,6 +456,22 @@ namespace Gemserk
                         {
                             openPrefabIcon.AddToClassList("hidden");
                         }
+                    }
+                    
+                    var favoriteAsset = visualElement.Q<Image>("Favorite");
+                    if (!SelectionHistoryWindowUtils.ShowFavoriteButton)
+                    {
+                        favoriteAsset.style.display = DisplayStyle.None;
+                    }
+                    else
+                    {
+                        favoriteAsset.style.display = DisplayStyle.Flex;
+                        
+                        var isFavorite = FavoritesController.Favorites.IsFavorite(entry.Reference);
+                        
+                        favoriteAsset.image = isFavorite
+                            ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
+                            : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
                     }
                 }
                 

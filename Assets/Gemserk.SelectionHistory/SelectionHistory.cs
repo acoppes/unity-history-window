@@ -294,15 +294,5 @@ namespace Gemserk
                 currentSelectionIndex = _history.Count - 1;
         
         }
-
-        public Entry GetEntry(int index)
-        {
-            if (index < 0 || index >= _history.Count)
-            {
-                return null;
-            }
-
-            return _history[index];
-        }
     }
 }
