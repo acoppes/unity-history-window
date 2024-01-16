@@ -1,6 +1,6 @@
 # 1.2.0
 
-* Multiple internal changes to improve window performance (use with caution).
+* Huge window performance improvements (use with caution) by caching all visual elements instead of regenerating the window all the time (my bad there, should've done this when I migrated to use UIElements the first time)
 
 # 1.1.19
 
