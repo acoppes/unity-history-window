@@ -25,6 +25,8 @@ namespace Gemserk
         public VisualTreeAsset historyElementViewTree;
 
         private SelectionHistory selectionHistory;
+
+        private List<VisualElement> visualElements = new List<VisualElement>();
         
         private void OnDisable()
         {
@@ -58,10 +60,206 @@ namespace Gemserk
             {
                 ReloadRootAndRemoveUnloadedAndDuplicated();
             };
-
+            
+            var scroll = new ScrollView(ScrollViewMode.Vertical)
+            {
+                name = "MainScroll"
+            };
+            
+            root.Add(scroll);
+            
+            CreateMaxElements(selectionHistory, scroll);
+            
             ReloadRootAndRemoveUnloadedAndDuplicated();
             
             Selection.selectionChanged += OnSelectionChanged;
+        }
+
+        private void CreateMaxElements(SelectionHistory selectionHistory, VisualElement parent)
+        {
+            var size = selectionHistory.historySize;
+
+            for (int i = 0; i < size; i++)
+            {
+                var elementTree = CreateHistoryVisualElement(i);
+                parent.Add(elementTree);
+                
+                visualElements.Add(elementTree);
+            }
+        }
+
+        private VisualElement CreateHistoryVisualElement(int index)
+        {
+            var elementTree = historyElementViewTree.CloneTree();
+            var historyIndex = index;
+            
+            var dragArea = elementTree.Q<VisualElement>("DragArea");
+            if (dragArea != null)
+            {
+                dragArea.RegisterCallback<MouseUpEvent>(evt =>
+                {
+                    var entry = selectionHistory.GetEntry(historyIndex);
+                    if (entry == null)
+                    {
+                        return;
+                    }
+                    
+                    if (evt.button == 0)
+                    {
+                        selectionHistory.SetSelection(entry.Reference);
+                        Selection.activeObject = entry.Reference;
+                    }
+                    else
+                    {
+                        SelectionHistoryWindowUtils.PingEntry(entry);
+                    }
+                });
+                dragArea.RegisterCallback<MouseDownEvent>(evt =>
+                {
+                    var entry = selectionHistory.GetEntry(historyIndex);
+                    if (entry == null)
+                    {
+                        return;
+                    }
+                    
+                    if (evt.button == 0 && evt.modifiers.HasFlag(EventModifiers.Alt))
+                    {
+                        DragAndDrop.PrepareStartDrag();
+
+                        var objectReferences = new[] { entry.Reference };
+                        DragAndDrop.paths = new[]
+                        {
+                            AssetDatabase.GetAssetPath(entry.Reference)
+                        };
+
+                        DragAndDrop.objectReferences = objectReferences;
+                        DragAndDrop.StartDrag(ObjectNames.GetDragAndDropTitle(entry.Reference));
+                    }
+                });
+
+                dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
+                {
+                    DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+                });
+
+                dragArea.RegisterCallback<PointerDownEvent>(evt =>
+                {
+                    var entry = selectionHistory.GetEntry(historyIndex);
+                    if (entry == null)
+                    {
+                        return;
+                    }
+                    
+                    var isPrefabAsset = entry.isReferenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
+                    var isSceneAsset = entry.isReferenced && entry.isAsset && entry.reference is SceneAsset;
+                    
+                    if (evt.button == 0 && evt.clickCount == 2)
+                    {
+                        if (isPrefabAsset)
+                        {
+                            AssetDatabase.OpenAsset(entry.Reference);
+                        }
+
+                        if (isSceneAsset)
+                        {
+                            if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                            {
+                                EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
+                            }
+                        }
+                    }
+                });
+            }
+            
+            var pingIcon = elementTree.Q<Image>("PingIcon");
+            if (pingIcon != null)
+            {
+                pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
+                pingIcon.RegisterCallback(delegate(MouseUpEvent e)
+                {
+                    var entry = selectionHistory.GetEntry(historyIndex);
+                    if (entry == null)
+                    {
+                        return;
+                    }
+                    SelectionHistoryWindowUtils.PingEntry(entry);
+                });
+            }
+            
+            var openPrefabIcon = elementTree.Q<Image>("OpenPrefabIcon");
+            if (openPrefabIcon != null)
+            {
+                openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openPrefabIconName).image;
+
+                // This should be done in update
+                
+                // if (isPrefabAsset || isSceneAsset)
+                // {
+                //     openPrefabIcon.RemoveFromClassList("hidden");
+                // }
+                    
+                openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
+                {
+                    var entry = selectionHistory.GetEntry(historyIndex);
+                    
+                    var isPrefabAsset = entry.isReferenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
+                    var isSceneAsset = entry.isReferenced && entry.isAsset && entry.reference is SceneAsset;
+                    
+                    if (isPrefabAsset)
+                    {
+                        AssetDatabase.OpenAsset(entry.Reference);
+                    } else if (isSceneAsset)
+                    {
+                        if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                        {
+                            EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
+                        }
+                    }
+                });
+            }
+
+            // if (SelectionHistoryWindowUtils.ShowFavoriteButton)
+            // {
+            //     var entry = selectionHistory.GetEntry(historyIndex);
+            //     
+            //     if (entry.isAsset && entry.isReferenced)
+            //     {
+            //         var favoriteAsset = elementTree.Q<Image>("Favorite");
+            //         if (favoriteAsset != null)
+            //         {
+            //             var isFavorite = FavoritesController.Favorites.IsFavorite(entry.Reference);
+            //             // favoriteEmptyIconName
+            //             favoriteAsset.image = isFavorite
+            //                 ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image
+            //                 : EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteEmptyIconName).image;
+            //             favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
+            //             {
+            //                 if (FavoritesController.Favorites.IsFavorite(entry.Reference))
+            //                 {
+            //                     FavoritesController.Favorites.RemoveFavorite(entry.Reference);
+            //                 } else
+            //                 {
+            //                     FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
+            //                     {
+            //                         reference = entry.Reference
+            //                     });
+            //                 }
+            //                 
+            //                 ReloadRootAndRemoveUnloadedAndDuplicated();
+            //             });
+            //         }
+            //     }
+            // }
+
+            // Do this in update?
+            
+            // var label = elementTree.Q<Label>("Name");
+            // if (label != null)
+            // {
+            //     label.text = entry.GetName(true);
+            // }
+
+            return elementTree;
         }
 
         private void OnSelectionChanged()
@@ -118,6 +316,33 @@ namespace Gemserk
 
         private void ReloadRoot()
         {
+            for (var i = 0; i < visualElements.Count; i++)
+            {
+                var visualElement = visualElements[i];
+                var entry = selectionHistory.GetEntry(i);
+                
+                if (entry == null)
+                {
+                    visualElement.style.display = DisplayStyle.None;
+                }
+                else
+                {
+                    visualElement.style.display = DisplayStyle.Flex;
+                    
+                    var label = visualElement.Q<Label>("Name");
+                    if (label != null)
+                    {
+                        label.text = entry.GetName(true);
+                    }
+                }
+                
+                // now update values
+                
+                // depending configuration, hide elements
+            }
+
+            return;
+            
             var root = rootVisualElement;
             
             root.Clear();
