@@ -6,8 +6,7 @@ using Object = UnityEngine.Object;
 
 namespace Gemserk
 {
-    [CreateAssetMenu(menuName = "Gemserk/Favorites Asset")]
-    public class Favorites : ScriptableObject
+    public class FavoritesAsset : ScriptableObject
     {
         [Serializable]
         public class Favorite
@@ -15,7 +14,7 @@ namespace Gemserk
             public Object reference;
         }
     
-        public event Action<Favorites> OnFavoritesUpdated;
+        public event Action<FavoritesAsset> OnFavoritesUpdated;
 
         public List<Favorite> favoritesList = new List<Favorite>();
 

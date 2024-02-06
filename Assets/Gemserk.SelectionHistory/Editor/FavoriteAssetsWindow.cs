@@ -46,7 +46,7 @@ namespace Gemserk
             
                 if (CanBeFavorite(reference))
                 {
-                    favorites.AddFavorite(new Favorites.Favorite
+                    favorites.AddFavorite(new FavoritesAsset.Favorite
                     {
                         reference = reference
                     });   
@@ -54,7 +54,7 @@ namespace Gemserk
             }
         }
 
-        private Favorites _favorites;
+        private FavoritesAsset _favorites;
 
         public StyleSheet styleSheet;
 
@@ -90,7 +90,7 @@ namespace Gemserk
             ReloadRoot();
         }
 
-        private void OnFavoritesUpdated(Favorites favorites)
+        private void OnFavoritesUpdated(FavoritesAsset favorites)
         {
             var root = rootVisualElement;
             root.Clear();
