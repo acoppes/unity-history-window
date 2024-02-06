@@ -72,7 +72,7 @@ namespace Gemserk
             //EditorSceneManager.sceneClosed += OnSceneClosed;
             EditorSceneManager.sceneOpened += OnSceneOpened;
             
-            selectionHistory = SelectionHistoryReference.SelectionHistory;
+            selectionHistory = SelectionHistoryAsset.instance.selectionHistory;
             
             if (selectionHistory != null)
             {
@@ -307,7 +307,7 @@ namespace Gemserk
                         FavoritesController.Favorites.RemoveFavorite(entry.Reference);
                     } else
                     {
-                        FavoritesController.Favorites.AddFavorite(new Favorites.Favorite
+                        FavoritesController.Favorites.AddFavorite(new FavoritesAsset.Favorite
                         {
                             reference = entry.Reference
                         });

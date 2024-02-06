@@ -5,9 +5,9 @@ namespace Gemserk
 {
     public class FavoritesController
     {
-        private static Favorites _favoritesInstance;
+        private static FavoritesAsset _favoritesInstance;
     
-        public static Favorites Favorites
+        public static FavoritesAsset Favorites
         {
             get
             {
@@ -15,11 +15,11 @@ namespace Gemserk
                 {
                     var assetPath = "Assets/Gemserk.Favorites.asset";
                     
-                    _favoritesInstance = AssetDatabase.LoadAssetAtPath<Favorites>(assetPath);
+                    _favoritesInstance = AssetDatabase.LoadAssetAtPath<FavoritesAsset>(assetPath);
                     
                     if (_favoritesInstance == null)
                     {
-                        _favoritesInstance = ScriptableObject.CreateInstance<Favorites>();
+                        _favoritesInstance = ScriptableObject.CreateInstance<FavoritesAsset>();
                         AssetDatabase.CreateAsset(_favoritesInstance, assetPath);
                         AssetDatabase.SaveAssets();
                     }
@@ -31,7 +31,7 @@ namespace Gemserk
             }
         }
 
-        private static void OnFavoritesUpdated(Favorites favorites)
+        private static void OnFavoritesUpdated(FavoritesAsset favorites)
         {
             EditorUtility.SetDirty(favorites);
             AssetDatabase.SaveAssets();

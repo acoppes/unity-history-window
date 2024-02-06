@@ -60,7 +60,7 @@ namespace Gemserk
 				    return;
 			    }
 
-			    var selectionHistory = SelectionHistoryReference.SelectionHistory;
+			    var selectionHistory = SelectionHistoryAsset.instance.selectionHistory;
 			    selectionHistory.UpdateSelection(Selection.activeObject);
 		    }
 	    }
@@ -69,7 +69,7 @@ namespace Gemserk
 	    [Shortcut("Selection History/Previous Selection")]
 	    public static void PreviousSelection()
 	    {
-		    var selectionHistory = SelectionHistoryReference.SelectionHistory;
+		    var selectionHistory = SelectionHistoryAsset.instance.selectionHistory;
 		    selectionHistory.Previous ();
 		    Selection.activeObject = selectionHistory.GetSelection ();
 	    }
@@ -78,7 +78,7 @@ namespace Gemserk
 	    [Shortcut("Selection History/Next Selection")]
 	    public static void NextSelection()
 	    {
-		    var selectionHistory = SelectionHistoryReference.SelectionHistory;
+		    var selectionHistory = SelectionHistoryAsset.instance.selectionHistory;
 		    selectionHistory.Next();
 		    Selection.activeObject = selectionHistory.GetSelection ();
 	    }

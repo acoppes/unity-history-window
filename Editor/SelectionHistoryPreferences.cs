@@ -25,7 +25,7 @@ namespace Gemserk {
                 label = "Selection History",
                 guiHandler = (searchContext) =>
                 {
-                    var selectionHistory = SelectionHistoryReference.SelectionHistory;
+                    var selectionHistory = SelectionHistoryAsset.instance.selectionHistory;
                     
                     if (!prefsLoaded) {
                        // historySize = EditorPrefs.GetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, defaultHistorySize);
@@ -64,11 +64,8 @@ namespace Gemserk {
                         // {
                         //     window.ReloadRootAndRemoveUnloadedAndDuplicated();
                         // }
-                        
-                        if (SelectionHistoryReference.asset != null)
-                        {
-                            EditorUtility.SetDirty(SelectionHistoryReference.asset);
-                        }
+
+                        SelectionHistoryAsset.instance.ForceSave();
                     }
                 },
 

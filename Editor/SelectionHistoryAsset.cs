@@ -1,12 +1,14 @@
+using UnityEditor;
 using UnityEngine;
 
 namespace Gemserk
 {
-    public class SelectionHistoryAsset : ScriptableObject
+    [FilePath("Gemserk/Gemserk.SelectionHistory.asset", FilePathAttribute.Location.ProjectFolder)]
+    public class SelectionHistoryAsset : ScriptableSingleton<SelectionHistoryAsset>
     {
+        [SerializeField]
         public SelectionHistory selectionHistory = new SelectionHistory();
-
-#if UNITY_EDITOR
+        
         private void OnEnable()
         {
             if (selectionHistory != null)
@@ -25,8 +27,14 @@ namespace Gemserk
 
         private void OnNewEntryAdded(SelectionHistory obj)
         {
-            UnityEditor.EditorUtility.SetDirty(this);
+            // EditorUtility.SetDirty(this);
+            Save(true);
+            // Debug.Log("Saved to: " + GetFilePath());
         }
-#endif
+
+        public void ForceSave()
+        {
+            Save(true);
+        }
     }
 }
