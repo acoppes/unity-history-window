@@ -79,7 +79,7 @@ namespace Gemserk
                 selectionHistory.OnNewEntryAdded += OnHistoryEntryAdded;
             }
 
-            FavoritesController.Favorites.OnFavoritesUpdated += delegate
+            FavoritesAsset.instance.OnFavoritesUpdated += delegate
             {
                 ReloadRootAndRemoveUnloadedAndDuplicated();
             };
@@ -302,12 +302,12 @@ namespace Gemserk
                     if (entry == null)
                         return;
                         
-                    if (FavoritesController.Favorites.IsFavorite(entry.Reference))
+                    if (FavoritesAsset.instance.IsFavorite(entry.Reference))
                     {
-                        FavoritesController.Favorites.RemoveFavorite(entry.Reference);
+                        FavoritesAsset.instance.RemoveFavorite(entry.Reference);
                     } else
                     {
-                        FavoritesController.Favorites.AddFavorite(new FavoritesAsset.Favorite
+                        FavoritesAsset.instance.AddFavorite(new FavoritesAsset.Favorite
                         {
                             reference = entry.Reference
                         });
@@ -455,7 +455,7 @@ namespace Gemserk
                     {
                         favoriteAsset.style.display = DisplayStyle.Flex;
                         
-                        var isFavorite = FavoritesController.Favorites.IsFavorite(entry.Reference);
+                        var isFavorite = FavoritesAsset.instance.IsFavorite(entry.Reference);
                         
                         favoriteAsset.image = isFavorite
                             ? EditorGUIUtility.IconContent(UnityBuiltInIcons.favoriteIconName).image

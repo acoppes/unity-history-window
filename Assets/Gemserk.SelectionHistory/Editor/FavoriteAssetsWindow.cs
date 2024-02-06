@@ -37,7 +37,7 @@ namespace Gemserk
 
         private static void FavoriteElements(Object[] references)
         {
-            var favorites = FavoritesController.Favorites;
+            var favorites = FavoritesAsset.instance;
 
             foreach (var reference in references)
             {
@@ -70,7 +70,7 @@ namespace Gemserk
 
         public void OnEnable()
         {
-            _favorites = FavoritesController.Favorites;
+            _favorites = FavoritesAsset.instance;
             _favorites.OnFavoritesUpdated += OnFavoritesUpdated;
             
             var root = rootVisualElement;
@@ -193,7 +193,7 @@ namespace Gemserk
                     
                     removeIcon.RegisterCallback(delegate(MouseUpEvent e)
                     {
-                        FavoritesController.Favorites.RemoveFavorite(assetReference);
+                        FavoritesAsset.instance.RemoveFavorite(assetReference);
                     });
                 }
                 

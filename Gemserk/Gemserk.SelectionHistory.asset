@@ -15,23 +15,7 @@ MonoBehaviour:
   selectionHistory:
     historySize: 200
     _history:
-    - reference: {fileID: 11500000, guid: e46ed68ab8cd4db47a8b49d87ce68639, type: 3}
-      sceneName: 
-      scenePath: 
-      globalObjectId: 
     - reference: {fileID: 11400000, guid: 0e37008f9a6a8f8408e1cbcbd1482457, type: 2}
-      sceneName: 
-      scenePath: 
-      globalObjectId: 
-    - reference: {fileID: 102900000, guid: 90e93f7f9be371140b0194c9f963b5b5, type: 3}
-      sceneName: 
-      scenePath: 
-      globalObjectId: 
-    - reference: {fileID: 11400000, guid: 91257546a0af9c2429cc31f49e1f6d2b, type: 2}
-      sceneName: 
-      scenePath: 
-      globalObjectId: 
-    - reference: {fileID: 102900000, guid: 4a1a59f0b5083c04590c927442d6b9ff, type: 3}
       sceneName: 
       scenePath: 
       globalObjectId: 
@@ -39,11 +23,32 @@ MonoBehaviour:
       sceneName: 
       scenePath: 
       globalObjectId: 
+    - reference: {fileID: 102900000, guid: 2e3df5c93e75a9d448e37473f84ca254, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
     - reference: {fileID: 102900000, guid: 794083f634975ac4ab06771d1eee8fda, type: 3}
       sceneName: 
       scenePath: 
       globalObjectId: 
-    - reference: {fileID: 11400000, guid: 91257546a0af9c2429cc31f49e1f6d2b, type: 2}
+    - reference: {fileID: 11500000, guid: ef8520c372cd21045bb452e116ea0664, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 5897886265953266890, guid: 8685a1b89c0783d4da3f517cac3e0b69,
+        type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 11500000, guid: 24e338debb5bca243b30e98fa8391682, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 11500000, guid: 1cacb32cef264c72b2e0f5f2412f9736, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 11500000, guid: 76094f091f1f4b07bb27fd8667a16406, type: 3}
       sceneName: 
       scenePath: 
       globalObjectId: 
