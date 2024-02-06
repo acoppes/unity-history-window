@@ -28,12 +28,6 @@ namespace Gemserk
             Save(true);
         }
 
-        public void ClearUnreferenced()
-        {
-            favoritesList.RemoveAll(f => f.reference == null);
-            Save(true);
-        }
-
         public bool IsFavorite(Object reference)
         {
             return favoritesList.Count(f => f.reference == reference) > 0;
