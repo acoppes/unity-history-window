@@ -1,3 +1,9 @@
+# 1.3.0
+
+* Moved asset type declaration to editor assembly now they use ScriptableSingleton, changed to use ScriptableSingleton for selection history to avoid issues creating the asset the first time. Had to change min unity version to 2020.x in order to use this new API.
+* Changed min unity version to 2020.1.1f1.
+* Changed default path for SelectionHistory and Favorites assets (so previously stored values will be lost with this update), also remember to update .gitignore (or similar) in order to ignore.
+
 # 1.2.0
 
 * Huge window performance improvements (use with caution) by caching all visual elements instead of regenerating the window all the time (my bad there, should've done this when I migrated to use UIElements the first time)
