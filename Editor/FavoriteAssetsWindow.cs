@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.ShortcutManagement;
@@ -56,7 +57,7 @@ namespace Gemserk
 
         private FavoritesAsset _favorites;
 
-        public StyleSheet styleSheet;
+        private StyleSheet styleSheet;
 
         public VisualTreeAsset searchToolbarViewTree;
         public VisualTreeAsset favoriteElementTreeAsset;
@@ -75,6 +76,9 @@ namespace Gemserk
 
         public void OnEnable()
         {
+            styleSheet = AssetDatabaseExt.FindAssets(typeof(StyleSheet), "SelectionHistoryStylesheet")
+                .OfType<StyleSheet>().FirstOrDefault();
+            
             _favorites = FavoritesAsset.instance;
             _favorites.OnFavoritesUpdated += OnFavoritesUpdated;
             
