@@ -6,7 +6,7 @@
     xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
 >
     
-    <engine:VisualElement class="favorite">
+    <engine:VisualElement class="favorite" name="Root">
         <engine:VisualElement name="DragArea">
             <engine:Label text="default" name="Favorite"/>
             <engine:Image name="Icon" />    

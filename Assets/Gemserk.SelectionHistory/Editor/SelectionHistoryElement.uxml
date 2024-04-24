@@ -6,7 +6,7 @@
     xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
 >
     
-    <engine:VisualElement class="history">
+    <engine:VisualElement class="history" name="Root">
         <engine:VisualElement name="DragArea">
             <engine:Label text="default" name="Name"/>
             <engine:Image name="Icon" />    

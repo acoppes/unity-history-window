@@ -199,7 +199,8 @@ namespace Gemserk
                 }
                 
                 var elementTree = favoriteElementTreeAsset.CloneTree();
-
+                var favoriteRoot = elementTree.Q<VisualElement>("Root");
+                
                 var dragArea = elementTree.Q<VisualElement>("DragArea");
                 
                 var isPrefabAsset = PrefabUtility.IsPartOfPrefabAsset(assetReference);
@@ -314,7 +315,7 @@ namespace Gemserk
                     label.text = assetReference.name;
                 }
 
-                favoritesParent.Add(elementTree);
+                favoritesParent.Add(favoriteRoot);
             }
 
             var receiveDragArea = new VisualElement();

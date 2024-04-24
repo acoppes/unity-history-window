@@ -205,9 +205,11 @@ namespace Gemserk
         private VisualElement CreateHistoryVisualElement(int index)
         {
             var elementTree = historyElementViewTree.CloneTree();
+            var selectionElementRoot = elementTree.Q<VisualElement>("Root");
+            
             var historyIndex = index;
             
-            var dragArea = elementTree.Q<VisualElement>("DragArea");
+            var dragArea = selectionElementRoot.Q<VisualElement>("DragArea");
             if (dragArea != null)
             {
                 dragArea.RegisterCallback<MouseUpEvent>(evt =>
@@ -290,7 +292,7 @@ namespace Gemserk
                 });
             }
             
-            var pingIcon = elementTree.Q<Image>("PingIcon");
+            var pingIcon = selectionElementRoot.Q<Image>("PingIcon");
             if (pingIcon != null)
             {
                 pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
@@ -305,7 +307,7 @@ namespace Gemserk
                 });
             }
             
-            var openPrefabIcon = elementTree.Q<Image>("OpenPrefabIcon");
+            var openPrefabIcon = selectionElementRoot.Q<Image>("OpenPrefabIcon");
             if (openPrefabIcon != null)
             {
                 openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openPrefabIconName).image;
@@ -338,7 +340,7 @@ namespace Gemserk
                 });
             }
 
-            var favoriteAsset = elementTree.Q<Image>("Favorite");
+            var favoriteAsset = selectionElementRoot.Q<Image>("Favorite");
             if (favoriteAsset != null)
             {
                 favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
@@ -363,7 +365,7 @@ namespace Gemserk
                 });
             }
 
-            return elementTree;
+            return selectionElementRoot;
         }
 
         private void OnSelectionChanged()
@@ -475,7 +477,14 @@ namespace Gemserk
                     
                     visualElement.style.display = DisplayStyle.Flex;
                     
-                    visualElement.ClearClassList();
+                    // since now I am using the root element, remove each specific class to avoid
+                    // losing the base ones defined in the uxml file.
+                    
+                    visualElement.RemoveFromClassList("unreferencedObject");
+                    visualElement.RemoveFromClassList("sceneObject");
+                    visualElement.RemoveFromClassList("assetObject");
+
+                    // visualElement.AddToClassList("history");
                     
                     if (!entry.isReferenced)
                     {
