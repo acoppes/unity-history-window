@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -44,6 +45,7 @@ namespace Gemserk
         
         public StyleSheet styleSheet;
 
+        public VisualTreeAsset searchToolbarViewTree;
         public VisualTreeAsset historyElementViewTree;
 
         private SelectionHistory selectionHistory;
@@ -53,6 +55,8 @@ namespace Gemserk
 
         private Button removeUnloadedButton;
         private Button removeDestroyedButton;
+
+        private string searchText;
 
         private void OnDisable()
         {
@@ -100,6 +104,8 @@ namespace Gemserk
             root.Clear();
             
             visualElements.Clear();
+
+            root.Add(CreateSearchToolbar());
             
             mainScrollElement = new ScrollView(ScrollViewMode.Vertical)
             {
@@ -154,6 +160,38 @@ namespace Gemserk
                 
                 visualElements.Add(elementTree);
             }
+        }
+
+        private VisualElement CreateSearchToolbar()
+        {
+            var elementTree = searchToolbarViewTree.CloneTree();
+
+            var textField = elementTree.Q<TextField>("Search");
+            textField.RegisterValueChangedCallback(delegate(ChangeEvent<string> change)
+            {
+                // set current view elements filter
+                // Debug.Log("new filter " + change.newValue);
+                searchText = change.newValue;
+                ReloadRoot();
+            });
+
+            var icon = elementTree.Q<Image>("Icon");
+            if (icon != null)
+            {
+                icon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
+            }
+            
+            var clearIcon = elementTree.Q<Image>("Clear");
+            if (clearIcon != null)
+            {
+                clearIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.clearSearchToolbarIconName).image;
+                clearIcon.RegisterCallback(delegate(MouseUpEvent e)
+                {
+                    textField.value = "";
+                });
+            }
+            
+            return elementTree;
         }
 
         private VisualElement CreateHistoryVisualElement(int index)
@@ -380,6 +418,16 @@ namespace Gemserk
                 removeDestroyedButton.style.display = showDestroyedObjects ? DisplayStyle.Flex : DisplayStyle.None;
             }
             
+            string[] searchTexts = null;
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                searchText = searchText.TrimStart().TrimEnd();
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    searchTexts = searchText.Split(' ');
+                }
+            }
+            
             for (var i = 0; i < visualElements.Count; i++)
             {
                 var visualElement = visualElements[i];
@@ -391,6 +439,27 @@ namespace Gemserk
                 }
                 else
                 {
+                    var testName = entry.GetName(false).ToLower();
+                    
+                    if (searchTexts != null && searchTexts.Length > 0)
+                    {
+                        var match = true;
+                        
+                        foreach (var text in searchTexts)
+                        {
+                            if (!testName.Contains(text.ToLower()))
+                            {
+                                match = false;
+                            }
+                        }
+
+                        if (!match)
+                        {
+                            visualElement.style.display = DisplayStyle.None;
+                            continue;
+                        }
+                    }
+                    
                     currentEntry = i;
                     
                     var isPrefabAsset = entry.isReferenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
@@ -518,6 +587,11 @@ namespace Gemserk
             menu.AddItem(new GUIContent("Open preferences"), false, delegate
             {
                 SettingsService.OpenUserPreferences("Selection History");
+            });
+            
+            menu.AddItem(new GUIContent("Reload UI"), false, delegate
+            {
+                RegenerateUI();
             });
         }
 

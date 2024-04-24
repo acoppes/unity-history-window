@@ -99,6 +99,29 @@
     /* align-self: flex-end; */
 }
 
+.searchToolbar #Search {
+    margin-left: 30px;
+    margin-right: 5px;
+    flex-grow: 1;
+}
+
+.searchToolbar #Clear {
+    margin-top: 3px;
+    max-width: 16px;
+    max-height: 16px;
+    right: 10px;
+    position: absolute;
+}
+
+.searchToolbar #Icon {
+    margin-top: 3px;
+    max-width: 16px;
+    max-height: 16px;
+    left: 10px;
+    position: absolute;
+}
+
+
 .hidden {
     display:none;
 }
