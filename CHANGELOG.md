@@ -1,3 +1,8 @@
+# 1.4.2
+
+* Fixed wrong margin in uss file for search toolbar.
+* Changed to use the root object from the cloned template container instead of the template container itself for both the history element and the favorite element.
+
 # 1.4.1
 
 * Fixed to clone search bar element and not the template, to fix an issue with searchbar hidden from scroll elements.
