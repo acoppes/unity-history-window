@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -43,7 +44,7 @@ namespace Gemserk
             window.titleContent = titleContent;
         }
         
-        public StyleSheet styleSheet;
+        private StyleSheet styleSheet;
 
         public VisualTreeAsset searchToolbarViewTree;
         public VisualTreeAsset historyElementViewTree;
@@ -73,7 +74,16 @@ namespace Gemserk
 
         public void OnEnable()
         {
+        // public StyleSheet styleSheet;
+        //
+        // public VisualTreeAsset searchToolbarViewTree;
+        // public VisualTreeAsset historyElementViewTree;
+            
             //EditorSceneManager.sceneClosed += OnSceneClosed;
+
+            styleSheet = AssetDatabaseExt.FindAssets(typeof(StyleSheet), "SelectionHistoryStylesheet")
+                .OfType<StyleSheet>().FirstOrDefault();
+            
             EditorSceneManager.sceneOpened += OnSceneOpened;
             
             selectionHistory = SelectionHistoryAsset.instance.selectionHistory;
