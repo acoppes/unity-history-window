@@ -8,31 +8,6 @@ This plugin keeps a history of selected objects in Unity. It comes with a [windo
 <img src="screenshots/demo.gif" width="500" />
 <br/>
 
-### Install it from OpenUPM
-
-This package can be installed using OpenUPM, just click here [![openupm](https://img.shields.io/npm/v/com.gemserk.selectionhistory?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.gemserk.selectionhistory/) for more details.
-
-### Install from Git URL
-
-You can also install it by opening Unity Package Manager and selecting add package from git URL and add this `https://github.com/acoppes/unity-history-window.git#1.1.13` (check [tags](https://github.com/acoppes/unity-history-window/tags) for the latest version), Or add it manually to the `manifest.json`. Check the latest released version.
-
-After installing it, open it from the menu Window > Gemserk > Selection History, or with shortcut Ctrl + Shift + H. 
-
-### Features
-
-* Stores history of selected objects (custom count), both assets and scene objects (optional)
-* Drag objects from the window to Scene, Hierarchy, Project or Inspector **(alt/option key pressed)**
-* Keeps tracks for selection from unloaded scenes (optional)
-* Select **(left click)** or ping/focus objects without losing selection **(right click)**.
-* Quick menu options to customize behavior.
-* Favorite items to [Favorites window](#favorites-window) (optional)
-
-### Roadmap
-
-* Add more icons to show visually actions like ping, select and drag.
-
-As extra, it comes with a [another window](#favorites-window) to keep track of a list of favorite assets and easily access them.
-
 **Dragging from window to inspector**
 
 <img src="screenshots/demodrag.gif" width="500" />
@@ -47,6 +22,30 @@ As extra, it comes with a [another window](#favorites-window) to keep track of a
 
 <img src="screenshots/history04.gif" width="500" />
 <br/>
+
+### Features
+
+* Easy to install by using OpenUPM package dependency.
+* Stores history of selected objects (custom number), both assets and scene objects (optional), and keep the history for other sessions.
+* Drag objects to/from the window to/from Scene, Hierarchy, Project or Inspector.
+* Keeps tracks for selection from unloaded scenes (optional)
+* Select **(left click)** or ping/focus objects without losing selection **(right click)**.
+* Quick menu options to customize behavior.
+* Favorite items to [Favorites window](#favorites-window) (optional)
+
+### Install it from OpenUPM
+
+This package can be installed using OpenUPM, just click here [![openupm](https://img.shields.io/npm/v/com.gemserk.selectionhistory?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.gemserk.selectionhistory/) for more details.
+
+*Note: recommended approach*
+
+### Install from Git URL
+
+You can also install it by opening Unity Package Manager and selecting add package from git URL and add this `https://github.com/acoppes/unity-history-window.git#1.1.13` (check [tags](https://github.com/acoppes/unity-history-window/tags) for the latest version), Or add it manually to the `manifest.json`. Check the latest released version.
+
+After installing it, open it from the menu Window > Gemserk > Selection History, or with shortcut Ctrl + Shift + H. 
+
+As extra, it comes with a [another window](#favorites-window) to keep track of a list of favorite assets and easily access them.
 
 ## Favorites Window
 
