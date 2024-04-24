@@ -223,7 +223,7 @@ namespace Gemserk
                     });
                     dragArea.RegisterCallback<MouseDownEvent>(evt =>
                     {
-                        if (evt.button == 0 && evt.modifiers.HasFlag(EventModifiers.Alt))
+                        if (evt.button == 0)
                         {
                             DragAndDrop.PrepareStartDrag();
 

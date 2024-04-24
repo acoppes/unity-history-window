@@ -1,3 +1,7 @@
+# 1.4.3
+
+* Fixed to drag with simple drag (no alt modifier) from Favorites Window as well.
+
 # 1.4.2
 
 * Fixed wrong margin in uss file for search toolbar.
