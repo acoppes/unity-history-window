@@ -1,3 +1,7 @@
+# 1.4.0
+
+* Added search toolbar for both history and favorites windows.
+
 # 1.3.1 
 
 * Reverted to use Drag from history window without having to use Alt modifier (was a fix/workaround for mac users but I suppose windows is more common for Unity devs)

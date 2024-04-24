@@ -7,9 +7,9 @@ MonoImporter:
   - m_ViewDataDictionary: {instanceID: 0}
   - styleSheet: {fileID: 7433441132597879392, guid: 51608abdc59297e44b306ea90947f75b,
       type: 3}
-  - favoriteElementTreeAsset: {fileID: 9197481963319205126, guid: fcf928e2ae210cb4f899f2b33bc6451f,
+  - searchToolbarViewTree: {fileID: 9197481963319205126, guid: 9eb444f87c864358b7bc8d305a18f6d3,
       type: 3}
-  - dragElementAsset: {fileID: 9197481963319205126, guid: b8b630f4eeeb40b4e8c739dbb35a8455,
+  - favoriteElementTreeAsset: {fileID: 9197481963319205126, guid: fcf928e2ae210cb4f899f2b33bc6451f,
       type: 3}
   executionOrder: 0
   icon: {instanceID: 0}

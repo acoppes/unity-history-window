@@ -114,7 +114,7 @@
 }
 
 .searchToolbar #Icon {
-    margin-top: 3px;
+    margin-top: 2px;
     max-width: 16px;
     max-height: 16px;
     left: 10px;
