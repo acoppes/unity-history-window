@@ -1,5 +1,9 @@
 # 1.4.1
 
+* Fixed to clone search bar element and not the template, to fix an issue with searchbar hidden from scroll elements.
+
+# 1.4.1
+
 * Removed direct dependencies to assets from the csharp files to avoid issues when reloading the window, now it just searches the stylesheet and others in OnEnable methods.
 * Fixed package.json version
 

@@ -172,6 +172,7 @@ namespace Gemserk
         private VisualElement CreateSearchToolbar()
         {
             var elementTree = searchToolbarViewTree.CloneTree();
+            var searchToolbarTree = elementTree.Q<VisualElement>("SearchToolbar");
 
             var textField = elementTree.Q<TextField>("Search");
             textField.RegisterValueChangedCallback(delegate(ChangeEvent<string> change)
@@ -198,7 +199,7 @@ namespace Gemserk
                 });
             }
             
-            return elementTree;
+            return searchToolbarTree;
         }
 
         private VisualElement CreateHistoryVisualElement(int index)
