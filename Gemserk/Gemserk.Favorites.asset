@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   favoritesList:
   - reference: {fileID: 102900000, guid: 4a1a59f0b5083c04590c927442d6b9ff, type: 3}
-  - reference: {fileID: 102900000, guid: 4144c1c6b7457de48a6d66728d424285, type: 3}
-  - reference: {fileID: 11400000, guid: 0e37008f9a6a8f8408e1cbcbd1482457, type: 2}
-  - reference: {fileID: 11500000, guid: 24e338debb5bca243b30e98fa8391682, type: 3}
-  - reference: {fileID: 11500000, guid: 1cacb32cef264c72b2e0f5f2412f9736, type: 3}
-  - reference: {fileID: 11500000, guid: 76094f091f1f4b07bb27fd8667a16406, type: 3}
+  - reference: {fileID: 1551831244053812, guid: 19c20701dca26b8448f2bb0c1e5788a0,
+      type: 3}
+  - reference: {fileID: 1551831244053812, guid: 3ebe9e922267a534d93c812d209667c8,
+      type: 3}
+  - reference: {fileID: 11500000, guid: 0b9c7e0ea1d1f9540bf87b238c0b98b3, type: 3}

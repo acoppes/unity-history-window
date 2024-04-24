@@ -18,6 +18,11 @@ This plugin keeps a history of selected objects in Unity. It comes with a [windo
 <img src="screenshots/demodrag2.gif" width="500" />
 <br/>
 
+**Search Toolbar**
+
+<img src="screenshots/search-example-01.gif" width="500" />
+<br/>
+
 **Quick options to override behavior**
 
 <img src="screenshots/history04.gif" width="500" />

@@ -58,7 +58,12 @@ namespace Gemserk
 
         public StyleSheet styleSheet;
 
+        public VisualTreeAsset searchToolbarViewTree;
         public VisualTreeAsset favoriteElementTreeAsset;
+
+        public VisualElement favoritesParent;
+        
+        private string searchText;
         
         private void OnDisable()
         {
@@ -76,6 +81,8 @@ namespace Gemserk
             var root = rootVisualElement;
             root.styleSheets.Add(styleSheet);
 
+            root.Add(CreateSearchToolbar());
+
             root.RegisterCallback<DragPerformEvent>(evt =>
             {
                 DragAndDrop.AcceptDrag();
@@ -92,20 +99,68 @@ namespace Gemserk
 
         private void OnFavoritesUpdated(FavoritesAsset favorites)
         {
-            var root = rootVisualElement;
-            root.Clear();
-        
+            // var root = rootVisualElement;
+            // root.Clear();
             ReloadRoot();
         }
 
+        private VisualElement CreateSearchToolbar()
+        {
+            var elementTree = searchToolbarViewTree.CloneTree();
+
+            var textField = elementTree.Q<TextField>("Search");
+            textField.RegisterValueChangedCallback(delegate(ChangeEvent<string> change)
+            {
+                // set current view elements filter
+                // Debug.Log("new filter " + change.newValue);
+                searchText = change.newValue;
+                
+                ReloadRoot();
+            });
+
+            var icon = elementTree.Q<Image>("Icon");
+            if (icon != null)
+            {
+                icon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
+            }
+            
+            var clearIcon = elementTree.Q<Image>("Clear");
+            if (clearIcon != null)
+            {
+                clearIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.clearSearchToolbarIconName).image;
+                clearIcon.RegisterCallback(delegate(MouseUpEvent e)
+                {
+                    textField.value = "";
+                });
+            }
+            
+            return elementTree;
+        }
+        
         private void ReloadRoot()
         {
             var root = rootVisualElement;
 
             // var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/FavoriteElement.uxml");
-
-            var scroll = new ScrollView(ScrollViewMode.Vertical);
-            root.Add(scroll);
+            if (favoritesParent == null)
+            {
+                favoritesParent = new ScrollView(ScrollViewMode.Vertical);
+                root.Add(favoritesParent);
+            }
+            else
+            {
+                favoritesParent.Clear();
+            }
+            
+            string[] searchTexts = null;
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                searchText = searchText.TrimStart().TrimEnd();
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    searchTexts = searchText.Split(' ');
+                }
+            }
 
             for (var i = 0; i < _favorites.favoritesList.Count; i++)
             {
@@ -113,6 +168,26 @@ namespace Gemserk
 
                 if (assetReference == null)
                     continue;
+
+                var testName = assetReference.name.ToLower();
+                    
+                if (searchTexts != null && searchTexts.Length > 0)
+                {
+                    var match = true;
+                        
+                    foreach (var text in searchTexts)
+                    {
+                        if (!testName.Contains(text.ToLower()))
+                        {
+                            match = false;
+                        }
+                    }
+
+                    if (!match)
+                    {
+                        continue;
+                    }
+                }
                 
                 var elementTree = favoriteElementTreeAsset.CloneTree();
 
@@ -230,7 +305,7 @@ namespace Gemserk
                     label.text = assetReference.name;
                 }
 
-                scroll.Add(elementTree);
+                favoritesParent.Add(elementTree);
             }
 
             var receiveDragArea = new VisualElement();

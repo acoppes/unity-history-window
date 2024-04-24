@@ -15,12 +15,7 @@ MonoBehaviour:
   selectionHistory:
     historySize: 200
     _history:
-    - reference: {fileID: 11500000, guid: 1cacb32cef264c72b2e0f5f2412f9736, type: 3}
-      sceneName: 
-      scenePath: 
-      globalObjectId: 
-    - reference: {fileID: 1068529831357515114, guid: 42cb11caecd83a547b6239626f30ff34,
-        type: 3}
+    - reference: {fileID: 11500000, guid: 2b4ddf865bbb3ef4598e953fc7365db1, type: 3}
       sceneName: 
       scenePath: 
       globalObjectId: 
@@ -29,19 +24,16 @@ MonoBehaviour:
       sceneName: 
       scenePath: 
       globalObjectId: 
-    - reference: {fileID: 11500000, guid: 76094f091f1f4b07bb27fd8667a16406, type: 3}
-      sceneName: 
-      scenePath: 
-      globalObjectId: 
-    - reference: {fileID: 102900000, guid: 794083f634975ac4ab06771d1eee8fda, type: 3}
-      sceneName: 
-      scenePath: 
-      globalObjectId: 
     - reference: {fileID: 102900000, guid: 2e3df5c93e75a9d448e37473f84ca254, type: 3}
       sceneName: 
       scenePath: 
       globalObjectId: 
-    - reference: {fileID: 11500000, guid: 0b9c7e0ea1d1f9540bf87b238c0b98b3, type: 3}
+    - reference: {fileID: 11500000, guid: 36063a73dc5d0f744b0b72ba4bd6afb1, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 1551831244053812, guid: 19c20701dca26b8448f2bb0c1e5788a0,
+        type: 3}
       sceneName: 
       scenePath: 
       globalObjectId: 
@@ -50,8 +42,7 @@ MonoBehaviour:
       sceneName: 
       scenePath: 
       globalObjectId: 
-    - reference: {fileID: 1551831244053812, guid: 19c20701dca26b8448f2bb0c1e5788a0,
-        type: 3}
+    - reference: {fileID: 11500000, guid: 0b9c7e0ea1d1f9540bf87b238c0b98b3, type: 3}
       sceneName: 
       scenePath: 
       globalObjectId: 
