@@ -5,7 +5,7 @@
     xmlns:editor="UnityEditor.UIElements"
     xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
 >
-    <engine:VisualElement class="searchToolbar">
+    <engine:VisualElement class="searchToolbar" name="SearchToolbar">
         <engine:Image name="Icon" />
         <engine:TextField text="" name="Search"/>
         <engine:Image name="Clear" />   
