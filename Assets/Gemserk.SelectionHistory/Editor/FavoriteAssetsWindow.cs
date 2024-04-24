@@ -59,8 +59,8 @@ namespace Gemserk
 
         private StyleSheet styleSheet;
 
-        public VisualTreeAsset searchToolbarViewTree;
-        public VisualTreeAsset favoriteElementTreeAsset;
+        private VisualTreeAsset searchToolbarViewTree;
+        private VisualTreeAsset favoriteElementTreeAsset;
 
         public VisualElement favoritesParent;
         
@@ -78,6 +78,10 @@ namespace Gemserk
         {
             styleSheet = AssetDatabaseExt.FindAssets(typeof(StyleSheet), "SelectionHistoryStylesheet")
                 .OfType<StyleSheet>().FirstOrDefault();
+            searchToolbarViewTree = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "SearchToolbar")
+                .OfType<VisualTreeAsset>().FirstOrDefault();
+            favoriteElementTreeAsset = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "FavoriteElement")
+                .OfType<VisualTreeAsset>().FirstOrDefault();
             
             _favorites = FavoritesAsset.instance;
             _favorites.OnFavoritesUpdated += OnFavoritesUpdated;

@@ -46,8 +46,8 @@ namespace Gemserk
         
         private StyleSheet styleSheet;
 
-        public VisualTreeAsset searchToolbarViewTree;
-        public VisualTreeAsset historyElementViewTree;
+        private VisualTreeAsset searchToolbarViewTree;
+        private VisualTreeAsset historyElementViewTree;
 
         private SelectionHistory selectionHistory;
 
@@ -74,15 +74,12 @@ namespace Gemserk
 
         public void OnEnable()
         {
-        // public StyleSheet styleSheet;
-        //
-        // public VisualTreeAsset searchToolbarViewTree;
-        // public VisualTreeAsset historyElementViewTree;
-            
-            //EditorSceneManager.sceneClosed += OnSceneClosed;
-
             styleSheet = AssetDatabaseExt.FindAssets(typeof(StyleSheet), "SelectionHistoryStylesheet")
                 .OfType<StyleSheet>().FirstOrDefault();
+            searchToolbarViewTree = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "SearchToolbar")
+                .OfType<VisualTreeAsset>().FirstOrDefault();
+            historyElementViewTree = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "SelectionHistoryElement")
+                .OfType<VisualTreeAsset>().FirstOrDefault();
             
             EditorSceneManager.sceneOpened += OnSceneOpened;
             
@@ -599,10 +596,10 @@ namespace Gemserk
                 SettingsService.OpenUserPreferences("Selection History");
             });
             
-            menu.AddItem(new GUIContent("Reload UI"), false, delegate
-            {
-                RegenerateUI();
-            });
+            // menu.AddItem(new GUIContent("Reload UI"), false, delegate
+            // {
+            //     RegenerateUI();
+            // });
         }
 
         private void AddMenuItemForPreference(GenericMenu menu, string preference, string text, string tooltip)
