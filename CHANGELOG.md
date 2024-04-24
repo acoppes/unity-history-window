@@ -1,3 +1,7 @@
+# 1.3.1 
+
+* Reverted to use Drag from history window without having to use Alt modifier (was a fix/workaround for mac users but I suppose windows is more common for Unity devs)
+
 # 1.3.0
 
 * Moved asset type declaration to editor assembly now they use ScriptableSingleton, changed to use ScriptableSingleton for selection history to avoid issues creating the asset the first time. Had to change min unity version to 2020.x in order to use this new API.
