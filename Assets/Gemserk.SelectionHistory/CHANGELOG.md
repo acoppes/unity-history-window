@@ -1,3 +1,7 @@
+# 1.4.1
+
+* Just fixed package.json version
+
 # 1.4.0
 
 * Added search toolbar for both history and favorites windows.
