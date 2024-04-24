@@ -1,6 +1,7 @@
 # 1.4.1
 
-* Just fixed package.json version
+* Removed direct dependencies to assets from the csharp files to avoid issues when reloading the window, now it just searches the stylesheet and others in OnEnable methods.
+* Fixed package.json version
 
 # 1.4.0
 
