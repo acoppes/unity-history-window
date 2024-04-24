@@ -46,6 +46,7 @@
     -unity-text-align: middle-left;
     margin: 2px;
     padding: 3px;
+    background-color: #282828;
     border-color: black;
     border-width: 1px;
     border-radius: 3px;
@@ -99,14 +100,21 @@
     /* align-self: flex-end; */
 }
 
+.searchToolbar {
+    margin-top: 3px;
+    margin-bottom: 3px;
+    min-height: 19px;
+}
+
 .searchToolbar #Search {
     margin-left: 30px;
     margin-right: 5px;
-    flex-grow: 1;
+    margin-bottom: 10px;
+    min-height: 19px;
 }
 
 .searchToolbar #Clear {
-    margin-top: 3px;
+    margin-top: 2px;
     max-width: 16px;
     max-height: 16px;
     right: 10px;
@@ -120,7 +128,6 @@
     left: 10px;
     position: absolute;
 }
-
 
 .hidden {
     display:none;

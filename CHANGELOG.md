@@ -1,6 +1,7 @@
 # 1.4.1
 
 * Fixed to clone search bar element and not the template, to fix an issue with searchbar hidden from scroll elements.
+* Fixed stylesheet to match colors and also added some padding to search toolbar.
 
 # 1.4.1
 
