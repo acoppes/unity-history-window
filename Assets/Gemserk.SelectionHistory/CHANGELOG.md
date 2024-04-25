@@ -1,3 +1,13 @@
+# 1.4.5
+
+* Now all assets can be opened, not only scenes and prefabs.
+* Changed open button to be a "folder" (it is the closest thing I found).
+* Added tooltip to icons, for example, for the folder icon is "Open", for ping icon is "Locate", etc.
+
+# 1.4.4
+
+* Fixed styles.
+
 # 1.4.3
 
 * Fixed to drag with simple drag (no alt modifier) from Favorites Window as well.

@@ -268,7 +268,7 @@ namespace Gemserk
                     
                     if (evt.button == 0 && evt.clickCount == 2)
                     {
-                        if (entry.IsPrefabAsset())
+                        if (entry.isAsset)
                         {
                             AssetDatabase.OpenAsset(entry.Reference);
                         }
@@ -296,6 +296,7 @@ namespace Gemserk
             if (pingIcon != null)
             {
                 pingIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
+                pingIcon.tooltip = "Locate";
                 pingIcon.RegisterCallback(delegate(MouseUpEvent e)
                 {
                     var entry = selectionHistory.GetEntry(historyIndex);
@@ -310,8 +311,8 @@ namespace Gemserk
             var openPrefabIcon = selectionElementRoot.Q<Image>("OpenPrefabIcon");
             if (openPrefabIcon != null)
             {
-                openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openPrefabIconName).image;
-                
+                openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openAssetIconName).image;
+                openPrefabIcon.tooltip = "Open";
                 openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
                 {
                     var entry = selectionHistory.GetEntry(historyIndex);
@@ -321,7 +322,7 @@ namespace Gemserk
                         return;
                     }
                     
-                    if (entry.IsPrefabAsset())
+                    if (entry.isAsset)
                     {
                         AssetDatabase.OpenAsset(entry.Reference);
                     } else if (entry.IsSceneAsset())
@@ -343,6 +344,8 @@ namespace Gemserk
             var favoriteAsset = selectionElementRoot.Q<Image>("Favorite");
             if (favoriteAsset != null)
             {
+                favoriteAsset.tooltip = "Toggle Favorite";
+                
                 favoriteAsset.RegisterCallback(delegate(MouseUpEvent e)
                 {
                     var entry = selectionHistory.GetEntry(historyIndex);
@@ -472,7 +475,8 @@ namespace Gemserk
                     
                     currentEntry = i;
                     
-                    var isPrefabAsset = entry.isReferenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
+                    // var isPrefabAsset = entry.isReferenced && entry.isAsset && PrefabUtility.IsPartOfPrefabAsset(entry.Reference) && entry.Reference is GameObject;
+                    var isAsset = entry.isReferenced && entry.isAsset;
                     var isSceneAsset = entry.isReferenced && entry.isAsset && entry.reference is SceneAsset;
                     
                     visualElement.style.display = DisplayStyle.Flex;
@@ -522,7 +526,7 @@ namespace Gemserk
                     {
                         openPrefabIcon.ClearClassList();
                         
-                        if (isPrefabAsset || isSceneAsset || entry.isUnloadedHierarchyObject)
+                        if (isAsset || isSceneAsset || entry.isUnloadedHierarchyObject)
                         {
                             openPrefabIcon.RemoveFromClassList("hidden");
                         }

@@ -3,7 +3,6 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace Gemserk
@@ -203,8 +202,9 @@ namespace Gemserk
                 
                 var dragArea = elementTree.Q<VisualElement>("DragArea");
                 
-                var isPrefabAsset = PrefabUtility.IsPartOfPrefabAsset(assetReference);
+                // var isPrefabAsset = PrefabUtility.IsPartOfPrefabAsset(assetReference);
                 var isSceneAsset = assetReference is SceneAsset;
+                var isAsset = !isSceneAsset;
 
                 if (dragArea != null)
                 {
@@ -248,7 +248,7 @@ namespace Gemserk
                         if (evt.button == 0 && evt.clickCount == 2)
                         {
                             // Debug.Log("DOUBLE CLICK");
-                            if (isPrefabAsset)
+                            if (isAsset)
                             {
                                 AssetDatabase.OpenAsset(assetReference);
                             }
@@ -275,6 +275,7 @@ namespace Gemserk
                 {
                     // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
                     removeIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.removeIconName).image;
+                    removeIcon.tooltip = "Remove";
                     
                     removeIcon.RegisterCallback(delegate(MouseUpEvent e)
                     {
@@ -286,16 +287,18 @@ namespace Gemserk
                 if (openPrefabIcon != null)
                 {
                     // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
-                    openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openPrefabIconName).image;
+                    openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openAssetIconName).image;
+                    openPrefabIcon.tooltip = "Open";
 
-                    if (isPrefabAsset || isSceneAsset)
-                    {
-                        openPrefabIcon.RemoveFromClassList("hidden");
-                    }
+                    openPrefabIcon.RemoveFromClassList("hidden");
+                    // if (isAsset)
+                    // {
+                    //     openPrefabIcon.RemoveFromClassList("hidden");
+                    // }
                     
                     openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
                     {
-                        if (isPrefabAsset)
+                        if (isAsset)
                         {
                             AssetDatabase.OpenAsset(assetReference);
                         } else if (isSceneAsset)
