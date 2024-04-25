@@ -1,4 +1,4 @@
-# 1.4.5
+# 1.5.0
 
 * Now all assets can be opened, not only scenes and prefabs.
 * Changed open button to be a "folder" (it is the closest thing I found).
