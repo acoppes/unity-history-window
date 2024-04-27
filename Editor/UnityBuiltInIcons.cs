@@ -13,6 +13,7 @@ namespace Gemserk
         public const string refreshIconName = "TreeEditor.Refresh";
 
         public const string openAssetIconName = "d_FolderOpened Icon";
-        public const string clearSearchToolbarIconName = "d_winbtn_win_close";
+        public const string clearSearchToolbarIconName = "d_clear";
+        
     }
 }
