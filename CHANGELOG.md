@@ -1,6 +1,7 @@
 # 1.5.1
 
 * Changed to use another icon that seems to be better supported in newer versions.
+* Show clear search only if there is any text.
 
 # 1.5.0
 

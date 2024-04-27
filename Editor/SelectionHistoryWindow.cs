@@ -51,6 +51,7 @@ namespace Gemserk
 
         private SelectionHistory selectionHistory;
 
+        private VisualElement searchToolbar;
         private ScrollView mainScrollElement;
         private List<VisualElement> visualElements = new List<VisualElement>();
 
@@ -188,7 +189,7 @@ namespace Gemserk
         private VisualElement CreateSearchToolbar()
         {
             var elementTree = searchToolbarViewTree.CloneTree();
-            var searchToolbarTree = elementTree.Q<VisualElement>("SearchToolbar");
+            searchToolbar = elementTree.Q<VisualElement>("SearchToolbar");
 
             var textField = elementTree.Q<TextField>("Search");
             textField.RegisterValueChangedCallback(delegate(ChangeEvent<string> change)
@@ -215,7 +216,7 @@ namespace Gemserk
                 });
             }
             
-            return searchToolbarTree;
+            return searchToolbar;
         }
 
         private VisualElement CreateHistoryVisualElement(int index)
@@ -454,6 +455,20 @@ namespace Gemserk
                 if (!string.IsNullOrEmpty(searchText))
                 {
                     searchTexts = searchText.Split(' ');
+                }
+            }
+
+            if (searchToolbar != null)
+            {
+                var imageElement = searchToolbar.Q<Image>("Clear");
+                
+                if (string.IsNullOrEmpty(searchText))
+                {
+                    imageElement.style.display = DisplayStyle.None;
+                }
+                else
+                {
+                    imageElement.style.display = DisplayStyle.Flex;
                 }
             }
             

@@ -61,7 +61,8 @@ namespace Gemserk
         private VisualTreeAsset searchToolbarViewTree;
         private VisualTreeAsset favoriteElementTreeAsset;
 
-        public VisualElement favoritesParent;
+        private VisualElement searchToolbar;
+        private VisualElement favoritesParent;
         
         private string searchText;
         
@@ -130,7 +131,7 @@ namespace Gemserk
         private VisualElement CreateSearchToolbar()
         {
             var elementTree = searchToolbarViewTree.CloneTree();
-            var searchToolbarTree = elementTree.Q<VisualElement>("SearchToolbar");
+            searchToolbar = elementTree.Q<VisualElement>("SearchToolbar");
             
             var textField = elementTree.Q<TextField>("Search");
             textField.RegisterValueChangedCallback(delegate(ChangeEvent<string> change)
@@ -158,7 +159,7 @@ namespace Gemserk
                 });
             }
             
-            return searchToolbarTree;
+            return searchToolbar;
         }
         
         private void ReloadRoot()
@@ -183,6 +184,20 @@ namespace Gemserk
                 if (!string.IsNullOrEmpty(searchText))
                 {
                     searchTexts = searchText.Split(' ');
+                }
+            }
+            
+            if (searchToolbar != null)
+            {
+                var imageElement = searchToolbar.Q<Image>("Clear");
+                
+                if (string.IsNullOrEmpty(searchText))
+                {
+                    imageElement.style.display = DisplayStyle.None;
+                }
+                else
+                {
+                    imageElement.style.display = DisplayStyle.Flex;
                 }
             }
 
