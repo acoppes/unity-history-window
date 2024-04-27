@@ -2,6 +2,7 @@
 
 * Changed to use another icon that seems to be better supported in newer versions.
 * Show clear search only if there is any text.
+* Added internal nullify some fields in order to see if it helps fixing the issue when updating the plugin and the window code is reloaded but the window is not.
 
 # 1.5.0
 
