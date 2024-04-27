@@ -65,6 +65,27 @@ namespace Gemserk
         
         private string searchText;
         
+        private void GetDefaultElements()
+        {
+            if (styleSheet == null)
+            {
+                styleSheet = AssetDatabaseExt.FindAssets(typeof(StyleSheet), "SelectionHistoryStylesheet")
+                    .OfType<StyleSheet>().FirstOrDefault();
+            }
+            
+            if (searchToolbarViewTree == null)
+            {
+                searchToolbarViewTree = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "SearchToolbar")
+                    .OfType<VisualTreeAsset>().FirstOrDefault();
+            }
+            
+            if (favoriteElementTreeAsset == null)
+            {
+                favoriteElementTreeAsset = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "FavoriteElement")
+                    .OfType<VisualTreeAsset>().FirstOrDefault();
+            }
+        }
+        
         private void OnDisable()
         {
             if (_favorites != null)
@@ -75,12 +96,7 @@ namespace Gemserk
 
         public void OnEnable()
         {
-            styleSheet = AssetDatabaseExt.FindAssets(typeof(StyleSheet), "SelectionHistoryStylesheet")
-                .OfType<StyleSheet>().FirstOrDefault();
-            searchToolbarViewTree = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "SearchToolbar")
-                .OfType<VisualTreeAsset>().FirstOrDefault();
-            favoriteElementTreeAsset = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "FavoriteElement")
-                .OfType<VisualTreeAsset>().FirstOrDefault();
+            GetDefaultElements();
             
             _favorites = FavoritesAsset.instance;
             _favorites.OnFavoritesUpdated += OnFavoritesUpdated;
