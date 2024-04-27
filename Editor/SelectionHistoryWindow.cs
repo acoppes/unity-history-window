@@ -59,6 +59,27 @@ namespace Gemserk
 
         private string searchText;
 
+        private void GetDefaultElements()
+        {
+            if (styleSheet == null)
+            {
+                styleSheet = AssetDatabaseExt.FindAssets(typeof(StyleSheet), "SelectionHistoryStylesheet")
+                    .OfType<StyleSheet>().FirstOrDefault();
+            }
+            
+            if (searchToolbarViewTree == null)
+            {
+                searchToolbarViewTree = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "SearchToolbar")
+                    .OfType<VisualTreeAsset>().FirstOrDefault();
+            }
+            
+            if (historyElementViewTree == null)
+            {
+                historyElementViewTree = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "SelectionHistoryElement")
+                    .OfType<VisualTreeAsset>().FirstOrDefault();
+            }
+        }
+
         private void OnDisable()
         {
             //EditorSceneManager.sceneClosed -= OnSceneClosed;
@@ -74,12 +95,7 @@ namespace Gemserk
 
         public void OnEnable()
         {
-            styleSheet = AssetDatabaseExt.FindAssets(typeof(StyleSheet), "SelectionHistoryStylesheet")
-                .OfType<StyleSheet>().FirstOrDefault();
-            searchToolbarViewTree = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "SearchToolbar")
-                .OfType<VisualTreeAsset>().FirstOrDefault();
-            historyElementViewTree = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "SelectionHistoryElement")
-                .OfType<VisualTreeAsset>().FirstOrDefault();
+            GetDefaultElements();
             
             EditorSceneManager.sceneOpened += OnSceneOpened;
             
