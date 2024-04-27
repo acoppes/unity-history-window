@@ -93,6 +93,10 @@ namespace Gemserk
             {
                 _favorites.OnFavoritesUpdated -= OnFavoritesUpdated;
             }
+            
+            styleSheet = null;
+            searchToolbarViewTree = null;
+            favoriteElementTreeAsset = null;
         }
 
         public void OnEnable()

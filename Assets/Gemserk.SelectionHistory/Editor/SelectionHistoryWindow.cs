@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -92,6 +91,10 @@ namespace Gemserk
             }
             
             Selection.selectionChanged -= OnSelectionChanged;
+
+            styleSheet = null;
+            searchToolbarViewTree = null;
+            historyElementViewTree = null;
         }
 
         public void OnEnable()
