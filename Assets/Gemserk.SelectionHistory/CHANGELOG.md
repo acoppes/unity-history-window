@@ -1,3 +1,7 @@
+# 1.5.1
+
+* Changed to use another icon that seems to be better supported in newer versions.
+
 # 1.5.0
 
 * Now all assets can be opened, not only scenes and prefabs.
