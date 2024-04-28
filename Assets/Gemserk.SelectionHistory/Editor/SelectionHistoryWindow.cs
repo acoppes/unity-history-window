@@ -265,15 +265,9 @@ namespace Gemserk
                         return;
                     }
                     
-                    if (entry.isAsset)
+                    if (entry.isAsset || entry.IsSceneAsset())
                     {
                         AssetDatabase.OpenAsset(entry.Reference);
-                    } else if (entry.IsSceneAsset())
-                    {
-                        if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-                        {
-                            EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
-                        }
                     } else if (entry.isUnloadedHierarchyObject)
                     {
                         if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())

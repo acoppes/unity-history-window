@@ -272,24 +272,10 @@ namespace Gemserk
                     openPrefabIcon.tooltip = "Open";
 
                     openPrefabIcon.RemoveFromClassList("hidden");
-                    // if (isAsset)
-                    // {
-                    //     openPrefabIcon.RemoveFromClassList("hidden");
-                    // }
-                    
+
                     openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
                     {
-                        if (isAsset)
-                        {
-                            AssetDatabase.OpenAsset(assetReference);
-                        } else if (isSceneAsset)
-                        {
-                            if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-                            {
-                                EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(assetReference));
-                            }
-                            
-                        }
+                        AssetDatabase.OpenAsset(assetReference);
                     });
                 }
                 

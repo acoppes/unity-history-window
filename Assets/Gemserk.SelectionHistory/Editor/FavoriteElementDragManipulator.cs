@@ -71,23 +71,9 @@ namespace Gemserk
                 return;
             }
             
-            var isSceneAsset = assetReference is SceneAsset;
-            var isAsset = !isSceneAsset;
-            
             if (evt.button == 0 && evt.clickCount == 2)
             {
-                if (isAsset)
-                {
-                    AssetDatabase.OpenAsset(assetReference);
-                }
-
-                if (isSceneAsset)
-                {
-                    if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-                    {
-                        EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(assetReference));
-                    }
-                }
+                AssetDatabase.OpenAsset(assetReference);
             }
         }
 
