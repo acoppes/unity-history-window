@@ -237,100 +237,12 @@ namespace Gemserk
                 
                 var dragArea = elementTree.Q<VisualElement>("DragArea");
                 
-                // var isPrefabAsset = PrefabUtility.IsPartOfPrefabAsset(assetReference);
                 var isSceneAsset = assetReference is SceneAsset;
                 var isAsset = !isSceneAsset;
 
                 if (dragArea != null)
                 {
-                    dragArea.RegisterCallback<MouseUpEvent>(evt =>
-                    {
-                        // if (evt.button == 0)
-                        // {
-                        //     Selection.activeObject = assetReference;
-                        // }
-                        
-                        if (evt.button == 1)
-                        {
-                            EditorGUIUtility.PingObject(assetReference);
-                        }
-                        
-                        dragArea.userData = null;
-                    });
-                    dragArea.RegisterCallback<MouseDownEvent>(evt =>
-                    {
-                        if (evt.button == 0)
-                        {
-                            DragAndDrop.PrepareStartDrag();
-
-                            var objectReferences = new[] {assetReference};
-                            DragAndDrop.paths = new[]
-                            {
-                                AssetDatabase.GetAssetPath(assetReference)
-                            };
-                            
-                            DragAndDrop.SetGenericData("mousePosition", evt.originalMousePosition);
-                            DragAndDrop.SetGenericData("startTime", evt.timestamp);
-
-                            DragAndDrop.objectReferences = objectReferences;
-                            DragAndDrop.StartDrag(ObjectNames.GetDragAndDropTitle(assetReference));
-                        }
-                    });
-
-                    dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
-                    {
-                        DragAndDrop.visualMode = DragAndDropVisualMode.Link;
-                    });
-                    
-                    dragArea.RegisterCallback<DragPerformEvent>(evt =>
-                    {
-                        if (assetReference == null || DragAndDrop.GetGenericData("mousePosition") == null)
-                        {
-                            DragAndDrop.AcceptDrag();
-                            FavoriteElements(DragAndDrop.objectReferences);
-                        }
-                        else
-                        {
-                            // This is a hack to react to "click" event, just accept drag over element and comparing the distance
-                            // between the mouse drag start position and mouse end position. If smaller than some amount,
-                            // then execute normal "click" logic (select object). One drawback is the delay, had to add some 
-                            // timestamp data just to simulate normal click.
-                    
-                            var mousePosition = (Vector2) DragAndDrop.GetGenericData("mousePosition");
-                            var startTime = (long) DragAndDrop.GetGenericData("startTime");
-
-                            var delta = evt.originalMousePosition - mousePosition;
-                            var deltaTime = evt.timestamp - startTime;
-                    
-                            // I assume timestamp is in milliseconds, so I accept 200ms of dt to consider a click. 
-                            if (evt.button == 0 && delta.magnitude < 5 && deltaTime < 200)
-                            {
-                                Selection.activeObject = assetReference;
-                            }
-                        }
-                        
-
-                    });
-                    
-                    dragArea.RegisterCallback<PointerDownEvent>(evt =>
-                    {
-                        if (evt.button == 0 && evt.clickCount == 2)
-                        {
-                            // Debug.Log("DOUBLE CLICK");
-                            if (isAsset)
-                            {
-                                AssetDatabase.OpenAsset(assetReference);
-                            }
-
-                            if (isSceneAsset)
-                            {
-                                if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-                                {
-                                    EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(assetReference));
-                                }
-                            }
-                        }
-                    });
+                    dragArea.AddManipulator(new FavoriteElementDragManipulator(assetReference));
                 }
                 
                 var icon = elementTree.Q<Image>("Icon");

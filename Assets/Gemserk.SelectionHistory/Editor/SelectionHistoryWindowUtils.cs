@@ -21,8 +21,10 @@ namespace Gemserk
 	    public static readonly string OrderLastSelectedFirstKey = "Gemserk.SelectionHistory.OrderLastSelectedFirst";
 	    public static readonly string BackgroundRecordKey = "Gemserk.SelectionHistory.BackgroundRecord";
 
+	    public const float distanceToConsiderDrag = 10.0f;
+	    
 	    private static readonly bool debugEnabled = false;
-
+	    
 	    static SelectionHistoryWindowUtils()
 	    {
 		    Selection.selectionChanged += SelectionRecorder;

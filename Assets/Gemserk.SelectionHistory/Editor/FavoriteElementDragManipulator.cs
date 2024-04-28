@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace Gemserk
 {
-    public class HistoryElementDragManipulator : MouseManipulator
+    public class FavoriteElementDragManipulator : MouseManipulator
     {
         private readonly EventCallback<MouseDownEvent> mouseDownHandler;
         private readonly EventCallback<MouseMoveEvent> mouseMoveHandler;
@@ -16,14 +16,11 @@ namespace Gemserk
         private bool isDragging;
         private bool isPressed;
 
-        private readonly SelectionHistory selectionHistory;
-        private readonly int historyIndex;
+        private readonly Object assetReference;
      
-        public HistoryElementDragManipulator(SelectionHistory selectionHistory, int historyIndex)
+        public FavoriteElementDragManipulator(Object assetReference)
         {
-            this.selectionHistory = selectionHistory;
-            this.historyIndex = historyIndex;
-            
+            this.assetReference = assetReference;
             mouseDownHandler = OnMouseDown;
             mouseMoveHandler = OnMouseMove;
             mouseUpHandler = OnMouseUp;
@@ -52,19 +49,14 @@ namespace Gemserk
                 return;
             }
             
-            var entry = selectionHistory.GetEntry(historyIndex);    
-            
-            if (evt.button == 0 && evt.clickCount == 1)
+            if (evt.button == 0)
             {
-                // Just select the object
-                selectionHistory.SetSelection(entry.Reference);
-                Selection.activeObject = entry.Reference;
+                Selection.activeObject = assetReference;
             }
             
             if (evt.button == 1)
             {
-                // Just ping the object
-                SelectionHistoryWindowUtils.PingEntry(entry);
+                EditorGUIUtility.PingObject(assetReference);
             } 
         }
         
@@ -79,30 +71,21 @@ namespace Gemserk
                 return;
             }
             
-            var entry = selectionHistory.GetEntry(historyIndex);    
+            var isSceneAsset = assetReference is SceneAsset;
+            var isAsset = !isSceneAsset;
             
             if (evt.button == 0 && evt.clickCount == 2)
             {
-                // Try to open the asset.
-                
-                if (entry.isAsset)
+                if (isAsset)
                 {
-                    AssetDatabase.OpenAsset(entry.Reference);
-                }
-                
-                if (entry.IsSceneAsset())
-                {
-                    if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-                    {
-                        EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
-                    }
+                    AssetDatabase.OpenAsset(assetReference);
                 }
 
-                if (entry.isUnloadedHierarchyObject)
+                if (isSceneAsset)
                 {
                     if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                     {
-                        EditorSceneManager.OpenScene(entry.scenePath);
+                        EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(assetReference));
                     }
                 }
             }
@@ -131,24 +114,22 @@ namespace Gemserk
             
             isDragging = true;
             
-            var entry = selectionHistory.GetEntry(historyIndex);
-            
             // This is necessary in order to process the drag properly. 
             target.ReleasePointer(0);
             
             DragAndDrop.PrepareStartDrag();
             
-            var objectReferences = new[] { entry.Reference };
+            var objectReferences = new[] { assetReference };
             DragAndDrop.paths = new[]
             {
-                AssetDatabase.GetAssetPath(entry.Reference)
+                AssetDatabase.GetAssetPath(assetReference)
             };
             
             // DragAndDrop.SetGenericData("mousePosition", evt.originalMousePosition);
             // DragAndDrop.SetGenericData("startTime", evt.timestamp);
             
             DragAndDrop.objectReferences = objectReferences;
-            DragAndDrop.StartDrag(ObjectNames.GetDragAndDropTitle(entry.Reference));
+            DragAndDrop.StartDrag(ObjectNames.GetDragAndDropTitle(assetReference));
             DragAndDrop.visualMode = DragAndDropVisualMode.Move;
         }
      
