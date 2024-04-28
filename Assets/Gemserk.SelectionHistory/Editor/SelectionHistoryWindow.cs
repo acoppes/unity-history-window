@@ -232,7 +232,7 @@ namespace Gemserk
             var dragArea = selectionElementRoot.Q<VisualElement>("DragArea");
             if (dragArea != null)
             {
-                dragArea.RegisterCallback<MouseUpEvent>(evt =>
+                dragArea.RegisterCallback<PointerUpEvent>(evt =>
                 {
                     var entry = selectionHistory.GetEntry(historyIndex);
                     if (entry == null || !entry.isReferenced)
@@ -240,42 +240,42 @@ namespace Gemserk
                         return;
                     }
                     
-                    if (evt.button == 0)
-                    {
-                        selectionHistory.SetSelection(entry.Reference);
-                        Selection.activeObject = entry.Reference;
-                    }
-                    else
+                    if (evt.button == 1)
                     {
                         SelectionHistoryWindowUtils.PingEntry(entry);
-                    }
+                    } 
                 });
-                dragArea.RegisterCallback<MouseDownEvent>(evt =>
+                
+                dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
                 {
+                    DragAndDrop.visualMode = DragAndDropVisualMode.Link;
+                });
+                
+                dragArea.RegisterCallback<DragPerformEvent>(evt =>
+                {
+                    // This is a hack to react to "click" event, just accept drag over element and comparing the distance
+                    // between the mouse drag start position and mouse end position. If smaller than some amount,
+                    // then execute normal "click" logic (select object). One drawback is the delay, had to add some 
+                    // timestamp data just to simulate normal click.
+                    
+                    var mousePosition = (Vector2) DragAndDrop.GetGenericData("mousePosition");
+                    var startTime = (long) DragAndDrop.GetGenericData("startTime");
+                    
                     var entry = selectionHistory.GetEntry(historyIndex);
                     if (entry == null)
                     {
                         return;
                     }
+
+                    var delta = evt.originalMousePosition - mousePosition;
+                    var deltaTime = evt.timestamp - startTime;
                     
-                    if (evt.button == 0)
+                    // I assume timestamp is in milliseconds, so I accept 200ms of dt to consider a click. 
+                    if (evt.button == 0 && delta.magnitude < 5 && deltaTime < 200)
                     {
-                        DragAndDrop.PrepareStartDrag();
-
-                        var objectReferences = new[] { entry.Reference };
-                        DragAndDrop.paths = new[]
-                        {
-                            AssetDatabase.GetAssetPath(entry.Reference)
-                        };
-
-                        DragAndDrop.objectReferences = objectReferences;
-                        DragAndDrop.StartDrag(ObjectNames.GetDragAndDropTitle(entry.Reference));
+                        selectionHistory.SetSelection(entry.Reference);
+                        Selection.activeObject = entry.Reference;
                     }
-                });
-
-                dragArea.RegisterCallback<DragUpdatedEvent>(evt =>
-                {
-                    DragAndDrop.visualMode = DragAndDropVisualMode.Link;
                 });
 
                 dragArea.RegisterCallback<PointerDownEvent>(evt =>
@@ -308,6 +308,23 @@ namespace Gemserk
                                 EditorSceneManager.OpenScene(entry.scenePath);
                             }
                         }
+                    }
+                    
+                    if (evt.button == 0)
+                    {
+                        DragAndDrop.PrepareStartDrag();
+
+                        var objectReferences = new[] { entry.Reference };
+                        DragAndDrop.paths = new[]
+                        {
+                            AssetDatabase.GetAssetPath(entry.Reference)
+                        };
+                        
+                        DragAndDrop.SetGenericData("mousePosition", evt.originalMousePosition);
+                        DragAndDrop.SetGenericData("startTime", evt.timestamp);
+
+                        DragAndDrop.objectReferences = objectReferences;
+                        DragAndDrop.StartDrag(ObjectNames.GetDragAndDropTitle(entry.Reference));
                     }
                 });
             }
