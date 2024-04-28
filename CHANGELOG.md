@@ -1,6 +1,7 @@
 # 1.5.3
 
 * Found a better way of handling drag by using a MouseManipulator and starting drag only when mouse moved more than some distance.
+* Simplified opening scenes by just using AssetDatabase.OpenAsset() which already ask the user to save changes or not.
 
 # 1.5.2
 

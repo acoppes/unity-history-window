@@ -85,17 +85,9 @@ namespace Gemserk
             {
                 // Try to open the asset.
                 
-                if (entry.isAsset)
+                if (entry.isAsset || entry.IsSceneAsset())
                 {
                     AssetDatabase.OpenAsset(entry.Reference);
-                }
-                
-                if (entry.IsSceneAsset())
-                {
-                    if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-                    {
-                        EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(entry.reference));
-                    }
                 }
 
                 if (entry.isUnloadedHierarchyObject)
