@@ -5,6 +5,10 @@ using UnityEngine.UIElements;
 
 namespace Gemserk
 {
+    // Some links to have as reference for all the drag iterations I had:
+    // https://forum.unity.com/threads/how-to-register-drag-and-click-events-on-the-same-visualelement.1189135/
+    // https://forum.unity.com/threads/mouse-events-not-working-for-uielements.1100497/
+    
     public class HistoryElementDragManipulator : MouseManipulator
     {
         private readonly EventCallback<MouseDownEvent> mouseDownHandler;
