@@ -1,3 +1,7 @@
+# 1.5.2
+
+* Hack to accept both drag and click (select) over history elements by accepting drag and detecting distance and time to detect it as a click. I am having problems receiving PointerUpEvent if I start a drag and couldn't find another way for now to do this.
+
 # 1.5.1
 
 * Changed to use another icon that seems to be better supported in newer versions.
