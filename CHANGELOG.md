@@ -1,3 +1,7 @@
+# 1.5.4
+
+* Bug fix when reach max elements in history window it starts selecting the wrong object and throw exception with first one.
+
 # 1.5.3
 
 * Found a better way of handling drag by using a MouseManipulator and starting drag only when mouse moved more than some distance.

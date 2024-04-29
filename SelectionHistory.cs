@@ -225,7 +225,7 @@ namespace Gemserk
                 OnNewEntryAdded?.Invoke(this);
             }
 
-            if (_history.Count >= historySize)
+            if (_history.Count > historySize)
             {
                 _history.RemoveRange(0, _history.Count - historySize + 1);
                 //			_history.RemoveAt(0);
