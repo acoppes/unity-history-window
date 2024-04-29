@@ -221,14 +221,17 @@ namespace Gemserk
             {
                 _history.Add(new Entry(selection));
                 currentSelectionIndex = _history.Count - 1;
-                
-                OnNewEntryAdded?.Invoke(this);
             }
 
             if (_history.Count > historySize)
             {
-                _history.RemoveRange(0, _history.Count - historySize + 1);
+                _history.RemoveRange(0, _history.Count - historySize);
                 //			_history.RemoveAt(0);
+            }
+            
+            if (!isLastSelected && !isCurrentSelection)
+            {
+                OnNewEntryAdded?.Invoke(this);
             }
         }
 

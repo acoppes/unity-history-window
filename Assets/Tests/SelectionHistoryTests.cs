@@ -90,7 +90,7 @@ namespace Gemserk
 		}
 
 		[Test]
-		public void TestPreviousAndNextShouldntUpdateHistory()
+		public void TestPreviousAndNextShouldNotUpdateHistory()
 		{
 			var selectionHistory = new SelectionHistory();
 
@@ -232,6 +232,27 @@ namespace Gemserk
 			// sceneName: GlobalIdTestScene
 			// scenePath: Assets/Scenes/GlobalIdTest/GlobalIdTestScene.unity
 			// globalObjectId: GlobalObjectId_V1-2-8d557def68244fd46a45dd08bd34aae2-1767799830-0
+		}
+		
+		[Test]
+		public void TestAddNewElementOverMaxCountShouldBeMaxCount()
+		{
+			var selectionHistory = new SelectionHistory();
+
+			var selection1 = new GameObject();
+			var selection2 = new GameObject();
+			var selection3 = new GameObject();
+
+			selectionHistory.historySize = 2;
+
+			selectionHistory.UpdateSelection(selection1);
+			selectionHistory.UpdateSelection(selection2);
+			
+			Assert.AreEqual(2, selectionHistory.GetHistoryCount());
+			
+			selectionHistory.UpdateSelection(selection3);
+			
+			Assert.AreEqual(2, selectionHistory.GetHistoryCount());
 		}
 
 	}
