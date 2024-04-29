@@ -35,7 +35,8 @@ This plugin keeps a history of selected objects in Unity. It comes with a [windo
 * Drag objects to/from the window to/from Scene, Hierarchy, Project or Inspector.
 * Keeps tracks for selection from unloaded scenes (optional)
 * Select **(left click)** or ping/focus objects without losing selection **(right click)**.
-* Quick menu options to customize behavior.
+* Open any asset with double click directly from the history window.
+* Quick menu options to customize behavior (show hierarchy objects or not).
 * Favorite items to [Favorites window](#favorites-window) (optional)
 
 ### Install it from OpenUPM

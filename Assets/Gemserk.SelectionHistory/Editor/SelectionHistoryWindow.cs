@@ -12,7 +12,7 @@ namespace Gemserk
     {
         public static SelectionHistory.Entry GetEntry(this SelectionHistory selectionHistory, int index)
         {
-            if (index < 0 || index >= selectionHistory.History.Count)
+            if (index < 0 || index >= selectionHistory.GetHistoryCount())
             {
                 return null;
             }
