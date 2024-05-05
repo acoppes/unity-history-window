@@ -1,6 +1,7 @@
 # 1.5.5
 
-* fix: don't change scroll when adding/removing favorites from history window.
+* fix: don't change scroll when adding/removing favorites from history window
+* feat(favorites): use yellow favorite icon color to show elements in favorites and gray onefor the others (only for unity 2022+)
 
 # 1.5.4
 
