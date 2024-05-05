@@ -321,6 +321,7 @@ namespace Gemserk
         private void OnHistoryEntryAdded(SelectionHistory selectionHistory)
         {
             ReloadRootAndRemoveUnloadedAndDuplicated();
+            ScrollToLatestSelection();
         }
 
         private void OnSceneOpened(Scene scene, OpenSceneMode mode)
@@ -525,10 +526,20 @@ namespace Gemserk
             if (mainScrollElement != null)
             {
                 mainScrollElement.contentContainer.style.flexDirection = SelectionHistoryWindowUtils.OrderLastSelectedFirst ? FlexDirection.ColumnReverse : FlexDirection.Column;
+            }
+        }
 
-                if (currentEntry >= 0)
+        public void ScrollToLatestSelection()
+        {
+            var index = selectionHistory.GetSelectedIndex();
+            
+            if (mainScrollElement != null)
+            {
+                mainScrollElement.contentContainer.style.flexDirection = SelectionHistoryWindowUtils.OrderLastSelectedFirst ? FlexDirection.ColumnReverse : FlexDirection.Column;
+
+                if (index >= 0)
                 {
-                    mainScrollElement.ScrollTo(visualElements[currentEntry]);
+                    mainScrollElement.ScrollTo(visualElements[index]);
                 }
             }
         }

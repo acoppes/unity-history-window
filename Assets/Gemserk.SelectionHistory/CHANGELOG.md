@@ -1,3 +1,7 @@
+# 1.5.5
+
+* fix: don't change scroll when adding/removing favorites from history window.
+
 # 1.5.4
 
 * Bug fix when reach max elements in history window it starts selecting the wrong object and throw exception with first one.
