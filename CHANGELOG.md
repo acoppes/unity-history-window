@@ -2,6 +2,7 @@
 
 * fix: don't change scroll when adding/removing favorites from history window
 * feat(favorites): use yellow favorite icon color to show elements in favorites and gray onefor the others (only for unity 2022+)
+* feat(search): turns out that unity already has a toolbar search field to use with UIElements, to changed to use that one instead of having my own (less code to maintain).
 
 # 1.5.4
 
