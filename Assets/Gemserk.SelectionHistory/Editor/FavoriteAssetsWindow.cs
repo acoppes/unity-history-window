@@ -1,7 +1,7 @@
 using System.Linq;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEditor.ShortcutManagement;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -58,10 +58,9 @@ namespace Gemserk
 
         private StyleSheet styleSheet;
 
-        private VisualTreeAsset searchToolbarViewTree;
         private VisualTreeAsset favoriteElementTreeAsset;
 
-        private VisualElement searchToolbar;
+        private ToolbarSearchField searchToolbar;
         private VisualElement favoritesParent;
         
         private string searchText;
@@ -72,12 +71,6 @@ namespace Gemserk
             {
                 styleSheet = AssetDatabaseExt.FindAssets(typeof(StyleSheet), "SelectionHistoryStylesheet")
                     .OfType<StyleSheet>().FirstOrDefault();
-            }
-            
-            if (searchToolbarViewTree == null)
-            {
-                searchToolbarViewTree = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "SearchToolbar")
-                    .OfType<VisualTreeAsset>().FirstOrDefault();
             }
             
             if (favoriteElementTreeAsset == null)
@@ -95,7 +88,6 @@ namespace Gemserk
             }
             
             styleSheet = null;
-            searchToolbarViewTree = null;
             favoriteElementTreeAsset = null;
         }
 
@@ -134,35 +126,14 @@ namespace Gemserk
 
         private VisualElement CreateSearchToolbar()
         {
-            var elementTree = searchToolbarViewTree.CloneTree();
-            searchToolbar = elementTree.Q<VisualElement>("SearchToolbar");
-            
-            var textField = elementTree.Q<TextField>("Search");
-            textField.RegisterValueChangedCallback(delegate(ChangeEvent<string> change)
+            searchToolbar = new ToolbarSearchField();
+            searchToolbar.AddToClassList("searchToolbar");
+            searchToolbar.RegisterValueChangedCallback(evt =>
             {
-                // set current view elements filter
-                // Debug.Log("new filter " + change.newValue);
-                searchText = change.newValue;
-                
+                searchText = evt.newValue;
                 ReloadRoot();
             });
 
-            var icon = elementTree.Q<Image>("Icon");
-            if (icon != null)
-            {
-                icon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
-            }
-            
-            var clearIcon = elementTree.Q<Image>("Clear");
-            if (clearIcon != null)
-            {
-                clearIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.clearSearchToolbarIconName).image;
-                clearIcon.RegisterCallback(delegate(MouseUpEvent e)
-                {
-                    textField.value = "";
-                });
-            }
-            
             return searchToolbar;
         }
         
@@ -188,20 +159,6 @@ namespace Gemserk
                 if (!string.IsNullOrEmpty(searchText))
                 {
                     searchTexts = searchText.Split(' ');
-                }
-            }
-            
-            if (searchToolbar != null)
-            {
-                var imageElement = searchToolbar.Q<Image>("Clear");
-                
-                if (string.IsNullOrEmpty(searchText))
-                {
-                    imageElement.style.display = DisplayStyle.None;
-                }
-                else
-                {
-                    imageElement.style.display = DisplayStyle.Flex;
                 }
             }
 

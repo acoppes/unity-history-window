@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -44,13 +45,11 @@ namespace Gemserk
         }
         
         private StyleSheet styleSheet;
-
-        private VisualTreeAsset searchToolbarViewTree;
         private VisualTreeAsset historyElementViewTree;
 
         private SelectionHistory selectionHistory;
 
-        private VisualElement searchToolbar;
+        private ToolbarSearchField searchToolbar;
         private ScrollView mainScrollElement;
         private List<VisualElement> visualElements = new List<VisualElement>();
 
@@ -65,12 +64,6 @@ namespace Gemserk
             {
                 styleSheet = AssetDatabaseExt.FindAssets(typeof(StyleSheet), "SelectionHistoryStylesheet")
                     .OfType<StyleSheet>().FirstOrDefault();
-            }
-            
-            if (searchToolbarViewTree == null)
-            {
-                searchToolbarViewTree = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "SearchToolbar")
-                    .OfType<VisualTreeAsset>().FirstOrDefault();
             }
             
             if (historyElementViewTree == null)
@@ -93,7 +86,6 @@ namespace Gemserk
             Selection.selectionChanged -= OnSelectionChanged;
 
             styleSheet = null;
-            searchToolbarViewTree = null;
             historyElementViewTree = null;
         }
 
@@ -131,7 +123,7 @@ namespace Gemserk
             root.Clear();
             
             visualElements.Clear();
-
+            
             root.Add(CreateSearchToolbar());
             
             mainScrollElement = new ScrollView(ScrollViewMode.Vertical)
@@ -175,6 +167,19 @@ namespace Gemserk
             }) {text = "Remove destroyed"};
             root.Add(removeDestroyedButton);
         }
+        
+        private VisualElement CreateSearchToolbar()
+        {
+            searchToolbar = new ToolbarSearchField();
+            searchToolbar.AddToClassList("searchToolbar");
+            searchToolbar.RegisterValueChangedCallback(evt =>
+            {
+                searchText = evt.newValue;
+                ReloadRoot();
+            });
+
+            return searchToolbar;
+        }
 
         private void CreateMaxElements(SelectionHistory selectionHistory, VisualElement parent)
         {
@@ -187,39 +192,6 @@ namespace Gemserk
                 
                 visualElements.Add(elementTree);
             }
-        }
-
-        private VisualElement CreateSearchToolbar()
-        {
-            var elementTree = searchToolbarViewTree.CloneTree();
-            searchToolbar = elementTree.Q<VisualElement>("SearchToolbar");
-
-            var textField = elementTree.Q<TextField>("Search");
-            textField.RegisterValueChangedCallback(delegate(ChangeEvent<string> change)
-            {
-                // set current view elements filter
-                // Debug.Log("new filter " + change.newValue);
-                searchText = change.newValue;
-                ReloadRoot();
-            });
-
-            var icon = elementTree.Q<Image>("Icon");
-            if (icon != null)
-            {
-                icon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.searchIconName).image;
-            }
-            
-            var clearIcon = elementTree.Q<Image>("Clear");
-            if (clearIcon != null)
-            {
-                clearIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.clearSearchToolbarIconName).image;
-                clearIcon.RegisterCallback(delegate(MouseUpEvent e)
-                {
-                    textField.value = "";
-                });
-            }
-            
-            return searchToolbar;
         }
 
         private VisualElement CreateHistoryVisualElement(int index)
@@ -376,20 +348,6 @@ namespace Gemserk
                 if (!string.IsNullOrEmpty(searchText))
                 {
                     searchTexts = searchText.Split(' ');
-                }
-            }
-
-            if (searchToolbar != null)
-            {
-                var imageElement = searchToolbar.Q<Image>("Clear");
-                
-                if (string.IsNullOrEmpty(searchText))
-                {
-                    imageElement.style.display = DisplayStyle.None;
-                }
-                else
-                {
-                    imageElement.style.display = DisplayStyle.Flex;
                 }
             }
             

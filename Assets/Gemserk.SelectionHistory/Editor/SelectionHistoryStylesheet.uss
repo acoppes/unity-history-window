@@ -104,29 +104,7 @@
     margin-top: 3px;
     margin-bottom: 3px;
     min-height: 19px;
-}
-
-.searchToolbar #Search {
-    margin-left: 30px;
-    margin-right: 5px;
-    margin-bottom: 0px;
-    min-height: 19px;
-}
-
-.searchToolbar #Clear {
-    margin-top: 2px;
-    max-width: 16px;
-    max-height: 16px;
-    right: 10px;
-    position: absolute;
-}
-
-.searchToolbar #Icon {
-    margin-top: 2px;
-    max-width: 16px;
-    max-height: 16px;
-    left: 10px;
-    position: absolute;
+    width: auto;
 }
 
 .hidden {
