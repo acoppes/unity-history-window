@@ -3,7 +3,7 @@
     -unity-text-align: middle-left;
     margin: 2px;
     padding: 3px;
-    background-color: #282828;
+    background-color: rgba(0, 0, 0, 0.1);
     border-color: black;
     border-width: 1px;
     border-radius: 3px;
@@ -46,7 +46,7 @@
     -unity-text-align: middle-left;
     margin: 2px;
     padding: 3px;
-    background-color: #282828;
+    background-color: rgba(0, 0, 0, 0.1);
     border-color: black;
     border-width: 1px;
     border-radius: 3px;
