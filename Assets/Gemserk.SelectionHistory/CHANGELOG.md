@@ -1,3 +1,7 @@
+# 1.5.6
+
+* fix: style reacts better to dark/light theme, had to change a bit the current style but it is almost the same.
+
 # 1.5.5
 
 * fix: don't change scroll when adding/removing favorites from history window
