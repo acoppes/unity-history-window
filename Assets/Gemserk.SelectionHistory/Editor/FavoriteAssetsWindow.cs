@@ -166,10 +166,17 @@ namespace Gemserk
             {
                 var assetReference = _favorites.favoritesList[i].reference;
 
-                if (assetReference == null)
+                if (!assetReference)
                     continue;
 
-                var testName = assetReference.name.ToLower();
+                var assetName = assetReference.name;
+
+                if (string.IsNullOrEmpty(assetName))
+                {
+                    assetName = assetReference.GetType().Name;
+                }
+                
+                var testName = assetName.ToLower();
                     
                 if (searchTexts != null && searchTexts.Length > 0)
                 {
@@ -239,7 +246,7 @@ namespace Gemserk
                 var label = elementTree.Q<Label>("Favorite");
                 if (label != null)
                 {
-                    label.text = assetReference.name;
+                    label.text = assetName;
                 }
 
                 favoritesParent.Add(favoriteRoot);
