@@ -1,6 +1,6 @@
 # 1.5.7
 
-* fix: Use type name for nameless objects to have something visual in the history window and avoid visual issues.
+* fix: Use type name for nameless objects to have something visual in the history window and avoid visual issues, for both the selection history and the favorites window.
 
 # 1.5.6
 
