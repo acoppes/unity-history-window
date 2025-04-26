@@ -1,3 +1,7 @@
+# 1.5.7
+
+* fix: Use type name for nameless objects to have something visual in the history window and avoid visual issues.
+
 # 1.5.6
 
 * fix: style reacts better to dark/light theme, had to change a bit the current style but it is almost the same.
