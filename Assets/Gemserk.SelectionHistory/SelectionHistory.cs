@@ -59,6 +59,9 @@ namespace Gemserk
 
             public string sceneName;
             public string scenePath;
+
+            // private bool unnamed;
+            // private string unnamedName;
             
             public string globalObjectId;
 
@@ -76,9 +79,11 @@ namespace Gemserk
             {
                 get
                 {
-                    if (Reference != null)
+                    if (Reference)
                     {
-                        return Reference.name;
+                        return string.IsNullOrEmpty(Reference.name) 
+                            ? Reference.GetType().Name 
+                            : Reference.name;
                     }
                     return unreferencedObjectName;
                 }   
@@ -88,6 +93,11 @@ namespace Gemserk
             {
                 this.reference = reference;
                 unreferencedObjectName = reference.name;
+
+                if (string.IsNullOrEmpty(reference.name))
+                {
+                    unreferencedObjectName = reference.GetType().Name;
+                }
 
                 if (reference is GameObject go)
                 {
