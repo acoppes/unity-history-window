@@ -34,22 +34,34 @@ namespace Gemserk
 		    try
 		    {
 				// This is some kind of migration from old saved files to new version using ScriptableSingleton.
+				var oldSelectionHistoryAssetPath = Path.Combine(Application.dataPath, "Gemserk.SelectionHistory.asset");
+				var oldFavoritesAssetPath = Path.Combine(Application.dataPath, "Gemserk.Favorites.asset");
 
-			    var oldSelectionHistoryAssetPath = Path.Combine(Application.dataPath, "Gemserk.SelectionHistory.asset");
-			    if (File.Exists(oldSelectionHistoryAssetPath))
-			    {
-				    Debug.LogWarning($"{oldSelectionHistoryAssetPath} found old history asset file. Auto renaming to avoid editor issues, should be deleted.");
-				    var renamedFilePath = Path.Combine(Application.dataPath, "Gemserk.SelectionHistory.backup");
-				    FileUtil.MoveFileOrDirectory(oldSelectionHistoryAssetPath, renamedFilePath);
-			    }
-			    
-			    var oldFavoritesAssetPath = Path.Combine(Application.dataPath, "Gemserk.Favorites.asset");
-			    if (File.Exists(oldFavoritesAssetPath))
-			    {
-				    Debug.LogWarning($"{oldFavoritesAssetPath} found old favorites asset file. Auto renaming to avoid editor issues, should be deleted.");
-				    var renamedFilePath = Path.Combine(Application.dataPath, "Gemserk.Favorites.backup");
-				    FileUtil.MoveFileOrDirectory(oldFavoritesAssetPath, renamedFilePath);
-			    }
+				if (File.Exists(oldSelectionHistoryAssetPath) || File.Exists(oldFavoritesAssetPath))
+				{
+					if (EditorUtility.DisplayDialog("Selection History", 
+						    "Found old Selection History and/or Favorites Assets that should be removed to avoid issues. Do you want to remove them now?", 
+						    "Yes", "No"))
+					{
+						if (File.Exists(oldSelectionHistoryAssetPath))
+						{
+							// Debug.LogWarning($"{oldSelectionHistoryAssetPath} found old history asset file. Auto renaming to avoid editor issues, should be deleted.");
+							var renamedFilePath = Path.Combine(Application.dataPath, "Gemserk.SelectionHistory.backup");
+							FileUtil.MoveFileOrDirectory(oldSelectionHistoryAssetPath, renamedFilePath);
+						}
+
+						if (File.Exists(oldFavoritesAssetPath))
+						{
+							// Debug.LogWarning($"{oldFavoritesAssetPath} found old favorites asset file. Auto renaming to avoid editor issues, should be deleted.");
+							var renamedFilePath = Path.Combine(Application.dataPath, "Gemserk.Favorites.backup");
+							FileUtil.MoveFileOrDirectory(oldFavoritesAssetPath, renamedFilePath);
+						}
+						EditorUtility.DisplayDialog("Selection History",
+							"Assets were renamed from .asset to .backup to keep your serialized data just in case you want to check it out. You can remove them at any time.",
+							"Ok");
+					}
+				}
+
 		    }
 		    catch (Exception e) 
 		    {
