@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System;
+using System.IO;
+using UnityEditor;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
@@ -28,6 +30,31 @@ namespace Gemserk
 	    static SelectionHistoryWindowUtils()
 	    {
 		    Selection.selectionChanged += SelectionRecorder;
+		    
+		    try
+		    {
+				// This is some kind of migration from old saved files to new version using ScriptableSingleton.
+
+			    var oldSelectionHistoryAssetPath = Path.Combine(Application.dataPath, "Gemserk.SelectionHistory.asset");
+			    if (File.Exists(oldSelectionHistoryAssetPath))
+			    {
+				    Debug.LogWarning($"{oldSelectionHistoryAssetPath} found old history asset file. Auto renaming to avoid editor issues, should be deleted.");
+				    var renamedFilePath = Path.Combine(Application.dataPath, "Gemserk.SelectionHistory.backup");
+				    FileUtil.MoveFileOrDirectory(oldSelectionHistoryAssetPath, renamedFilePath);
+			    }
+			    
+			    var oldFavoritesAssetPath = Path.Combine(Application.dataPath, "Gemserk.Favorites.asset");
+			    if (File.Exists(oldFavoritesAssetPath))
+			    {
+				    Debug.LogWarning($"{oldFavoritesAssetPath} found old favorites asset file. Auto renaming to avoid editor issues, should be deleted.");
+				    var renamedFilePath = Path.Combine(Application.dataPath, "Gemserk.Favorites.backup");
+				    FileUtil.MoveFileOrDirectory(oldFavoritesAssetPath, renamedFilePath);
+			    }
+		    }
+		    catch (Exception e) 
+		    {
+			    Debug.LogError(e);
+		    }
 	    }
 		
 	    private static void SelectionRecorder ()
