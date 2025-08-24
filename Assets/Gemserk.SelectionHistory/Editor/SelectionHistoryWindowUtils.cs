@@ -75,6 +75,13 @@ namespace Gemserk
 		    selectionHistory.Previous ();
 		    Selection.activeObject = selectionHistory.GetSelection ();
 	    }
+	    
+	    [MenuItem("Window/Gemserk/Previous selection %#,", true)]
+	    public static bool PreviousSelectionValidator()
+	    {
+		    var selectionHistory = SelectionHistoryAsset.instance.selectionHistory;
+		    return selectionHistory.History.Count > 0;
+	    }
 
 	    [MenuItem("Window/Gemserk/Next selection %#.")]
 	    [Shortcut("Selection History/Next Selection")]
@@ -83,6 +90,13 @@ namespace Gemserk
 		    var selectionHistory = SelectionHistoryAsset.instance.selectionHistory;
 		    selectionHistory.Next();
 		    Selection.activeObject = selectionHistory.GetSelection ();
+	    }
+	    
+	    [MenuItem("Window/Gemserk/Next selection %#.", true)]
+	    public static bool NextSelectionValidator()
+	    {
+		    var selectionHistory = SelectionHistoryAsset.instance.selectionHistory;
+		    return selectionHistory.History.Count > 0;
 	    }
 		
 		public static bool AutomaticRemoveDestroyed =>

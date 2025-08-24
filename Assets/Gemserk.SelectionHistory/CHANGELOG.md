@@ -1,3 +1,7 @@
+# 1.5.8
+
+* fix: Don't allow next/previous selection if there is no history.
+
 # 1.5.7
 
 * fix: Use type name for nameless objects to have something visual in the history window and avoid visual issues, for both the selection history and the favorites window.
