@@ -1,6 +1,7 @@
 # 1.5.8
 
 * fix: Don't allow next/previous selection if there is no history.
+* fix: Added some kind of migration code to autorename old history and favorite assets to avoid the issue with the ScriptableSingleton, for now it keeps them as .backup file just in case someone wants to recover their history in some way.
 
 # 1.5.7
 
