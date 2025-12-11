@@ -491,7 +491,7 @@ namespace Gemserk
         {
             var index = selectionHistory.GetSelectedIndex();
             
-            if (mainScrollElement != null)
+            if (mainScrollElement != null && mainScrollElement.visible && mainScrollElement.contentContainer.panel != null)
             {
                 mainScrollElement.contentContainer.style.flexDirection = SelectionHistoryWindowUtils.OrderLastSelectedFirst ? FlexDirection.ColumnReverse : FlexDirection.Column;
 
