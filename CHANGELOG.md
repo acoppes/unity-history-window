@@ -1,3 +1,7 @@
+# 1.5.9
+
+* fix: Check visual item has panel to not throw errors on Unity 6.3 when the history window is open but not visible. I suppose unity is doing some optimization but not checking that when trying to scroll to object.
+
 # 1.5.8
 
 * fix: Don't allow next/previous selection if there is no history.
