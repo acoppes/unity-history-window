@@ -22,6 +22,7 @@ namespace Gemserk
 	    
 	    public static readonly string OrderLastSelectedFirstKey = "Gemserk.SelectionHistory.OrderLastSelectedFirst";
 	    public static readonly string BackgroundRecordKey = "Gemserk.SelectionHistory.BackgroundRecord";
+	    public static readonly string NativeKeyHandleDisabledKey = "Gemserk.SelectionHistory.nativeKeyHandleDisabled";
 
 	    public const float distanceToConsiderDrag = 10.0f;
 	    
