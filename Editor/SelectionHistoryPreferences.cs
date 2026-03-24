@@ -2,6 +2,8 @@
 using UnityEditor;
 
 namespace Gemserk {
+    
+    [InitializeOnLoad]
     public static class SelectionHistoryPreferences {
 
         static bool prefsLoaded = false;
@@ -19,6 +21,21 @@ namespace Gemserk {
 
         private static bool backgroundRecord;
 
+        public static bool nativeKeyHandleDisabled;
+        
+        static SelectionHistoryPreferences()
+        {
+            // historySize = EditorPrefs.GetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, defaultHistorySize);
+            autoremoveDestroyed = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDestroyedPrefKey, true);
+            autoremoveUnloaded = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveUnloadedPrefKey, true);
+            autoRemoveDuplicated = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAllowDuplicatedEntriesPrefKey, false);
+            drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, true);
+            orderLastSelectedFirst = EditorPrefs.GetBool(SelectionHistoryWindowUtils.OrderLastSelectedFirstKey, false);
+            backgroundRecord = EditorPrefs.GetBool(SelectionHistoryWindowUtils.BackgroundRecordKey, false);
+            nativeKeyHandleDisabled = EditorPrefs.GetBool(SelectionHistoryWindowUtils.NativeKeyHandleDisabledKey, false);
+            prefsLoaded = true;
+        }
+
         [SettingsProvider]
         public static SettingsProvider CreateSelectionHistorySettingsProvider() {
             var provider = new SettingsProvider("Selection History", SettingsScope.User) {
@@ -26,17 +43,6 @@ namespace Gemserk {
                 guiHandler = (searchContext) =>
                 {
                     var selectionHistory = SelectionHistoryAsset.instance.selectionHistory;
-                    
-                    if (!prefsLoaded) {
-                       // historySize = EditorPrefs.GetInt(SelectionHistoryWindowUtils.HistorySizePrefKey, defaultHistorySize);
-                        autoremoveDestroyed = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDestroyedPrefKey, true);
-                        autoremoveUnloaded = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveUnloadedPrefKey, true);
-                        autoRemoveDuplicated = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryAllowDuplicatedEntriesPrefKey, false);
-                        drawFavorites = EditorPrefs.GetBool(SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, true);
-                        orderLastSelectedFirst = EditorPrefs.GetBool(SelectionHistoryWindowUtils.OrderLastSelectedFirstKey, false);
-                        backgroundRecord = EditorPrefs.GetBool(SelectionHistoryWindowUtils.BackgroundRecordKey, false);
-                        prefsLoaded = true;
-                    }
                     
                     if (selectionHistory != null)
                     {
@@ -50,6 +56,7 @@ namespace Gemserk {
                     drawFavorites = EditorGUILayout.Toggle("Show Pin to favorites button", drawFavorites);
                     orderLastSelectedFirst = EditorGUILayout.Toggle("Order last selected first", orderLastSelectedFirst);
                     backgroundRecord = EditorGUILayout.Toggle("Record selection while window closed", backgroundRecord);
+                    nativeKeyHandleDisabled = EditorGUILayout.Toggle("Disable native mouse handle (button 4 & 5)", nativeKeyHandleDisabled);
 
                     if (GUI.changed) {
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryAutomaticRemoveDestroyedPrefKey, autoremoveDestroyed);
@@ -58,6 +65,7 @@ namespace Gemserk {
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.HistoryShowPinButtonPrefKey, drawFavorites);
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.OrderLastSelectedFirstKey, orderLastSelectedFirst);
                         EditorPrefs.SetBool(SelectionHistoryWindowUtils.BackgroundRecordKey, backgroundRecord);
+                        EditorPrefs.SetBool(SelectionHistoryWindowUtils.NativeKeyHandleDisabledKey, nativeKeyHandleDisabled);
 
                         // var window = EditorWindow.GetWindow<SelectionHistoryWindow>();
                         // if (window != null)

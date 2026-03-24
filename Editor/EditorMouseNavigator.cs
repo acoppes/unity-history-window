@@ -58,6 +58,11 @@ namespace Gemserk
 
         private static void PollMouseButtons()
         {
+            if (SelectionHistoryPreferences.nativeKeyHandleDisabled)
+            {
+                return;
+            }
+            
             bool backState = false;
             bool forwardState = false;
             bool ctrlState = false;
