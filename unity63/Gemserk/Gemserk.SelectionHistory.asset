@@ -1,0 +1,157 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_ObjectHideFlags: 53
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76094f091f1f4b07bb27fd8667a16406, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gemserk.SelectionHistory.Editor::Gemserk.SelectionHistoryAsset
+  selectionHistory:
+    historySize: 200
+    _history:
+    - reference: {fileID: 11400000, guid: 8105016687592461f977c054a80ce2f2, type: 2}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: ba062aa6c92b140379dbc06b43dd3b9b, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 709f11a7f3c4041caa4ef136ea32d874, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 11500000, guid: ef85e74dfd3749279eff9e7fbfbaf3f8, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 11500000, guid: b46a1ab31b3043b88cc57df2167383ac, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 3174898fbcdf12448963cdb5f5b60a33, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 919d97c1a707113409177d498d31cf51, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: e091bb444874ef244b1ba4a813fc1e34, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 7a24ec4b5c3e08e47bf50c8298c1fe0d, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: ad70ff8d98b257540b683737743828cb, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: f601c0d674119f74db9c15166b3a58c4, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: cce613d1538e76a4785658931c7db093, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 9f2ad7cb0b669c04d80de0ebde5db836, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 4584db2acba045742a16942983e7fb96, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 0f71aeefaa877ae4787e8356f25ad1e5, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 9a6069768ff3d8043a79348813f86cba, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: cae60a41b37427b48a00027b3e0fc1e6, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: a77cec0d8f4e942d383bb0c51a439644, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 3a5038547af7c7f46bd90a015862e0b3, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 2d8485e4e3a2bcb429fc32900ca26d9e, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 0}
+      sceneName: SampleScene
+      scenePath: Assets/Scenes/SampleScene.unity
+      globalObjectId: GlobalObjectId_V1-2-99c9720ab356a0642a771bea13969a05-832575517-0
+    - reference: {fileID: 0}
+      sceneName: SampleScene
+      scenePath: Assets/Scenes/SampleScene.unity
+      globalObjectId: GlobalObjectId_V1-2-99c9720ab356a0642a771bea13969a05-410087039-0
+    - reference: {fileID: 0}
+      sceneName: SampleScene
+      scenePath: Assets/Scenes/SampleScene.unity
+      globalObjectId: GlobalObjectId_V1-2-99c9720ab356a0642a771bea13969a05-330585543-0
+    - reference: {fileID: 102900000, guid: 4c83a4341e1a04442894683d651672c6, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: e35c129b225555c48879845c7c563018, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 00000000000000001000000000000000, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: 052aa9875da95414ea390809ea24e31d, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 102900000, guid: b2560198c7dcfc44e85ee5c1988dd3c0, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 11500000, guid: e3addd7b6298e8d42becf06c01f22952, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 7433441132597879392, guid: 9e7fd70eaedd177439e9e06435f96d48, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 9197481963319205126, guid: 9430dfa24e0b71b46885525b90de35f1, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 9197481963319205126, guid: 9f1ec91e64ecf674aa98c6dc4fb13327, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 
+    - reference: {fileID: 9197481963319205126, guid: fcf928e2ae210cb4f899f2b33bc6451f, type: 3}
+      sceneName: 
+      scenePath: 
+      globalObjectId: 

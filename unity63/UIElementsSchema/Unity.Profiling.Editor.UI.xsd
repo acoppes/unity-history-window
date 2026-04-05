@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:editor="UnityEditor.UIElements" xmlns:engine="UnityEngine.UIElements" xmlns="UnityEditor.Accessibility" elementFormDefault="qualified" targetNamespace="Unity.Profiling.Editor.UI" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="UnityEngine.UIElements.xsd" namespace="UnityEngine.UIElements" />
+  <xs:complexType name="PieChartType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
+        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PieChart" substitutionGroup="engine:VisualElement" xmlns:q1="Unity.Profiling.Editor.UI" type="q1:PieChartType" />
+  <xs:complexType name="ActivityIndicatorOverlayType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
+        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ActivityIndicatorOverlay" substitutionGroup="engine:VisualElement" xmlns:q2="Unity.Profiling.Editor.UI" type="q2:ActivityIndicatorOverlayType" />
+  <xs:complexType name="ReadOnlyFloatFieldType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
+        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ReadOnlyFloatField" substitutionGroup="engine:VisualElement" xmlns:q3="Unity.Profiling.Editor.UI" type="q3:ReadOnlyFloatFieldType" />
+  <xs:complexType name="BoxPlotGraphType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
+        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="BoxPlotGraph" substitutionGroup="engine:VisualElement" xmlns:q4="Unity.Profiling.Editor.UI" type="q4:BoxPlotGraphType" />
+  <xs:complexType name="BlocksGraphViewType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
+        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="BlocksGraphView" substitutionGroup="engine:VisualElement" xmlns:q5="Unity.Profiling.Editor.UI" type="q5:BlocksGraphViewType" />
+  <xs:complexType name="BlocksGraphViewRenderType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
+        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="BlocksGraphViewRender" substitutionGroup="engine:VisualElement" xmlns:q6="Unity.Profiling.Editor.UI" type="q6:BlocksGraphViewRenderType" />
+</xs:schema>

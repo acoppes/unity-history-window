@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:editor="UnityEditor.UIElements" xmlns:engine="UnityEngine.UIElements" xmlns="UnityEditor.Accessibility" elementFormDefault="qualified" targetNamespace="Unity.UIToolkit.Editor" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="UnityEngine.UIElements.xsd" namespace="UnityEngine.UIElements" />
+  <xs:complexType name="VisualElementInspectorType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
+        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="VisualElementInspector" substitutionGroup="engine:VisualElement" xmlns:q1="Unity.UIToolkit.Editor" type="q1:VisualElementInspectorType" />
+  <xs:complexType name="VisualTreeAssetHeaderType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
+        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
+        <xs:attribute default="d_TemplateContainer@2x (UnityEngine.Texture2D)" name="type-icon" type="xs:string" use="optional" />
+        <xs:attribute default="VisualTreeAsset" name="type-name" type="xs:string" use="optional" />
+        <xs:attribute default="" name="visual-tree-asset" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="VisualTreeAssetHeader" substitutionGroup="engine:VisualElement" xmlns:q2="Unity.UIToolkit.Editor" type="q2:VisualTreeAssetHeaderType" />
+  <xs:complexType name="VisualElementHeaderType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="false" name="enabled" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
+        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
+        <xs:attribute default="d_VisualElement@2x (UnityEngine.Texture2D)" name="type-icon" type="xs:string" use="optional" />
+        <xs:attribute default="VisualElement" name="type-name" type="xs:string" use="optional" />
+        <xs:attribute default="" name="element-name" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="VisualElementHeader" substitutionGroup="engine:VisualElement" xmlns:q3="Unity.UIToolkit.Editor" type="q3:VisualElementHeaderType" />
+  <xs:complexType name="OpenInBuilderElementType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
+        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
+        <xs:attribute default="" name="visual-tree-asset" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="OpenInBuilderElement" substitutionGroup="engine:VisualElement" xmlns:q4="Unity.UIToolkit.Editor" type="q4:OpenInBuilderElementType" />
+  <xs:complexType name="VisualTreeAssetInspectorType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="true" name="enabled" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="Inherit" name="language-direction" type="engine:VisualElement_language-direction_Type" use="optional" />
+        <xs:attribute default="" name="data-source" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-path" type="xs:string" use="optional" />
+        <xs:attribute default="" name="data-source-type" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="VisualTreeAssetInspector" substitutionGroup="engine:VisualElement" xmlns:q5="Unity.UIToolkit.Editor" type="q5:VisualTreeAssetInspectorType" />
+</xs:schema>
