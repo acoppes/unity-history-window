@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
+>
+    
+    <engine:VisualElement class="favorite" name="Root">
+        <engine:VisualElement name="DragArea">
+            <engine:Label text="default" name="Favorite"/>
+            <engine:Image name="Icon" />    
+        </engine:VisualElement>
+        <engine:Image class="hidden" name="OpenPrefabIcon" />
+        <engine:Image name="RemoveIcon" />
+    </engine:VisualElement>
+    
+    
+</engine:UXML>
