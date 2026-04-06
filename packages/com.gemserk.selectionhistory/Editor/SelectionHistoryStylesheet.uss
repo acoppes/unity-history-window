@@ -20,7 +20,6 @@
 .favorite #Icon {
     max-width: 16px;
     max-height: 16px;
-    visibility: initial;
     position: absolute;
     align-self: flex-start;
 }
@@ -71,7 +70,6 @@
 .history #Icon {
     max-width: 16px;
     max-height: 16px;
-    visibility: initial;
     position: absolute;
     align-self: flex-start;
 }
