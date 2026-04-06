@@ -155,6 +155,10 @@ namespace Gemserk
                         searchTexts = searchText.Split(' ');
                     }
                 }
+                else
+                {
+                    searchTexts = null;
+                }
                 
                 favoritesListView?.RefreshItems();
             });

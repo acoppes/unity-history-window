@@ -1,3 +1,7 @@
+# 1.5.14
+
+* fix: using search bar with favorites wasn't refreshing correctly when search is empty.
+
 # 1.5.13
 
 * fix: favorites remove was super slow, was registering n times the handlers.
