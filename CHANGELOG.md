@@ -1,3 +1,7 @@
+# 1.5.13
+
+* fix: favorites remove was super slow, was registering n times the handlers.
+
 # 1.5.11
 
 * feat: reorderable favorites, but lost support to unity 2020.x because I am using ListView and it wasn't fully supported for some reason.
