@@ -16,11 +16,11 @@ namespace Gemserk
         private bool isDragging;
         private bool isPressed;
 
-        private readonly Object assetReference;
+        // private readonly Object assetReference;
      
-        public FavoriteElementDragManipulator(Object assetReference)
+        public FavoriteElementDragManipulator()
         {
-            this.assetReference = assetReference;
+            // this.assetReference = assetReference;
             mouseDownHandler = OnMouseDown;
             mouseMoveHandler = OnMouseMove;
             mouseUpHandler = OnMouseUp;
@@ -48,6 +48,9 @@ namespace Gemserk
             {
                 return;
             }
+
+
+            var assetReference = target.userData as Object;
             
             if (evt.button == 0)
             {
@@ -70,6 +73,8 @@ namespace Gemserk
             {
                 return;
             }
+            
+            var assetReference = target.userData as Object;
             
             if (evt.button == 0 && evt.clickCount == 2)
             {
@@ -104,6 +109,8 @@ namespace Gemserk
             target.ReleasePointer(0);
             
             DragAndDrop.PrepareStartDrag();
+            
+            var assetReference = target.userData as Object;
             
             var objectReferences = new[] { assetReference };
             DragAndDrop.paths = new[]
