@@ -3,7 +3,7 @@
   "version": "1.5.11",
   "displayName": "Selection History by Gemserk",
   "description": "Selection history from http://blog.gemserk.com/2017/02/13/a-simple-selection-history-window-for-unity/ and https://github.com/acoppes/unity-history-window",
-  "unity": "2020.1",
+  "unity": "2021.3",
   "unityRelease": "1f1",
   "dependencies": { },
   "keywords": [

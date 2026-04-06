@@ -176,8 +176,9 @@ namespace Gemserk
                 favoritesListView.itemsSource = _favorites.favoritesList;
                 favoritesListView.bindItem = BindFavorite;
                 favoritesListView.makeItem = MakeFavoritesElement;
+#if UNITY_2021_1_OR_NEWER
                 favoritesListView.itemIndexChanged += OnReordered;
-                
+#endif
                 root.Add(favoritesListView);
             }
             // else
