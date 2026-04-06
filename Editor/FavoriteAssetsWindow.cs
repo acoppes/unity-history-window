@@ -71,7 +71,7 @@ namespace Gemserk
         private ToolbarSearchField searchToolbar;
         private ListView favoritesListView;
         
-        private string searchText;
+        private string[] searchTexts = null;
         
         private void GetDefaultElements()
         {
@@ -129,7 +129,7 @@ namespace Gemserk
         {
             // var root = rootVisualElement;
             // root.Clear();
-            ReloadRoot();
+            // ReloadRoot();
         }
 
         private VisualElement CreateSearchToolbar()
@@ -138,8 +138,24 @@ namespace Gemserk
             searchToolbar.AddToClassList("searchToolbar");
             searchToolbar.RegisterValueChangedCallback(evt =>
             {
-                searchText = evt.newValue;
-                ReloadRoot();
+                var searchText = evt.newValue;
+                
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    searchText = searchText.TrimStart().TrimEnd();
+                    if (!string.IsNullOrEmpty(searchText))
+                    {
+                        searchTexts = searchText.Split(' ');
+                    }
+                }
+                
+                // ReloadRoot();
+                
+                #if UNITY_2021_1_OR_NEWER
+                favoritesListView?.RefreshItems();
+                #else
+                favoritesListView?.Refresh();
+                #endif
             });
 
             return searchToolbar;
@@ -154,28 +170,23 @@ namespace Gemserk
             {
                 var elementTree = windowTreeAsset.CloneTree();
                 favoritesListView = elementTree.Q<ListView>("FavoritesList");
+
+                // favoritesListView = new ListView(_favorites.favoritesList, 20, MakeFavoritesElement, BindFavorite);
                 
+                favoritesListView.itemsSource = _favorites.favoritesList;
                 favoritesListView.bindItem = BindFavorite;
                 favoritesListView.makeItem = MakeFavoritesElement;
-                favoritesListView.itemsSource = _favorites.favoritesList;
+                favoritesListView.itemIndexChanged += OnReordered;
                 
                 root.Add(favoritesListView);
             }
-            else
-            {
-                favoritesListView.Clear();
-                // favoritesParent.Clear();
-            }
+            // else
+            // {
+            //     favoritesListView.Clear();
+            //     // favoritesParent.Clear();
+            // }
             
-            string[] searchTexts = null;
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                searchText = searchText.TrimStart().TrimEnd();
-                if (!string.IsNullOrEmpty(searchText))
-                {
-                    searchTexts = searchText.Split(' ');
-                }
-            }
+          
 
             // for (var i = 0; i < _favorites.favoritesList.Count; i++)
             // {
@@ -272,6 +283,11 @@ namespace Gemserk
             root.Add(receiveDragArea);
         }
 
+        private void OnReordered(int a, int b)
+        {
+            _favorites.OnFavoritesModified();
+        }
+
         private VisualElement MakeFavoritesElement()
         {
             var elementTree = favoriteElementTreeAsset.CloneTree();
@@ -285,36 +301,41 @@ namespace Gemserk
         {
             var favorite = _favorites.favoritesList[elementIndex];
             var assetReference = favorite.reference;
-            //
-            //     if (!assetReference)
-            //         continue;
-            //
+            
+            if (!assetReference)
+            {
+                visualElement.style.display = DisplayStyle.None;
+                return;
+            }
+            
             var assetName = assetReference.name;
             
             if (string.IsNullOrEmpty(assetName))
             {
                 assetName = assetReference.GetType().Name;
             }
-            //     
-            //     var testName = assetName.ToLower();
-            //         
-            //     if (searchTexts != null && searchTexts.Length > 0)
-            //     {
-            //         var match = true;
-            //             
-            //         foreach (var text in searchTexts)
-            //         {
-            //             if (!testName.Contains(text.ToLower()))
-            //             {
-            //                 match = false;
-            //             }
-            //         }
-            //
-            //         if (!match)
-            //         {
-            //             continue;
-            //         }
-            //     }
+            
+            var testName = assetName.ToLower();
+                
+            visualElement.style.display = DisplayStyle.Flex;
+            
+            if (searchTexts != null && searchTexts.Length > 0)
+            {
+                var match = true;
+                    
+                foreach (var text in searchTexts)
+                {
+                    if (!testName.Contains(text.ToLower()))
+                    {
+                        match = false;
+                    }
+                }
+            
+                if (!match)
+                {
+                    visualElement.style.display = DisplayStyle.None;
+                }
+            }
             
             // var favoriteRoot = visualElement.Q<VisualElement>("Root");
             

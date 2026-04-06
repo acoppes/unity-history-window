@@ -39,5 +39,10 @@ namespace Gemserk
             OnFavoritesUpdated?.Invoke(this);
             Save(true);
         }
+
+        public void OnFavoritesModified()
+        {
+            Save(true);
+        }
     }
 }
