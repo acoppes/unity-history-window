@@ -1,3 +1,7 @@
+# 1.5.11
+
+* feat: reorderable favorites, but lost support to unity 2020.x because I am using ListView and it wasn't fully supported for some reason.
+
 # 1.5.10
 
 * feat: Add mouse side button navigation with Ctrl-based Asset/Scene filtering
