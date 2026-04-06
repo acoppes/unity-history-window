@@ -86,6 +86,12 @@ namespace Gemserk
                 favoriteElementTreeAsset = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "FavoriteElement")
                     .OfType<VisualTreeAsset>().FirstOrDefault();
             }
+            
+            if (!windowTreeAsset)
+            {
+                windowTreeAsset = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "FavoritesWindow")
+                    .OfType<VisualTreeAsset>().FirstOrDefault();
+            }
         }
         
         private void OnDisable()
@@ -189,8 +195,35 @@ namespace Gemserk
         {
             var elementTree = favoriteElementTreeAsset.CloneTree();
             var favoriteRoot = elementTree.Q<VisualElement>("Root");
+            
             var dragArea = elementTree.Q<VisualElement>("DragArea");
             dragArea.AddManipulator(new FavoriteElementDragManipulator());
+            
+            var removeIcon = elementTree.Q<Image>("RemoveIcon");
+            if (removeIcon != null)
+            {
+                removeIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.removeIconName).image;
+                removeIcon.tooltip = "Remove";
+                removeIcon.RegisterCallback(delegate(MouseUpEvent e)
+                {
+                    var assetReference = removeIcon.userData as Object;
+                    FavoritesAsset.instance.RemoveFavorite(assetReference);
+                });
+            }
+
+            var openPrefabIcon = elementTree.Q<Image>("OpenPrefabIcon");
+            if (openPrefabIcon != null)
+            {
+                openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openAssetIconName).image;
+                openPrefabIcon.tooltip = "Open";
+                openPrefabIcon.RemoveFromClassList("hidden");
+                openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
+                {
+                    var assetReference = openPrefabIcon.userData as Object;
+                    AssetDatabase.OpenAsset(assetReference);
+                });
+            }
+            
             return favoriteRoot;
         }
 
@@ -254,29 +287,31 @@ namespace Gemserk
             var removeIcon = visualElement.Q<Image>("RemoveIcon");
             if (removeIcon != null)
             {
+                removeIcon.userData = assetReference;
                 // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
-                removeIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.removeIconName).image;
-                removeIcon.tooltip = "Remove";
-                
-                removeIcon.RegisterCallback(delegate(MouseUpEvent e)
-                {
-                    FavoritesAsset.instance.RemoveFavorite(assetReference);
-                });
+                // removeIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.removeIconName).image;
+                // removeIcon.tooltip = "Remove";
+                //
+                // removeIcon.RegisterCallback(delegate(MouseUpEvent e)
+                // {
+                //     FavoritesAsset.instance.RemoveFavorite(assetReference);
+                // });
             }
-            
+      
             var openPrefabIcon = visualElement.Q<Image>("OpenPrefabIcon");
             if (openPrefabIcon != null)
             {
+                openPrefabIcon.userData = assetReference;
                 // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
-                openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openAssetIconName).image;
-                openPrefabIcon.tooltip = "Open";
-
-                openPrefabIcon.RemoveFromClassList("hidden");
-
-                openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
-                {
-                    AssetDatabase.OpenAsset(assetReference);
-                });
+                // openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openAssetIconName).image;
+                // openPrefabIcon.tooltip = "Open";
+                //
+                // openPrefabIcon.RemoveFromClassList("hidden");
+                //
+                // openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
+                // {
+                //     AssetDatabase.OpenAsset(assetReference);
+                // });
             }
             
             var label = visualElement.Q<Label>("Favorite");

@@ -48,8 +48,7 @@ namespace Gemserk
             {
                 return;
             }
-
-
+            
             var assetReference = target.userData as Object;
             
             if (evt.button == 0)
