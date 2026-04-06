@@ -69,7 +69,7 @@ namespace Gemserk
         private VisualTreeAsset favoriteElementTreeAsset;
 
         private ToolbarSearchField searchToolbar;
-        private VisualElement favoritesParent;
+        private ListView favoritesListView;
         
         private string searchText;
         
@@ -150,14 +150,21 @@ namespace Gemserk
             var root = rootVisualElement;
 
             // var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/FavoriteElement.uxml");
-            if (favoritesParent == null)
+            if (favoritesListView == null)
             {
-                favoritesParent = new ScrollView(ScrollViewMode.Vertical);
-                root.Add(favoritesParent);
+                var elementTree = windowTreeAsset.CloneTree();
+                favoritesListView = elementTree.Q<ListView>("FavoritesList");
+                
+                favoritesListView.bindItem = BindFavorite;
+                favoritesListView.makeItem = MakeFavoritesElement;
+                favoritesListView.itemsSource = _favorites.favoritesList;
+                
+                root.Add(favoritesListView);
             }
             else
             {
-                favoritesParent.Clear();
+                favoritesListView.Clear();
+                // favoritesParent.Clear();
             }
             
             string[] searchTexts = null;
@@ -170,99 +177,196 @@ namespace Gemserk
                 }
             }
 
-            for (var i = 0; i < _favorites.favoritesList.Count; i++)
-            {
-                var assetReference = _favorites.favoritesList[i].reference;
-
-                if (!assetReference)
-                    continue;
-
-                var assetName = assetReference.name;
-
-                if (string.IsNullOrEmpty(assetName))
-                {
-                    assetName = assetReference.GetType().Name;
-                }
-                
-                var testName = assetName.ToLower();
-                    
-                if (searchTexts != null && searchTexts.Length > 0)
-                {
-                    var match = true;
-                        
-                    foreach (var text in searchTexts)
-                    {
-                        if (!testName.Contains(text.ToLower()))
-                        {
-                            match = false;
-                        }
-                    }
-
-                    if (!match)
-                    {
-                        continue;
-                    }
-                }
-                
-                var elementTree = favoriteElementTreeAsset.CloneTree();
-                var favoriteRoot = elementTree.Q<VisualElement>("Root");
-                
-                var dragArea = elementTree.Q<VisualElement>("DragArea");
-                
-                var isSceneAsset = assetReference is SceneAsset;
-                var isAsset = !isSceneAsset;
-
-                if (dragArea != null)
-                {
-                    dragArea.AddManipulator(new FavoriteElementDragManipulator(assetReference));
-                }
-                
-                var icon = elementTree.Q<Image>("Icon");
-                if (icon != null)
-                {
-                    icon.image = AssetPreview.GetMiniThumbnail(assetReference);
-                }
-                
-                var removeIcon = elementTree.Q<Image>("RemoveIcon");
-                if (removeIcon != null)
-                {
-                    // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
-                    removeIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.removeIconName).image;
-                    removeIcon.tooltip = "Remove";
-                    
-                    removeIcon.RegisterCallback(delegate(MouseUpEvent e)
-                    {
-                        FavoritesAsset.instance.RemoveFavorite(assetReference);
-                    });
-                }
-                
-                var openPrefabIcon = elementTree.Q<Image>("OpenPrefabIcon");
-                if (openPrefabIcon != null)
-                {
-                    // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
-                    openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openAssetIconName).image;
-                    openPrefabIcon.tooltip = "Open";
-
-                    openPrefabIcon.RemoveFromClassList("hidden");
-
-                    openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
-                    {
-                        AssetDatabase.OpenAsset(assetReference);
-                    });
-                }
-                
-                var label = elementTree.Q<Label>("Favorite");
-                if (label != null)
-                {
-                    label.text = assetName;
-                }
-
-                favoritesParent.Add(favoriteRoot);
-            }
+            // for (var i = 0; i < _favorites.favoritesList.Count; i++)
+            // {
+            //     var assetReference = _favorites.favoritesList[i].reference;
+            //
+            //     if (!assetReference)
+            //         continue;
+            //
+            //     var assetName = assetReference.name;
+            //
+            //     if (string.IsNullOrEmpty(assetName))
+            //     {
+            //         assetName = assetReference.GetType().Name;
+            //     }
+            //     
+            //     var testName = assetName.ToLower();
+            //         
+            //     if (searchTexts != null && searchTexts.Length > 0)
+            //     {
+            //         var match = true;
+            //             
+            //         foreach (var text in searchTexts)
+            //         {
+            //             if (!testName.Contains(text.ToLower()))
+            //             {
+            //                 match = false;
+            //             }
+            //         }
+            //
+            //         if (!match)
+            //         {
+            //             continue;
+            //         }
+            //     }
+            //     
+            //     var elementTree = favoriteElementTreeAsset.CloneTree();
+            //     var favoriteRoot = elementTree.Q<VisualElement>("Root");
+            //     
+            //     var dragArea = elementTree.Q<VisualElement>("DragArea");
+            //     
+            //     var isSceneAsset = assetReference is SceneAsset;
+            //     var isAsset = !isSceneAsset;
+            //
+            //     if (dragArea != null)
+            //     {
+            //         dragArea.AddManipulator(new FavoriteElementDragManipulator(assetReference));
+            //     }
+            //     
+            //     var icon = elementTree.Q<Image>("Icon");
+            //     if (icon != null)
+            //     {
+            //         icon.image = AssetPreview.GetMiniThumbnail(assetReference);
+            //     }
+            //     
+            //     var removeIcon = elementTree.Q<Image>("RemoveIcon");
+            //     if (removeIcon != null)
+            //     {
+            //         // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
+            //         removeIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.removeIconName).image;
+            //         removeIcon.tooltip = "Remove";
+            //         
+            //         removeIcon.RegisterCallback(delegate(MouseUpEvent e)
+            //         {
+            //             FavoritesAsset.instance.RemoveFavorite(assetReference);
+            //         });
+            //     }
+            //     
+            //     var openPrefabIcon = elementTree.Q<Image>("OpenPrefabIcon");
+            //     if (openPrefabIcon != null)
+            //     {
+            //         // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
+            //         openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openAssetIconName).image;
+            //         openPrefabIcon.tooltip = "Open";
+            //
+            //         openPrefabIcon.RemoveFromClassList("hidden");
+            //
+            //         openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
+            //         {
+            //             AssetDatabase.OpenAsset(assetReference);
+            //         });
+            //     }
+            //     
+            //     var label = elementTree.Q<Label>("Favorite");
+            //     if (label != null)
+            //     {
+            //         label.text = assetName;
+            //     }
+            //
+            //     favoritesParent.Add(favoriteRoot);
+            // }
 
             var receiveDragArea = new VisualElement();
             receiveDragArea.style.flexGrow = 1;
             root.Add(receiveDragArea);
+        }
+
+        private VisualElement MakeFavoritesElement()
+        {
+            var elementTree = favoriteElementTreeAsset.CloneTree();
+            var favoriteRoot = elementTree.Q<VisualElement>("Root");
+            var dragArea = elementTree.Q<VisualElement>("DragArea");
+            dragArea.AddManipulator(new FavoriteElementDragManipulator());
+            return favoriteRoot;
+        }
+
+        private void BindFavorite(VisualElement visualElement, int elementIndex)
+        {
+            var favorite = _favorites.favoritesList[elementIndex];
+            var assetReference = favorite.reference;
+            //
+            //     if (!assetReference)
+            //         continue;
+            //
+            var assetName = assetReference.name;
+            
+            if (string.IsNullOrEmpty(assetName))
+            {
+                assetName = assetReference.GetType().Name;
+            }
+            //     
+            //     var testName = assetName.ToLower();
+            //         
+            //     if (searchTexts != null && searchTexts.Length > 0)
+            //     {
+            //         var match = true;
+            //             
+            //         foreach (var text in searchTexts)
+            //         {
+            //             if (!testName.Contains(text.ToLower()))
+            //             {
+            //                 match = false;
+            //             }
+            //         }
+            //
+            //         if (!match)
+            //         {
+            //             continue;
+            //         }
+            //     }
+            
+            // var favoriteRoot = visualElement.Q<VisualElement>("Root");
+            
+            var dragArea = visualElement.Q<VisualElement>("DragArea");
+            
+            var isSceneAsset = assetReference is SceneAsset;
+            var isAsset = !isSceneAsset;
+
+            if (dragArea != null)
+            {
+                dragArea.userData = assetReference;
+            }
+            
+            var icon = visualElement.Q<Image>("Icon");
+            if (icon != null)
+            {
+                icon.image = AssetPreview.GetMiniThumbnail(assetReference);
+            }
+            
+            var removeIcon = visualElement.Q<Image>("RemoveIcon");
+            if (removeIcon != null)
+            {
+                // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
+                removeIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.removeIconName).image;
+                removeIcon.tooltip = "Remove";
+                
+                removeIcon.RegisterCallback(delegate(MouseUpEvent e)
+                {
+                    FavoritesAsset.instance.RemoveFavorite(assetReference);
+                });
+            }
+            
+            var openPrefabIcon = visualElement.Q<Image>("OpenPrefabIcon");
+            if (openPrefabIcon != null)
+            {
+                // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
+                openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openAssetIconName).image;
+                openPrefabIcon.tooltip = "Open";
+
+                openPrefabIcon.RemoveFromClassList("hidden");
+
+                openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
+                {
+                    AssetDatabase.OpenAsset(assetReference);
+                });
+            }
+            
+            var label = visualElement.Q<Label>("Favorite");
+            if (label != null)
+            {
+                label.text = assetName;
+            }
         }
     }
 }
