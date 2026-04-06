@@ -54,10 +54,18 @@ namespace Gemserk
             }
         }
 
-        private FavoritesAsset _favorites;
+        [SerializeField]
+        private VisualTreeAsset windowTreeAsset = default;
 
+        // [SerializeField]
+        // private VisualTreeAsset windowTreeAsset = default;
+
+        private FavoritesAsset _favorites;
+        
+        [SerializeField]
         private StyleSheet styleSheet;
 
+        [SerializeField]
         private VisualTreeAsset favoriteElementTreeAsset;
 
         private ToolbarSearchField searchToolbar;
@@ -67,13 +75,13 @@ namespace Gemserk
         
         private void GetDefaultElements()
         {
-            if (styleSheet == null)
+            if (!styleSheet)
             {
                 styleSheet = AssetDatabaseExt.FindAssets(typeof(StyleSheet), "SelectionHistoryStylesheet")
                     .OfType<StyleSheet>().FirstOrDefault();
             }
             
-            if (favoriteElementTreeAsset == null)
+            if (!favoriteElementTreeAsset)
             {
                 favoriteElementTreeAsset = AssetDatabaseExt.FindAssets(typeof(VisualTreeAsset), "FavoriteElement")
                     .OfType<VisualTreeAsset>().FirstOrDefault();
@@ -82,7 +90,7 @@ namespace Gemserk
         
         private void OnDisable()
         {
-            if (_favorites != null)
+            if (_favorites)
             {
                 _favorites.OnFavoritesUpdated -= OnFavoritesUpdated;
             }

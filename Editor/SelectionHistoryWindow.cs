@@ -44,7 +44,10 @@ namespace Gemserk
             window.titleContent = titleContent;
         }
         
+        [SerializeField]
         private StyleSheet styleSheet;
+        
+        [SerializeField]
         private VisualTreeAsset historyElementViewTree;
 
         private SelectionHistory selectionHistory;
