@@ -1,4 +1,4 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Packages/com.gemserk.selectionhistory/Editor/SelectionHistoryStylesheet.uss?fileID=7433441132597879392&amp;guid=51608abdc59297e44b306ea90947f75b&amp;type=3#SelectionHistoryStylesheet"/>
-    <engine:ListView reorderable="true" reorder-mode="Animated" item-template="project://database/Packages/com.gemserk.selectionhistory/Editor/FavoriteElement.uxml?fileID=9197481963319205126&amp;guid=fcf928e2ae210cb4f899f2b33bc6451f&amp;type=3#FavoriteElement" name="FavoritesList"/>
+    <Style src="SelectionHistoryStylesheet.uss?fileID=7433441132597879392&amp;guid=51608abdc59297e44b306ea90947f75b&amp;type=3#SelectionHistoryStylesheet"/>
+    <engine:ListView reorderable="true" reorder-mode="Animated" item-template="FavoriteElement.uxml?fileID=9197481963319205126&amp;guid=fcf928e2ae210cb4f899f2b33bc6451f&amp;type=3#FavoriteElement" name="FavoritesList"/>
 </engine:UXML>
