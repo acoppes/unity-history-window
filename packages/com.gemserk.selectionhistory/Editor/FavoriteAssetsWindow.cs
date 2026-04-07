@@ -210,8 +210,8 @@ namespace Gemserk
                 removeIcon.tooltip = "Remove";
                 removeIcon.RegisterCallback(delegate(MouseUpEvent e)
                 {
-                    var assetReference = removeIcon.userData as Object;
-                    FavoritesAsset.instance.RemoveFavorite(assetReference);
+                    var index = (int) removeIcon.userData;
+                    FavoritesAsset.instance.RemoveAtIndex(index);
                 });
             }
 
@@ -224,7 +224,10 @@ namespace Gemserk
                 openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
                 {
                     var assetReference = openPrefabIcon.userData as Object;
-                    AssetDatabase.OpenAsset(assetReference);
+                    if (assetReference)
+                    {
+                        AssetDatabase.OpenAsset(assetReference);
+                    }
                 });
             }
             
@@ -240,6 +243,11 @@ namespace Gemserk
             visualElement.parent.parent.style.display = DisplayStyle.Flex;
             
             var label = visualElement.Q<Label>("Favorite");
+            
+            var removeIcon = visualElement.Q<Image>("RemoveIcon");
+            removeIcon.userData = elementIndex;
+            
+            var openPrefabIcon = visualElement.Q<Image>("OpenPrefabIcon");
             
             if (!assetReference)
             {
@@ -299,10 +307,6 @@ namespace Gemserk
                 icon.image = AssetPreview.GetMiniThumbnail(assetReference);
             }
             
-            var removeIcon = visualElement.Q<Image>("RemoveIcon");
-            removeIcon.userData = assetReference;
-      
-            var openPrefabIcon = visualElement.Q<Image>("OpenPrefabIcon");
             openPrefabIcon.userData = assetReference;
             
             label.text = assetName;
