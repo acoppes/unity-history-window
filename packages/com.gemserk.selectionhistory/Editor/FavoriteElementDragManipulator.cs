@@ -77,7 +77,10 @@ namespace Gemserk
             
             if (evt.button == 0 && evt.clickCount == 2)
             {
-                AssetDatabase.OpenAsset(assetReference);
+                if (assetReference)
+                {
+                    AssetDatabase.OpenAsset(assetReference);
+                }
             }
         }
 
