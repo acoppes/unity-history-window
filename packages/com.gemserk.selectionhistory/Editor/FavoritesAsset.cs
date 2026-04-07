@@ -14,6 +14,7 @@ namespace Gemserk
         public class Favorite
         {
             public Object reference;
+            public string assetPath;
         }
     
         public event Action<FavoritesAsset> OnFavoritesUpdated;
@@ -42,6 +43,13 @@ namespace Gemserk
 
         public void OnFavoritesModified()
         {
+            foreach (var favorite in favoritesList)
+            {
+                if (favorite.reference)
+                {
+                    favorite.assetPath = AssetDatabase.GetAssetPath(favorite.reference);
+                }
+            }
             Save(true);
         }
     }
