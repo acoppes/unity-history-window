@@ -242,12 +242,14 @@ namespace Gemserk
             // this is the reorderable item, hiding that to not show the handle with empty item.
             visualElement.parent.parent.style.display = DisplayStyle.Flex;
             
+            var dragArea = visualElement.Q<VisualElement>("DragArea");
+            
+            var icon = visualElement.Q<Image>("Icon");
             var label = visualElement.Q<Label>("Favorite");
-            
             var removeIcon = visualElement.Q<Image>("RemoveIcon");
-            removeIcon.userData = elementIndex;
-            
             var openPrefabIcon = visualElement.Q<Image>("OpenPrefabIcon");
+            
+            removeIcon.userData = elementIndex;
             
             if (!assetReference)
             {
@@ -291,24 +293,9 @@ namespace Gemserk
                 }
             }
             
-            var dragArea = visualElement.Q<VisualElement>("DragArea");
-            
-            // var isSceneAsset = assetReference is SceneAsset;
-            // var isAsset = !isSceneAsset;
-
-            if (dragArea != null)
-            {
-                dragArea.userData = assetReference;
-            }
-            
-            var icon = visualElement.Q<Image>("Icon");
-            if (icon != null)
-            {
-                icon.image = AssetPreview.GetMiniThumbnail(assetReference);
-            }
-            
+            dragArea.userData = assetReference;
+            icon.image = AssetPreview.GetMiniThumbnail(assetReference);
             openPrefabIcon.userData = assetReference;
-            
             label.text = assetName;
         }
     }
