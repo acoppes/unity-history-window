@@ -40,6 +40,10 @@
     /* align-self: flex-end; */
 }
 
+.favorites-missing-reference {
+    color: yellow;
+}
+
 .history {
     font-size: 12px;
     -unity-text-align: middle-left;

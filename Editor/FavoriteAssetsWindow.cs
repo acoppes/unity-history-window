@@ -236,10 +236,24 @@ namespace Gemserk
             var favorite = _favorites.favoritesList[elementIndex];
             var assetReference = favorite.reference;
             
+            // this is the reorderable item, hiding that to not show the handle with empty item.
+            visualElement.parent.parent.style.display = DisplayStyle.Flex;
+            
+            var label = visualElement.Q<Label>("Favorite");
+            
             if (!assetReference)
             {
-                visualElement.parent.parent.style.display = DisplayStyle.None;
+                label.AddToClassList("favorites-missing-reference");
+                label.text = "(missing reference)";
+                if (!string.IsNullOrEmpty(favorite.assetPath))
+                {
+                    label.text = $"{favorite.assetPath}";
+                }
                 return;
+            }
+            else
+            {
+                label.RemoveFromClassList("favorites-missing-reference");
             }
             
             var assetName = assetReference.name;
@@ -250,9 +264,6 @@ namespace Gemserk
             }
             
             var testName = assetName.ToLower();
-            
-            // this is the reorderable item, hiding that to not show the handle with empty item.
-            visualElement.parent.parent.style.display = DisplayStyle.Flex;
             
             if (searchTexts != null && searchTexts.Length > 0)
             {
@@ -274,8 +285,8 @@ namespace Gemserk
             
             var dragArea = visualElement.Q<VisualElement>("DragArea");
             
-            var isSceneAsset = assetReference is SceneAsset;
-            var isAsset = !isSceneAsset;
+            // var isSceneAsset = assetReference is SceneAsset;
+            // var isAsset = !isSceneAsset;
 
             if (dragArea != null)
             {
@@ -289,40 +300,12 @@ namespace Gemserk
             }
             
             var removeIcon = visualElement.Q<Image>("RemoveIcon");
-            if (removeIcon != null)
-            {
-                removeIcon.userData = assetReference;
-                // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
-                // removeIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.removeIconName).image;
-                // removeIcon.tooltip = "Remove";
-                //
-                // removeIcon.RegisterCallback(delegate(MouseUpEvent e)
-                // {
-                //     FavoritesAsset.instance.RemoveFavorite(assetReference);
-                // });
-            }
+            removeIcon.userData = assetReference;
       
             var openPrefabIcon = visualElement.Q<Image>("OpenPrefabIcon");
-            if (openPrefabIcon != null)
-            {
-                openPrefabIcon.userData = assetReference;
-                // removeIcon.image = AssetPreview.GetMiniThumbnail(assetReference);
-                // openPrefabIcon.image = EditorGUIUtility.IconContent(UnityBuiltInIcons.openAssetIconName).image;
-                // openPrefabIcon.tooltip = "Open";
-                //
-                // openPrefabIcon.RemoveFromClassList("hidden");
-                //
-                // openPrefabIcon.RegisterCallback(delegate(MouseUpEvent e)
-                // {
-                //     AssetDatabase.OpenAsset(assetReference);
-                // });
-            }
+            openPrefabIcon.userData = assetReference;
             
-            var label = visualElement.Q<Label>("Favorite");
-            if (label != null)
-            {
-                label.text = assetName;
-            }
+            label.text = assetName;
         }
     }
 }
