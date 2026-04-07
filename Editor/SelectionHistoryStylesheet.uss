@@ -9,12 +9,11 @@
     border-radius: 3px;
 }
 
-.favorite #DragArea{
-    margin-right: 16px;
+.favorite #DragArea {
 }
 
 .favorite Label {
-    margin-left: 17px;
+    margin-left: 18px;
 }
 
 .favorite #Icon {
@@ -22,6 +21,8 @@
     max-height: 16px;
     position: absolute;
     align-self: flex-start;
+    min-height: 16px;
+    min-width: 16px;
 }
 
 .favorite #RemoveIcon {
@@ -29,7 +30,6 @@
     max-height: 16px;
     right: 4px;
     position: absolute;
-    /* align-self: flex-end; */
 }
 
 .favorite #OpenPrefabIcon {
@@ -37,7 +37,6 @@
     max-height: 16px;
     right: 30px;
     position: absolute;
-    /* align-self: flex-end; */
 }
 
 .favorites-missing-reference {
@@ -56,15 +55,14 @@
 }
 
 .unreferencedObject Label {
-    color: #5D5D5D;
+    color: rgb(93, 93, 93);
 }
 
-.sceneObject Label { 
+.sceneObject Label {
     color: darkseagreen;
 }
 
 .assetObject Label {
-    
 }
 
 .history Label {
@@ -81,9 +79,8 @@
 .history #PingIcon {
     max-width: 16px;
     max-height: 16px;
-    right: 0px;
+    right: 0;
     position: absolute;
-    /* align-self: flex-end; */
 }
 
 .history #Favorite {
@@ -91,7 +88,6 @@
     max-height: 16px;
     right: 25px;
     position: absolute;
-    /* align-self: flex-end; */
 }
 
 .history #OpenPrefabIcon {
@@ -99,7 +95,6 @@
     max-height: 16px;
     right: 50px;
     position: absolute;
-    /* align-self: flex-end; */
 }
 
 .searchToolbar {
@@ -110,5 +105,5 @@
 }
 
 .hidden {
-    display:none;
+    display: none;
 }

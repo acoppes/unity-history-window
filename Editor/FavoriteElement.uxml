@@ -1,11 +1,11 @@
-<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="SelectionHistoryStylesheet.uss?fileID=7433441132597879392&amp;guid=51608abdc59297e44b306ea90947f75b&amp;type=3#SelectionHistoryStylesheet"/>
-    <engine:VisualElement name="Root" class="favorite">
-        <engine:VisualElement name="DragArea">
-            <engine:Label text="default" name="Favorite"/>
-            <engine:Image name="Icon" style="min-width: 16px; min-height: 16px; max-width: 16px; max-height: 16px;"/>
-        </engine:VisualElement>
-        <engine:Image name="OpenPrefabIcon" class="hidden"/>
-        <engine:Image name="RemoveIcon"/>
-    </engine:VisualElement>
-</engine:UXML>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Packages/com.gemserk.selectionhistory/Editor/SelectionHistoryStylesheet.uss?fileID=7433441132597879392&amp;guid=51608abdc59297e44b306ea90947f75b&amp;type=3#SelectionHistoryStylesheet"/>
+    <ui:VisualElement name="Root" class="favorite" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; justify-content: center;">
+        <ui:VisualElement name="DragArea" style="justify-content: center; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-top: 6px; margin-right: 0; margin-bottom: 0; margin-left: 0;">
+            <ui:Label text="NAME OF THE ASSET" name="Favorite"/>
+            <ui:Image name="Icon" style="min-width: 16px; min-height: 16px; max-width: 16px; max-height: 16px;"/>
+        </ui:VisualElement>
+        <ui:Image name="OpenPrefabIcon" class="hidden" style="min-width: 16px; min-height: 16px; display: flex; right: 30px;"/>
+        <ui:Image name="RemoveIcon" style="min-width: 16px; min-height: 16px;"/>
+    </ui:VisualElement>
+</ui:UXML>
