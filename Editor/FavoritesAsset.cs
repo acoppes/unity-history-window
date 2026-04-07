@@ -41,6 +41,16 @@ namespace Gemserk
             Save(true);
         }
 
+        public void RemoveAtIndex(int index)
+        {
+            if (index < 0 || index >= favoritesList.Count) 
+                return;
+            
+            favoritesList.RemoveAt(index);
+            OnFavoritesUpdated?.Invoke(this);
+            Save(true);
+        }
+
         public void OnFavoritesModified()
         {
             foreach (var favorite in favoritesList)
