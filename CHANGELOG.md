@@ -1,3 +1,7 @@
+# 1.5.15
+
+* fix: now deleted objects are displayed as missing and/or show the path if possible.
+
 # 1.5.14
 
 * fix: using search bar with favorites wasn't refreshing correctly when search is empty.
