@@ -161,10 +161,15 @@ namespace Gemserk
                     searchTexts = null;
                 }
                 
-                favoritesListView?.RefreshItems();
+                RefreshView();
             });
 
             return searchToolbar;
+        }
+
+        public void RefreshView()
+        {
+            favoritesListView?.RefreshItems();
         }
         
         private void ReloadRoot()
