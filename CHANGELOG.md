@@ -1,3 +1,9 @@
+# 1.5.16
+
+* change: changed to store LazyLoadReference<Object> in favorites window to try to not load all assets in memory in favorites window. didn't validate that was the old behaviour but since the serialization is the same, it should't be worse.
+* change: selection history auto removes from list deleted assets/objects.
+* change: favorites window automatically show as missing deleted assets. 
+
 # 1.5.15
 
 * fix: now deleted objects are displayed as missing and/or show the path if possible.
