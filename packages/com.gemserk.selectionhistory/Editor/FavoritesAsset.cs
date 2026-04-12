@@ -13,7 +13,7 @@ namespace Gemserk
         [Serializable]
         public class Favorite
         {
-            public Object reference;
+            public LazyLoadReference<Object> reference;
             public string assetPath;
         }
     
@@ -31,12 +31,12 @@ namespace Gemserk
 
         public bool IsFavorite(Object reference)
         {
-            return favoritesList.Count(f => f.reference == reference) > 0;
+            return favoritesList.Count(f => !f.reference.isBroken && f.reference.isSet && f.reference.asset == reference) > 0;
         }
 
         public void RemoveFavorite(Object reference)
         {
-            favoritesList.RemoveAll(f => f.reference == reference);
+            favoritesList.RemoveAll(f => !f.reference.isBroken && f.reference.isSet && f.reference.asset == reference);
             OnFavoritesUpdated?.Invoke(this);
             Save(true);
         }
@@ -55,9 +55,9 @@ namespace Gemserk
         {
             foreach (var favorite in favoritesList)
             {
-                if (favorite.reference)
+                if (!favorite.reference.isBroken && favorite.reference.isSet)
                 {
-                    favorite.assetPath = AssetDatabase.GetAssetPath(favorite.reference);
+                    favorite.assetPath = AssetDatabase.GetAssetPath(favorite.reference.asset);
                 }
             }
             Save(true);

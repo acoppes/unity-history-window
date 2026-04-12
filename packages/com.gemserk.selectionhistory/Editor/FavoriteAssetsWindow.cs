@@ -48,7 +48,8 @@ namespace Gemserk
                 {
                     favorites.AddFavorite(new FavoritesAsset.Favorite
                     {
-                        reference = reference
+                        reference = reference,
+                        assetPath = AssetDatabase.GetAssetPath(reference)
                     });   
                 }
             }
@@ -251,7 +252,7 @@ namespace Gemserk
             
             removeIcon.userData = elementIndex;
             
-            if (!assetReference)
+            if (assetReference.isBroken || !assetReference.isSet)
             {
                 label.AddToClassList("favorites-missing-reference");
                 label.text = "(missing reference)";
@@ -266,7 +267,7 @@ namespace Gemserk
                 label.RemoveFromClassList("favorites-missing-reference");
             }
             
-            var assetName = assetReference.name;
+            var assetName = assetReference.asset.name;
             
             if (string.IsNullOrEmpty(assetName))
             {
@@ -293,9 +294,9 @@ namespace Gemserk
                 }
             }
             
-            dragArea.userData = assetReference;
-            icon.image = AssetPreview.GetMiniThumbnail(assetReference);
-            openPrefabIcon.userData = assetReference;
+            dragArea.userData = assetReference.asset;
+            icon.image = AssetPreview.GetMiniThumbnail(assetReference.asset);
+            openPrefabIcon.userData = assetReference.asset;
             label.text = assetName;
         }
     }
