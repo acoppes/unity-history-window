@@ -264,6 +264,12 @@ namespace Gemserk
 
                     if (entry == null)
                         return;
+                    
+                    if (!entry.isAsset)
+                        return;
+
+                    if (!entry.isReferenced)
+                        return;
                         
                     if (FavoritesAsset.instance.IsFavorite(entry.Reference))
                     {
@@ -272,7 +278,8 @@ namespace Gemserk
                     {
                         FavoritesAsset.instance.AddFavorite(new FavoritesAsset.Favorite
                         {
-                            reference = entry.Reference
+                            reference = entry.Reference,
+                            assetPath = AssetDatabase.GetAssetPath(entry.Reference)
                         });
                     }
                             
@@ -450,7 +457,8 @@ namespace Gemserk
                     }
                     
                     var favoriteAsset = visualElement.Q<Image>("Favorite");
-                    if (!SelectionHistoryWindowUtils.ShowFavoriteButton || !entry.isReferenced)
+                    
+                    if (!SelectionHistoryWindowUtils.ShowFavoriteButton || !entry.isReferenced || !entry.isAsset)
                     {
                         favoriteAsset.style.display = DisplayStyle.None;
                     }
