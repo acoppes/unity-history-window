@@ -170,6 +170,9 @@ namespace Gemserk
         public void RefreshView()
         {
             favoritesListView?.RefreshItems();
+
+            var favoritesList = rootVisualElement.Q<ListView>("FavoritesList");
+            favoritesList.reorderable = searchTexts == null || searchTexts.Length == 0;
         }
         
         private void ReloadRoot()
@@ -246,7 +249,7 @@ namespace Gemserk
             var assetReference = favorite.reference;
             
             // this is the reorderable item, hiding that to not show the handle with empty item.
-            visualElement.parent.parent.style.display = DisplayStyle.Flex;
+            visualElement.style.display = DisplayStyle.Flex;
             
             var dragArea = visualElement.Q<VisualElement>("DragArea");
             
@@ -295,7 +298,7 @@ namespace Gemserk
             
                 if (!match)
                 {
-                    visualElement.parent.parent.style.display = DisplayStyle.None;
+                    visualElement.style.display = DisplayStyle.None;
                 }
             }
             
