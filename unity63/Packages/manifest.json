@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.gemserk.selectionhistory": "file:C:/workspace/unity-history-window/packages/com.gemserk.selectionhistory",
+    "com.gemserk.selectionhistory": "file:../../packages/com.gemserk.selectionhistory",
     "com.unity.ai.navigation": "2.0.10",
     "com.unity.collab-proxy": "2.11.3",
     "com.unity.ide.rider": "3.0.39",

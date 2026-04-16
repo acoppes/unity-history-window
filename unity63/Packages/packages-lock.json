@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.gemserk.selectionhistory": {
-      "version": "file:C:/workspace/unity-history-window/packages/com.gemserk.selectionhistory",
+      "version": "file:../../packages/com.gemserk.selectionhistory",
       "depth": 0,
       "source": "local",
       "dependencies": {}
