@@ -110,9 +110,14 @@ namespace Gemserk
             // This is necessary in order to process the drag properly. 
             target.ReleasePointer(0);
             
-            DragAndDrop.PrepareStartDrag();
-            
             var assetReference = target.userData as Object;
+            
+            if (!assetReference)
+            {
+                return;
+            }
+            
+            DragAndDrop.PrepareStartDrag();
             
             var objectReferences = new[] { assetReference };
             DragAndDrop.paths = new[]

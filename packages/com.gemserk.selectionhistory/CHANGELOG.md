@@ -1,3 +1,7 @@
+# 1.5.17
+
+* fix: fixed drag destroyed object/asset from favorites. 
+
 # 1.5.16
 
 * change: changed to store LazyLoadReference<Object> in favorites window to try to not load all assets in memory in favorites window. didn't validate that was the old behaviour but since the serialization is the same, it should't be worse.
