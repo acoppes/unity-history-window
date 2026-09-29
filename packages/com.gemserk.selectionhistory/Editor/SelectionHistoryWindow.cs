@@ -175,6 +175,7 @@ namespace Gemserk
         {
             searchToolbar = new ToolbarSearchField();
             searchToolbar.AddToClassList("searchToolbar");
+            searchToolbar.value = searchText;
             searchToolbar.RegisterValueChangedCallback(evt =>
             {
                 searchText = evt.newValue;
