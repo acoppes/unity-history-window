@@ -1,6 +1,6 @@
 # 1.5.18
 
-* 
+* fix: both favorite and history windows keep search texts after recompile.
 
 # 1.5.17
 
