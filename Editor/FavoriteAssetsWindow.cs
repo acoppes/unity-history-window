@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 
 namespace Gemserk
 {
-    public class FavoriteAssetsWindow : EditorWindow
+    public class FavoriteAssetsWindow : EditorWindow, IHasCustomMenu
     {
         [MenuItem("Window/Gemserk/Favorites")]
         public static void OpenWindow()
@@ -73,6 +73,8 @@ namespace Gemserk
         private ListView favoritesListView;
         
         private string[] searchTexts = null;
+
+        private bool reorderEnabled;
         
         private void GetDefaultElements()
         {
@@ -178,7 +180,7 @@ namespace Gemserk
             favoritesListView?.RefreshItems();
 
             var favoritesList = rootVisualElement.Q<ListView>("FavoritesList");
-            favoritesList.reorderable = searchTexts == null || searchTexts.Length == 0;
+            favoritesList.reorderable = (searchTexts == null || searchTexts.Length == 0) && reorderEnabled;
         }
         
         private void ReloadRoot()
@@ -312,6 +314,16 @@ namespace Gemserk
             icon.image = AssetPreview.GetMiniThumbnail(assetReference.asset);
             openPrefabIcon.userData = assetReference.asset;
             label.text = assetName;
+        }
+
+        public void AddItemsToMenu(GenericMenu menu)
+        {
+            menu.AddItem(new GUIContent("Reorder enabled"), reorderEnabled, data =>
+            {
+                reorderEnabled = !reorderEnabled;
+                RefreshView();
+            }, this);
+            
         }
     }
 }
