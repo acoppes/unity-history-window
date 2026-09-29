@@ -1,6 +1,7 @@
 # 1.5.18
 
 * fix: both favorite and history windows keep search texts after recompile.
+* changed: favorites reorder is now a toggleable menu option of the window.
 
 # 1.5.17
 
