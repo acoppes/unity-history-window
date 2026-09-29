@@ -144,7 +144,11 @@ namespace Gemserk
         {
             searchToolbar = new ToolbarSearchField();
             searchToolbar.AddToClassList("searchToolbar");
-            searchToolbar.value = string.Join(' ', searchTexts);
+            
+            if (searchTexts != null && searchTexts.Length > 0)
+            {
+                searchToolbar.value = string.Join(' ', searchTexts);
+            }
             
             searchToolbar.RegisterValueChangedCallback(evt =>
             {
