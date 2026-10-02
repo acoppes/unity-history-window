@@ -74,7 +74,7 @@ namespace Gemserk
         
         private string[] searchTexts = null;
 
-        private bool reorderEnabled;
+        private bool reorderEnabled = false;
         
         private void GetDefaultElements()
         {
