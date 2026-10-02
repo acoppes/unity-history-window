@@ -180,7 +180,19 @@ namespace Gemserk
             favoritesListView?.RefreshItems();
 
             var favoritesList = rootVisualElement.Q<ListView>("FavoritesList");
-            favoritesList.reorderable = (searchTexts == null || searchTexts.Length == 0) && reorderEnabled;
+
+            var reorderable = (searchTexts == null || searchTexts.Length == 0) && reorderEnabled;
+
+            if (reorderable)
+            {
+                favoritesList.reorderable = true;
+                favoritesList.reorderMode = ListViewReorderMode.Animated;
+            }
+            else
+            {
+                favoritesList.reorderMode = ListViewReorderMode.Simple;
+                favoritesList.reorderable = false;
+            }
         }
         
         private void ReloadRoot()
